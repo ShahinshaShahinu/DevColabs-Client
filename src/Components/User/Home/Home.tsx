@@ -141,6 +141,9 @@ function HomePage() {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    if (!username) {
+      setSelectCategory('Latest')
+    }
   };
 
 
@@ -152,7 +155,6 @@ function HomePage() {
       if (username) {
         const UserStatus = await UserBlock_UnBlock(userEmail)
         if (UserStatus === false) {
-          console.log('susdasd false sfalse');
           setliked(true)
           dispatch(updateUser({}));
           localStorage.removeItem("user");
@@ -202,16 +204,20 @@ function HomePage() {
 
           setHomePosts(userResponse?.data);
         } else if (selectCategory === 'Recommended') {
-          setClickedHashtag('')
-          const userHashtag = await userRecomended();
-          const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-          const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
-          const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-            const postTagsCleaned = post.HashTag.map(tag => tag.trim());
-            const userHashTagsCleaned = userHashTags.map((tag: string) => tag.trim());
-            return postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag));
-          });
-          setHomePosts(filteredPosts);
+          setClickedHashtag('');
+          if (username) {
+            const userHashtag = await userRecomended();
+            const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+            const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
+            const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+              const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+              const userHashTagsCleaned = userHashTags.map((tag: string) => tag.trim());
+              return postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag));
+            });
+            setHomePosts(filteredPosts);
+          } else {
+            setIsModalOpen(true);
+          }
         }
 
       } catch (error) {
@@ -231,12 +237,20 @@ function HomePage() {
     const fetchData = async () => {
 
       if (clickedHashtag) {
+        console.log(clickedHashtag,'click');
+        
         setSelectCategory('');
+        console.log('after');
+        
         const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+        console.log(userResponse,'ress');
+        
         const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
           const postTagsCleaned = post.HashTag.map(tag => tag.trim());
           return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
         });
+        console.log(filteredPosts,'clikc',filteredPosts?.length,'lemee');
+        
         setTag({
           HashtagName: clickedHashtag.trim(),
           CountPost: filteredPosts?.length,
@@ -245,7 +259,7 @@ function HomePage() {
       }
     }
     fetchData();
-  }, [clickedHashtag, refresh,  setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment]);
+  }, [clickedHashtag, refresh, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment]);
 
 
   const SavePostSucess = (success: string) => {
@@ -360,7 +374,7 @@ function HomePage() {
             <Navbar />
           </div>
           <main className="flex-grow  bg-white">
-            
+
             <div className="lg:mx-28 xl:mx:28 md:mx-28 ">
               <div className="mx-auto max-w-screen-xl overflow">
                 <div className="flex md:flex-row-reverse">
@@ -864,7 +878,7 @@ function HomePage() {
                   border-r-2 p-2 ">
                         <nav className="flex flex-col top-44 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li className="flex cursor-pointer items-center w-auto h-12 space-x-2 bg-sky-200  rounded-3xl">
+                            <li className={`flex cursor-pointer items-center w-auto h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-3xl`}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>

@@ -21,18 +21,7 @@ function Navbar() {
   const [showUserCircle, setshowUserCircle] = useState(false);
   const [userData, setUserData] = useState<User>();
 
-  // useEffect(() => {
 
-  //   const Userauth = localStorage.getItem('user')
-  //   console.log(Userauth, 'user ahsa shahin');
-
-  //   if (Userauth) {
-  //     // Navigate('/')/
-  //   } else {
-  //     Navigate('/login')
-  //   }
-
-  // }, []);
 
   useEffect(() => {
     fetchUserData();
@@ -243,7 +232,7 @@ function Navbar() {
 
             <div className="flex md:left-60   absolute px-8 w-1/4">
               <form
-                onSubmit={  handleSearchSubmit }
+                onSubmit={handleSearchSubmit}
                 className={`flex items-center md:flex md:items-center top-0 z-[3] md:z-auto md:static absolute  w-full md:w-auto md:max-w-[100%] sm:w-96  xl:w-96 md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 ${showMenu
                   ? `hidden   bottom-100`
                   : `opacity-0 flex top-[-400px]`
@@ -369,7 +358,7 @@ function Navbar() {
             >
               {username ? (
                 <>
-                  <li className="mx-4 my-6 md:my-0 ">
+                  <li  className="mx-4 items-center flex flex-col justify-center relative my-6 md:my-0">
                     <button
                       onClick={() => {
                         Navigate("/PostCreation");
@@ -382,15 +371,14 @@ function Navbar() {
                       </span>
                     </button>
                   </li>
-                  <li className="mx-4 my-6 md:my-0 ">
-                    <a
-                      href="#"
+                  <li className="mx-6 items-center flex relative my-6 md:my-0 ">
+                    <button
                       className="text-xl hover:text-cyan-500 duration-500"
                     >
-                      <IoIosNotificationsOutline className="w-8 h-8" />
-                    </a>
+                      <IoIosNotificationsOutline className="w-9 h-9 " />
+                    </button>
                   </li>
-                  <div className=" flex items-center justify-start    rounded-full  ">
+                  <div className=" items-center flex  justify-start    rounded-full  ">
                     <img
                       onClick={UserCircleButton}
                       className=" cursor-pointer w-10 h-10 rounded-full hidden md:block"
