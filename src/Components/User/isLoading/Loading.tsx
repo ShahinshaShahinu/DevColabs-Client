@@ -1,4 +1,4 @@
-import { ToastContainer } from "react-toastify"
+
 
 function Loading() {
     return (
@@ -6,7 +6,7 @@ function Loading() {
             <div
                 id="loadingModal"
                 aria-hidden="true"
-                className="fixed top-0 left-0 z-50 right-0 w-full h-screen flex items-center justify-center bg-gray-700 bg-opacity-50"
+                className="relative z-50 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50"
             >
 
                 <div role="status" className="flex items-center justify-center mb-4">
@@ -27,7 +27,7 @@ function Loading() {
                         />
                     </svg>
                     <span className="sr-only">Loading...</span>
-                    <ToastContainer />
+            
                 </div>
 
             </div>

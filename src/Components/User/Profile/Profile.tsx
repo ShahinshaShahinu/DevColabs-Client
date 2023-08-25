@@ -12,13 +12,14 @@ import { TextField } from "@material-ui/core"
 import { Data } from '../../../../../DevColab-Server/src/domain/models/user';
 import { uploadImage } from "../../../services/Cloudinary/Cloud"
 import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { useSocket } from '../../../Context/WebsocketContext';
 
 
 function Profile() {
     const Navigate = useNavigate();
     const { userId, username } = useSelector((state: any) => state.user);
-
-
+    const socket = useSocket();
+    const [sockets, setSocket] = useState('')
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [userProfileData, setUserProfileData] = useState<Data | null>(null);
@@ -39,10 +40,30 @@ function Profile() {
     const [userHshTagSelectedTags, setUserHshTagSelectedTags] = useState<any | Array<TemplateStringsArray>>([]);
     const clickDataUserId = location?.state
 
+    useEffect(() => {
+        socket.on('adminMessage', () => {
+            UserProfileSuccess('Notification')
+            setSocket('notificatonsdsss')
+        });
+        const fetchData = async () => {
+            const userResponse = await api.get(`/profile/${clickDataUserId}`, { withCredentials: true });
+            const user: Data = userResponse.data;
+            setUserProfileData(user)
+        }
+        fetchData()
 
+        return () => {
+            socket.off('adminMessage');
+        };
+    }, [socket,sockets])
 
 
     useEffect(() => {
+        socket.on('adminMessage', (data) => {
+            console.log('Admin message received:', data);
+
+        });
+
         const fetchData = async () => {
 
             if (clickDataUserId) {
@@ -65,16 +86,15 @@ function Profile() {
                 setUserProfileData(user)
                 setCount(user.count)
                 setUserPost(user.UserPosts);
-                console.log(userProfileData?.userProfileData?._id);
+                console.log(userProfileData, 'userProfileData');
 
             }
-
 
 
         }
 
         fetchData();
-    }, [Proimages, images, isLoading, userId]);
+    }, [Proimages, images, isLoading, userId, socket, sockets, setSocket ,userProfileData]);
 
 
     useEffect(() => {
@@ -571,29 +591,6 @@ function Profile() {
                     )}
 
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

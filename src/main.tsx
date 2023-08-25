@@ -7,18 +7,23 @@ import { Provider } from 'react-redux';
 import { Store, persistor } from './redux/store.ts';
 import { PersistGate } from 'redux-persist/integration/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { SocketProvider } from './Context/WebsocketContext.tsx';
+
+
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider  store={Store}>
-    <GoogleOAuthProvider clientId='1092413293944-0nma9o1743q1bua00g0o0con09jch7kt.apps.googleusercontent.com'>
-    <PersistGate loading={null} persistor={persistor}>
-    <BrowserRouter>
-    <App />
-    </BrowserRouter>
-    </PersistGate>
-    </GoogleOAuthProvider>
+    <Provider store={Store}>
+      <SocketProvider>
+        <GoogleOAuthProvider clientId='1092413293944-0nma9o1743q1bua00g0o0con09jch7kt.apps.googleusercontent.com'>
+          <PersistGate loading={null} persistor={persistor}>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </PersistGate>
+        </GoogleOAuthProvider>
+      </SocketProvider>
     </Provider>
   </React.StrictMode>
 )

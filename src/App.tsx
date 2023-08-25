@@ -23,6 +23,7 @@ import UserHashtagPage from './Pages/UserHashtagPage'
 import AdminReportManagementPage from './Pages/AdminReportManagementPage'
 import SearchPage from './Pages/SearchPage'
 
+
 // import QuillEditorPostCreation from './Components/User/PostCreation/QuillEditorPostCreation'
 
 
@@ -35,7 +36,7 @@ function App() {
   return (
     <>
 
-      <Routes>
+      <Routes> 
         {/* Users Routes */}
         <Route path='/' element={<HomePage/>} />
         <Route path='/signup' element={<SignupPage />} />

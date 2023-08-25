@@ -32,27 +32,60 @@ export const UserBlock_UnBlock = async (userEmail: string) => {
 
 export const DeletePostVideo = async (index: number, postId: string) => {
     try {
-        const deleted = await api.post(`/deleteVideo/${index}/${postId}`) ;
-        console.log(deleted,'dele postvideo ');
-         if(deleted){
+        const deleted = await api.post(`/deleteVideo/${index}/${postId}`);
+        console.log(deleted, 'dele postvideo ');
+        if (deleted) {
             return true
-         }else{
+        } else {
             return false
-         }
-        
+        }
+
     } catch (error) {
-        console.log(error,'videodelete err');
-        
+        console.log(error, 'videodelete err');
+
     }
 }
 
-export const userRecomended = async ()=>{
+export const userRecomended = async () => {
     try {
-        
+
         console.log('rec');
-        const getUserHashtag= await api.get('/RecomendedPost') ;
+        const getUserHashtag = await api.get('/RecomendedPost');
         return getUserHashtag
     } catch (error) {
-        console.log(error,'errr');
+        console.log(error, 'errr');
+    }
+}
+
+export const GetNotification = async () => {
+    try {
+        const allNotification = await api.get('/Notification', { withCredentials: true })
+        return allNotification;
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+export const Readed = async () => {
+    try {
+        const Read = true
+       const readed= await api.post('/ReadedNotification', { Read }, { withCredentials: true })
+       console.log(readed);
+       return readed
+       
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+export const DeletNotification = async () => {
+    try {
+        const response = await api.post('/DeletNotification', { withCredentials: true })
+        return response
+    } catch (error) {
+        console.log(error);
+
     }
 }

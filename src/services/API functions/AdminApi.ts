@@ -8,18 +8,52 @@ export const getReportedPosts = async () => {
 }
 
 
-export const BlockReportedPost = async (PostId:string)=>{
-     await api.post(`/admin/BlockReportedPost/${PostId}`);
+export const BlockReportedPost = async (PostId: string) => {
+    await api.post(`/admin/BlockReportedPost/${PostId}`);
 }
-export const UnBlockReportedPost = async (PostId:string)=>{
+export const UnBlockReportedPost = async (PostId: string) => {
     await api.post(`/admin/UnBlockReportedPost/${PostId}`);
 }
 
-export const DeleteRePortPost = async (PostId:string)=>{
+export const DeleteRePortPost = async (PostId: string) => {
     try {
         api.post(`/DeletePost/${PostId}`, { withCredentials: true });
     } catch (error) {
         console.log(error);
-        
+
+    }
+}
+
+
+
+
+
+
+export const SendNotification = async (message: string, notifyDate: string,ReportPostId:string,userId:string|undefined) => {
+    try {
+        await api.post('/sendNotification', { message, notifyDate ,ReportPostId,userId}, { withCredentials: true })
+     
+    } catch (error) {
+
+    }
+}
+
+
+
+
+
+export const UserManageMentBlock = async (email: string) => {
+    try {
+        await api.post(`/admin/UserManageMent/Block/${email}`, { withCredentials: true });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const UserManageMentUNBlock = async (email: string) => {
+    try {
+        await api.post(`/admin/UserManageMent/UnBloack/${email}`, { withCredentials: true });
+    } catch (error) {
+        console.log(error);
     }
 }

@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-// import { FcGoogle } from "react-icons/fc";
-// import { AiFillFacebook } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -19,14 +17,16 @@ function login() {
   useEffect(() => {
     const Userauth = localStorage.getItem("user");
     if (Userauth) {
+      localStorage.removeItem("userId");
       console.log(Userauth);
     }
     if (Userauth) {
-      localStorage.removeItem("userId");
       navigate("/");
     }
   }, []);
 
+
+  
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -49,11 +49,13 @@ function login() {
 
   const GoogleauthLogin = async (result: GoogleautLogin) => {
     try {
+console.log('log time');
 
       const loginUser = {
         email: result.email,
         password:import.meta.env.VITE_GOOGLE_AUTH_PASSWORD,
       };
+  console.log(import.meta.env.VITE_GOOGLE_AUTH_PASSWORD ,'llllllllll');
   
 
       const { data } = await api.post("/login", { ...loginUser }, { withCredentials: true });
@@ -229,9 +231,13 @@ function login() {
               <div className="flex justify-center py-8">
                 <GoogleLogin
                   onSuccess={(credentialResponse: any) => {
-                    GoogleauthLogin(jwt_decode(credentialResponse.credential));
+                    console.log('geeeee');
+                    
+                    GoogleauthLogin(jwt_decode(credentialResponse?.credential));
                   }}
                   onError={() => {
+                    
+                    
                     console.log("Login Failed");
                   }}
                 />

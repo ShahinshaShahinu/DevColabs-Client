@@ -16,6 +16,8 @@ import { GoReport } from "react-icons/go";
 import { updateUser } from "../../../redux/user/userSlice";
 import { googleLogout } from "@react-oauth/google";
 import { UserBlock_UnBlock, userRecomended } from "../../../services/API functions/UserApi";
+import NotificationPage from "../../../Pages/NotificationPage";
+
 
 
 
@@ -43,7 +45,8 @@ function HomePage() {
     HashtagName: '',
     CountPost: 0,
   });
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentDate(new Date());
@@ -55,9 +58,6 @@ function HomePage() {
   }, []);
   const CommentDate = format(currentDate, "d MMMM yyyy hh:mm a");
   const ReportDate = format(currentDate, "d MMMM yyyy hh:mm a");
-
-
-
 
 
 
@@ -141,9 +141,7 @@ function HomePage() {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
-    if (!username) {
-      setSelectCategory('Latest')
-    }
+
   };
 
 
@@ -152,21 +150,19 @@ function HomePage() {
   const handleClick = async (PostId: Posts) => {
     try {
       setliked(true)
-      if (username) {
-        const UserStatus = await UserBlock_UnBlock(userEmail)
-        if (UserStatus === false) {
-          setliked(true)
-          dispatch(updateUser({}));
-          localStorage.removeItem("user");
-          Navigate('/');
-        } else {
-          setliked(false);
-          const response = await api.post(`/Postslike/${PostId}`);
-          console.log(response?.data?.liked);
-        }
+
+      const UserStatus = await UserBlock_UnBlock(userEmail)
+      if (UserStatus === false) {
+        setliked(true)
+        dispatch(updateUser({}));
+        localStorage.removeItem("user");
+        Navigate('/');
       } else {
-        setIsModalOpen(true);
+        setliked(false);
+        const response = await api.post(`/Postslike/${PostId}`);
+        console.log(response?.data?.liked);
       }
+
 
 
     } catch (error) {
@@ -187,37 +183,26 @@ function HomePage() {
 
 
   useEffect(() => {
-    const checkUser = async () => {
-      const UserStatus = await UserBlock_UnBlock(userEmail)
-      if (UserStatus === false) {
-        dispatch(updateUser({}));
-        localStorage.removeItem("user");
-        googleLogout();
-      }
-    }
+
 
     const fetchData = async () => {
       try {
         if (selectCategory === 'Latest') {
-          setClickedHashtag('')
+
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
 
           setHomePosts(userResponse?.data);
         } else if (selectCategory === 'Recommended') {
-          setClickedHashtag('');
-          if (username) {
-            const userHashtag = await userRecomended();
-            const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-            const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
-            const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-              const postTagsCleaned = post.HashTag.map(tag => tag.trim());
-              const userHashTagsCleaned = userHashTags.map((tag: string) => tag.trim());
-              return postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag));
-            });
-            setHomePosts(filteredPosts);
-          } else {
-            setIsModalOpen(true);
-          }
+          const userHashtag = await userRecomended();
+          const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+          const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
+          const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+            const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+            const userHashTagsCleaned = userHashTags.map((tag: string) => tag.trim());
+            return postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag));
+          });
+          setHomePosts(filteredPosts);
+
         }
 
       } catch (error) {
@@ -227,8 +212,9 @@ function HomePage() {
     }
 
     fetchData();
-    checkUser();
-  }, [showCommentBox, selectCategory, setSelectCategory, setliked, liked, isScrolled, SetComment, ShareSocialMediaModal, ReportModal, setrefresh, SavedPost, isModalOpen, reftesh]);
+
+  }, [showCommentBox, selectCategory, setliked, liked, SetComment, ShareSocialMediaModal, ReportModal, setrefresh, SavedPost, isModalOpen, reftesh]);
+
 
 
 
@@ -237,29 +223,32 @@ function HomePage() {
     const fetchData = async () => {
 
       if (clickedHashtag) {
-        console.log(clickedHashtag,'click');
-        
         setSelectCategory('');
+        console.log(clickedHashtag, 'click');
+
         console.log('after');
-        
+
         const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-        console.log(userResponse,'ress');
-        
+        console.log(userResponse, 'ress');
+
+
         const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
           const postTagsCleaned = post.HashTag.map(tag => tag.trim());
           return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
         });
-        console.log(filteredPosts,'clikc',filteredPosts?.length,'lemee');
-        
+        console.log(filteredPosts, 'clikc', filteredPosts?.length, 'lemee');
+
         setTag({
           HashtagName: clickedHashtag.trim(),
           CountPost: filteredPosts?.length,
         });
+        console.log(filteredPosts);
+
         setHomePosts(filteredPosts);
       }
     }
     fetchData();
-  }, [clickedHashtag, refresh, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment]);
+  }, [clickedHashtag, refresh, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment, selectCategory]);
 
 
   const SavePostSucess = (success: string) => {
@@ -372,6 +361,7 @@ function HomePage() {
         <div className="min-h-screen flex flex-col">
           <div className=" relative z-20 ">
             <Navbar />
+            <NotificationPage />
           </div>
           <main className="flex-grow  bg-white">
 
@@ -392,15 +382,18 @@ function HomePage() {
                               </li>
                             ) : (
                               <>
-                                <li className={`flex cursor-pointer relative items-center  mt-3  h-12 space-x-2 ${isScrolled ? 'hidden md:flex' : 'flex'}`}>
-                                  <h1 onClick={() => Navigate('/')} className="font-semibold ml-3   relative text-3xl">{Tag?.HashtagName}</h1>
-                                </li>
-                                <div className="flex sm:ml-5 ml-11 relative">
-                                  <p className="font-medium">{Tag?.CountPost}</p>
+                                <div className="ml-8 mb-2">
+                                  <li className={`flex cursor-pointer relative items-center  mt-3   h-12 space-x-2 ${isScrolled ? 'hidden md:flex' : 'flex'}`}>
+                                    <h1 onClick={() => Navigate('/')} className="font-semibold ml-3   relative text-3xl">{Tag?.HashtagName}</h1>
+                                  </li>
+                                  <div className="flex sm:ml-5 ml-11 relative">
+                                    <p className="font-medium">{Tag?.CountPost}</p>
+                                  </div>
+                                  <div className="flex sm:ml-5 bottom-0 relative">
+                                    <p className="font-medium">posts</p>
+                                  </div>
                                 </div>
-                                <div className="flex sm:ml-5 bottom-0 relative">
-                                  <p className="font-medium">posts</p>
-                                </div>
+
                               </>
                             )}
                           </ul>
@@ -418,7 +411,7 @@ function HomePage() {
                                 Latest Posts
                               </button>
                               <button
-                                onClick={() => setSelectCategory('Recommended')}
+                                onClick={() => { username ? setSelectCategory('Recommended') : setIsModalOpen(true) }}
                                 type="button"
                                 className={`${selectCategory === "Recommended" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
@@ -457,7 +450,6 @@ function HomePage() {
 
                                         <div className="justify-end absolute right-12 flex items-end group">
                                           <PiDotsThreeOutlineVerticalFill type="button" data-dial-toggle="speed-dial-menu-top-right" aria-controls="speed-dial-menu-top-right" aria-expanded="false" className="flex items-center justify-center rounded-full w-6 h-6    focus:ring-4 focus:ring-blue-300 focus:outline-none " />
-
                                           <div onClick={() => {
                                             setClickedPostIndex(index);
                                           }} id="speed-dial-menu-top-right" className=" items-center hidden mt-0 space-x-2 group-hover:block">
@@ -743,7 +735,7 @@ function HomePage() {
 
                                     <div className="flex items-center space-x-4">
                                       <button
-                                        onClick={() => handleClick(post._id)}
+                                        onClick={() => { username ? handleClick(post._id) : setIsModalOpen(true) }}
                                         className="w-20  justify-center flex rounded-sm"
                                       >
                                         <a
@@ -878,15 +870,15 @@ function HomePage() {
                   border-r-2 p-2 ">
                         <nav className="flex flex-col top-44 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li className={`flex cursor-pointer items-center w-auto h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-3xl`}>
+                            <li className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl`}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
-                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-3xl">
+                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" onClick={() => Navigate('/comments')} />
                               <h1 onClick={() => Navigate('/comments')} className="font-bold text-base">Community</h1>
                             </li>
-                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-3xl">
+                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
                               <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
                             </li>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
-import { BlockReportedPost, DeleteRePortPost, UnBlockReportedPost, getReportedPosts } from "../../../services/API functions/AdminApi"
+import { BlockReportedPost, DeleteRePortPost, SendNotification, UnBlockReportedPost, getReportedPosts } from "../../../services/API functions/AdminApi"
 import { ReportPostData } from '../../../../../DevColab-Server/src/domain/models/ReportPost';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { format } from "date-fns";
+import { useSocket } from "../../../Context/WebsocketContext";
 
 function ReportManagement() {
 
@@ -9,16 +11,14 @@ function ReportManagement() {
   const [ReportPosts, setReportPosts] = useState<ReportPostData[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<number | null>(null);
   const [Refresh, setRefresh] = useState(false);
-
   const [isOpenUserModal, setisOpenUserModal] = useState(Boolean);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     const fetchReportPosts = async () => {
       try {
         const ReportedPosts = await getReportedPosts();
         setReportPosts(ReportedPosts.data); // Access the data property from API response
-        console.log(ReportedPosts.data);
-
       } catch (error) {
         console.error(error);
       }
@@ -26,6 +26,46 @@ function ReportManagement() {
     fetchReportPosts();
     setRefresh(false);
   }, [Refresh, setRefresh]);
+
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 60000); // 1 minute in milliseconds
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  const CurrentDateFormat = format(currentDate, "d MMMM yyyy hh:mm a");
+  const socket = useSocket();
+
+  const NotificationMessage = (check: boolean, ReportPostId: string, userId: string | undefined) => {
+    try {
+      if (check == true) {
+        const message = 'UnBlocked this post'
+        SendNotification(message, CurrentDateFormat, ReportPostId, userId);
+        socket.emit('adminMessage', {
+          userId,
+          message,
+        });
+        setRefresh(true)
+      }
+      if (check === false) {
+        const message = 'Blocked this post'
+        SendNotification(message, CurrentDateFormat, ReportPostId, userId);
+        socket.emit('adminMessage', {
+          userId,
+          message,
+        });
+        setRefresh(true)
+      }
+    } catch (error) {
+
+    }
+  }
+
 
   const toggleDropdown = (index: number) => {
     if (isDropdownOpen === index) {
@@ -46,17 +86,17 @@ function ReportManagement() {
   const deleteReportPosts = async (PostId: string) => {
     try {
       console.log(PostId);
-      
-     const deleted= await DeleteRePortPost(PostId)
-     console.log(deleted);
-     setRefresh(true)
+
+      const deleted = await DeleteRePortPost(PostId)
+      console.log(deleted);
+      setRefresh(true)
     } catch (error) {
       console.log(error);
 
     }
   }
   const handleDeleteClick = () => {
-  console.log('dele clicked modal opern');
+    console.log('dele clicked modal opern');
     setIsDeleteConfirmationOpen(true);
   };
   const handleCancelDelete = () => {
@@ -118,11 +158,11 @@ function ReportManagement() {
                     <td className="px-6 py-4">
                       {ReportPost?.PostId?.status ?
                         <button
-                          onClick={() => { BlockReportedPost(ReportPost?.PostId?._id), setRefresh(true) }}
+                          onClick={() => { BlockReportedPost(ReportPost?.PostId?._id), NotificationMessage(false, ReportPost?.PostId?._id, ReportPost?.PostId?.userId?._id ), setRefresh(true) }}
                           type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Inactive</button>
                         :
                         <button
-                          onClick={() => { UnBlockReportedPost(ReportPost?.PostId?._id), setRefresh(true) }}
+                          onClick={() => { UnBlockReportedPost(ReportPost?.PostId?._id), NotificationMessage(true, ReportPost?.PostId?._id, ReportPost?.PostId?.userId?._id), setRefresh(true) }}
                           type="button" className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Active</button>
                       }
                     </td>
@@ -162,20 +202,20 @@ function ReportManagement() {
                             {isDeleteConfirmationOpen && (
                               <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                                 <div className="bg-white p-8 rounded-lg shadow-lg">
-                                <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                      <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-900">
-                                        View Post
-                                      </h3>
+                                  <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                                    <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-900">
+                                      View Post
+                                    </h3>
                                   </div>
                                   <p className="p-10 font-serif text-black" >Are you sure you want to delete this?</p>
-                                  <button onClick={() =>{deleteReportPosts(ReportPost?.PostId?._id),setIsDeleteConfirmationOpen(false);} } className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                                  <button onClick={() => { deleteReportPosts(ReportPost?.PostId?._id), setIsDeleteConfirmationOpen(false); }} className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
                                     Confirm Delete
                                   </button>
                                   <button onClick={handleCancelDelete} className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded">
                                     Cancel
                                   </button>
                                 </div>
-                               
+
                               </div>
                             )}
 

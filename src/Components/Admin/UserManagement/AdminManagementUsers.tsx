@@ -2,10 +2,15 @@ import { useEffect, useState } from "react"
 import { api } from "../../../services/axios"
 import { useNavigate } from "react-router-dom";
 import { User } from "../../../../../DevColab-Server/src/domain/models/user";
+import {  UserManageMentBlock, UserManageMentUNBlock } from "../../../services/API functions/AdminApi";
+
 
 
 function AdminUserManaging() {
    const navigate = useNavigate();
+   const [userData,setUserData]=useState<User[]>([]);
+   const [isOpen,setisOpen]=useState(Boolean);
+   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
 
    const Userauth = localStorage.getItem('admin');
    useEffect(() => {
@@ -17,9 +22,6 @@ function AdminUserManaging() {
 
  
   
-   const [userData,setUserData]=useState<User[]>([]);
-   const [isOpen,setisOpen]=useState(Boolean);
-   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
 
 
    const openModal = (index:number) => {
@@ -53,7 +55,8 @@ function AdminUserManaging() {
   const handleBlock = async (email: string) => {
 
    try {
-     await api.post(`/admin/UserManageMent/Block/${email}`, { withCredentials: true });
+    UserManageMentBlock(email);
+  
      fetchUserData();
    } catch (error) {
      console.error('Error blocking user:', error);
@@ -62,9 +65,9 @@ function AdminUserManaging() {
  };
 
  const handleUnblock = async (email: string) => {
-
    try {
-     await api.post(`/admin/UserManageMent/UnBloack/${email}`, { withCredentials: true });
+    UserManageMentUNBlock(email);
+    
      fetchUserData();
    } catch (error) {
      console.error('Error unblocking user:', error);
