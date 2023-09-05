@@ -80,8 +80,9 @@ export const Signupvalidation = (userData: { UserName: string; email: string, Co
 
 export const LoginValidation = (userData: { email: string, password: string }) => {
   const regex = {
- 
-    emailRgx: /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/,
+
+    // emailRgx: /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/,
+    emailRgx: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
     passWordRgx: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   };
 
@@ -118,7 +119,7 @@ export const LoginValidation = (userData: { email: string, password: string }) =
 export const UpdatePassWord = async (userData: { Confirmpassword: string, password: string }) => {
 
   const regex = {
-    passWordRgx:  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    passWordRgx: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   }
   const { Confirmpassword, password } = userData;
 

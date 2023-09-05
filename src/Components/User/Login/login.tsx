@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -9,7 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
-
+import gitHubAuth from './gitHubAuth';
+import GitHubAuth from "./gitHubAuth";
 function login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,7 +27,8 @@ function login() {
   }, []);
 
 
-  
+
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -49,24 +51,24 @@ function login() {
 
   const GoogleauthLogin = async (result: GoogleautLogin) => {
     try {
-console.log('log time');
+      console.log('log time');
 
       const loginUser = {
         email: result.email,
-        password:import.meta.env.VITE_GOOGLE_AUTH_PASSWORD,
+        password: import.meta.env.VITE_GOOGLE_AUTH_PASSWORD,
       };
-  console.log(import.meta.env.VITE_GOOGLE_AUTH_PASSWORD ,'llllllllll');
-  
+      console.log(import.meta.env.VITE_GOOGLE_AUTH_PASSWORD, 'llllllllll');
+
 
       const { data } = await api.post("/login", { ...loginUser }, { withCredentials: true });
-     
+
 
       if (data?.Blocked) {
         const message = data.Blocked;
         LoginERror(message);
       }
       if (data?.exist) {
-      
+
         if (data?.Hashtag?.length === 0) {
           localStorage.setItem("user", data.accessToken);
 
@@ -99,7 +101,7 @@ console.log('log time');
     e.preventDefault();
     try {
       const errors: Errors | "success" = LoginValidation(user);
-   
+
 
       if (errors !== "success") {
         for (const key in errors) {
@@ -133,8 +135,8 @@ console.log('log time');
             navigate("/");
           }
           if (data?.Blocked) {
-            console.log(data.Blocked ,'blockedclodcked');
-            
+            console.log(data.Blocked, 'blockedclodcked');
+
             const message = data.Blocked;
             LoginERror(message);
           }
@@ -150,9 +152,11 @@ console.log('log time');
     }
   };
 
+
   return (
     <>
       <div>
+
         <div className="grid grid-cols-1   sm:grid-cols-2  w-full">
           <div className="hidden sm:block  ml-32">
             <div className="flex relative z-10 top-16 justify-center">
@@ -211,7 +215,8 @@ console.log('log time');
                     navigate("/ForgotPassword");
                   }}
                 >
-                  Forgot password?
+                  Forgot password
+                <p className="inline text-black font-medium px-1" >?</p>
                 </p>
               </div>
               <div className="flex px-4">
@@ -228,19 +233,24 @@ console.log('log time');
                 <div className="flex-grow border-t border-gray-400"></div>
               </div>
 
-              <div className="flex justify-center py-8">
+              <div className="flex justify-center  py-8  ">
                 <GoogleLogin
+                  size="medium"
                   onSuccess={(credentialResponse: any) => {
-                    console.log('geeeee');
-                    
                     GoogleauthLogin(jwt_decode(credentialResponse?.credential));
                   }}
                   onError={() => {
-                    
-                    
                     console.log("Login Failed");
                   }}
                 />
+
+
+                {/* <div className="    mx-1">
+                  <GitHubAuth />
+                </div> */}
+
+
+
               </div>
               <div className="flex bottom-2 relative">
                 <p className="inline-block "> Don’t have an account </p>{" "}
@@ -258,7 +268,7 @@ console.log('log time');
 
 
 
-        
+
       </div>
     </>
   );

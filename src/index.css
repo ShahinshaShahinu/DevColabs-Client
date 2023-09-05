@@ -6,7 +6,8 @@
 
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
+    width:2px;
+    height: 8px;
 }
   
 /* Track */
@@ -24,6 +25,10 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/*  */
+
+
 
 
 

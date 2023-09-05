@@ -1,4 +1,5 @@
-import { AiFillHome, AiOutlineMessage } from 'react-icons/ai'
+import { AiFillHome } from 'react-icons/ai'
+import { HiOutlineUserGroup } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 function Footer() {
@@ -9,11 +10,11 @@ function Footer() {
             <nav className="container mx-auto flex items-center justify-center">
               <div className="md:hidden">
                 <div className="flex space-x-4">
-                  <a href="#" className="hover:text-gray-400">
+                  <a  className="hover:text-gray-400">
                     <AiFillHome className='text-2xl mx-5' onClick={() => Navigate('/')} />
                   </a>
-                  <a href="#" className="hover:text-gray-400">
-                    <AiOutlineMessage className='text-2xl mx-5' onClick={() => Navigate('/')} />
+                  <a  className="hover:text-gray-400">
+                    <HiOutlineUserGroup className='text-2xl mx-5' onClick={() => Navigate('/Community')} />
                   </a>
                 </div>
               </div>

@@ -45,17 +45,17 @@ function Profile() {
             UserProfileSuccess('Notification')
             setSocket('notificatonsdsss')
         });
-        const fetchData = async () => {
-            const userResponse = await api.get(`/profile/${clickDataUserId}`, { withCredentials: true });
-            const user: Data = userResponse.data;
-            setUserProfileData(user)
-        }
-        fetchData()
+        // const fetchData = async () => {
+        //     const userResponse = await api.get(`/profile/${clickDataUserId}`, { withCredentials: true });
+        //     const user: Data = userResponse.data;
+        //     setUserProfileData(user)
+        // }
+        // fetchData()
 
         return () => {
             socket.off('adminMessage');
         };
-    }, [socket,sockets])
+    }, [socket, sockets])
 
 
     useEffect(() => {
@@ -65,36 +65,54 @@ function Profile() {
         });
 
         const fetchData = async () => {
+            try {
+                if (clickDataUserId) {
 
-            if (clickDataUserId) {
+                    const userResponse: any = await api.get(`/profile/${clickDataUserId}`, { withCredentials: true });
+                    console.log(userResponse, 'uuuuuuuuuusssssssssss');
 
-                const userResponse = await api.get(`/profile/${clickDataUserId}`, { withCredentials: true });
-                const user: Data = userResponse.data;
-                console.log(userResponse, 'resss');
+                    const user: Data = userResponse?.data;
+                    if (user) {
+                        console.log(user, 'yyyyyyyyyyyyy');
 
-                setUserProfileData(user)
-                setCount(user.count)
-                setUserPost(user.UserPosts);
-            } else {
-                const userResponse = await api.get(`/profile/${userId}`, { withCredentials: true });
-                const user: Data = userResponse.data;
-                console.log(userResponse.data, 'resss');
-                setUserHshTagSelectedTags(userResponse.data.userProfileData.UserHshTag.SelectedTags);
+                    }
 
-                console.log(userResponse.data.userProfileData.UserHshTag.SelectedTags);
+                    setUserProfileData(user)
+                    setCount(user.count)
+                    setUserPost(user.UserPosts);
 
-                setUserProfileData(user)
-                setCount(user.count)
-                setUserPost(user.UserPosts);
-                console.log(userProfileData, 'userProfileData');
+
+                } else {
+                    const userResponse = await api.get(`/profile/${userId}`, { withCredentials: true });
+                    const user: Data = userResponse.data;
+                    console.log(userResponse.data, 'resss');
+                    setUserHshTagSelectedTags(userResponse.data.userProfileData.UserHshTag.SelectedTags);
+
+                    console.log(userResponse.data.userProfileData.UserHshTag.SelectedTags);
+
+                    setUserProfileData(user)
+                    setCount(user.count)
+                    setUserPost(user.UserPosts);
+                    console.log(userProfileData, 'userProfileData');
+
+                }
+
+            } catch (error) {
+                const errorWithResponse = error as { response?: { data?: { error?: string } } };
+                console.log(error, 'erere');
+                if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
+                    localStorage.removeItem('user')
+                    Navigate('/login')
+                }
+
+
 
             }
-
-
         }
+      
 
         fetchData();
-    }, [Proimages, images, isLoading, userId, socket, sockets, setSocket ,userProfileData]);
+    }, [Proimages, images, isLoading, userId, socket, sockets, setSocket]);
 
 
     useEffect(() => {
@@ -258,7 +276,7 @@ function Profile() {
 
 
 
-    console.log(UserPost, 'UserPostUserPostUserPostUserPost');
+
 
 
     return (

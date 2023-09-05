@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={Store}>
       <SocketProvider>
-        <GoogleOAuthProvider clientId='1092413293944-0nma9o1743q1bua00g0o0con09jch7kt.apps.googleusercontent.com'>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLECLIENTID} >
           <PersistGate loading={null} persistor={persistor}>
             <BrowserRouter>
               <App />
@@ -27,3 +27,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </Provider>
   </React.StrictMode>
 )
+
+
+
+
+
+
+
+
+
+
+
+// clientId='1092413293944-0nma9o1743q1bua00g0o0con09jch7kt.apps.googleusercontent.com'>

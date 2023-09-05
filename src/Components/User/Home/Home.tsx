@@ -17,9 +17,15 @@ import { updateUser } from "../../../redux/user/userSlice";
 import { googleLogout } from "@react-oauth/google";
 import { UserBlock_UnBlock, userRecomended } from "../../../services/API functions/UserApi";
 import NotificationPage from "../../../Pages/NotificationPage";
+import Footer from "../Navbar/Footer";
+import CommunitySection from "./CommunitySection";
 
 
-
+interface IHashtag {
+  _id: string,
+  Hashtag: string;
+  createdAt: string;
+}
 
 
 
@@ -27,6 +33,7 @@ function HomePage() {
   const Navigate = useNavigate();
   const { userId } = useSelector((state: any) => state.user);
   const [HomePosts, setHomePosts] = useState<any[]>([]);
+  const [SelectHashtag, setSelectHashtag] = useState(false)
   const [Comment, SetComment] = useState<string>('');
   const [currentDate, setCurrentDate] = useState(new Date());
   const { image, username, userEmail } = useSelector((state: any) => state.user);
@@ -37,7 +44,8 @@ function HomePage() {
   const [ReportModal, setReportModal] = useState(false);
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [reftesh, setrefresh] = useState(false)
-  const [liked, setliked] = useState(false)
+  const [liked, setliked] = useState(false);
+  const [refreshGrp,setRefreshGrp] = useState(false)
   const [selectCategory, setSelectCategory] = useState<'Latest' | 'Recommended' | ''>('Latest')
   const [isScrolled, setIsScrolled] = useState(false);
   const [clickedHashtag, setClickedHashtag] = useState<string | null>(null);
@@ -62,11 +70,16 @@ function HomePage() {
 
 
 
+  const slecetedCategory = async (Categorys: 'Recommended') => {
 
-  // const openModal = () => {
-  //   setShareSocialMediaModal(true);
-  // };
+    const userHashtag = await userRecomended();
+    if (!userHashtag?.data || userHashtag.data.length === 0) {
+      setSelectHashtag(true)
+    } else {
+      setSelectCategory(Categorys)
 
+    }
+  }
 
   const closeShareModal = () => {
     setShareSocialMediaModal(false);
@@ -131,9 +144,43 @@ function HomePage() {
 
     }
   };
+  const [fetchHashTag, setfetchHashTag] = useState<IHashtag[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [modal, setmodal] = useState(true)
 
 
+  const submitForm = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    try {
+      if (selectedHashtags.length === 0) {
+        setFormError("Please select at least one hashtag.");
+        return;
+      } else {
+        await api.post('/selectedHashtags', { ...selectedHashtags })
+        setSelectHashtag(false)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
+  useEffect(() => {
+    const fetchHashtags = async () => {
+      const Hashtags = await api.get('/admin/HashTagManageMent', { withCredentials: true });
+      setfetchHashTag(Hashtags.data)
+    }
+    fetchHashtags();
+    setRefreshGrp(true)
+  }, [modal, setmodal]);
+
+  const handleCheckboxChange = (tagId: string) => {
+    setSelectedHashtags(prevSelectedHashtags => {
+      const updatedSelectedHashtags = prevSelectedHashtags.includes(tagId) ? prevSelectedHashtags.filter(id => id !== tagId) : [...prevSelectedHashtags, tagId];
+      setSelectedHashtags(updatedSelectedHashtags)
+      return updatedSelectedHashtags;
+    });
+  };
 
 
 
@@ -195,6 +242,8 @@ function HomePage() {
         } else if (selectCategory === 'Recommended') {
           const userHashtag = await userRecomended();
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+
+
           const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
           const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
             const postTagsCleaned = post.HashTag.map(tag => tag.trim());
@@ -210,6 +259,7 @@ function HomePage() {
       }
 
     }
+    setRefreshGrp(true)
 
     fetchData();
 
@@ -246,9 +296,10 @@ function HomePage() {
 
         setHomePosts(filteredPosts);
       }
+      
     }
     fetchData();
-  }, [clickedHashtag, refresh, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment, selectCategory]);
+  }, [refresh, clickedHashtag, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment, selectCategory]);
 
 
   const SavePostSucess = (success: string) => {
@@ -352,6 +403,11 @@ function HomePage() {
     setRows(calculatedRows);
   };
 
+  const loginModalOpen = ()=>{
+    setIsModalOpen(!isModalOpen);
+  }
+
+
 
   return (
     <>
@@ -367,14 +423,17 @@ function HomePage() {
 
             <div className="lg:mx-28 xl:mx:28 md:mx-28 ">
               <div className="mx-auto max-w-screen-xl overflow">
-                <div className="flex md:flex-row-reverse">
-                  <div className="w-full  md:h-screen flex relative">
+                <div className="flex md:flex-row-reverse ">
+                  <div className="bg-white 
+                  border-l-2  fixed  z-10 ">
+                    <CommunitySection  datas={refreshGrp} loginModalOpen={loginModalOpen}/>
+                  </div>
+                  <div className="w-full   md:h-screen flex relative">
                     {/* Outer Div with Black Background */}
-                    <div className="w-full absolute md:h-screen max-w-screen-sm top-16 bg-white ml-0">
+                    <div className="w-auto absolute md:h-screen md:scree max-w-screen-md top-16 bg-white ml-0 ">
                       {/* Inner Content */}
-
-                      <div className="flex max-w-screen relative z-10 top-2 md:left-52 lg:left-0 h-auto bg-opacity-75">
-                        <nav className="fixed baCkground border-b-2 sm:w-full backdrop-blur-md h-auto xl:w-[40rem] md:w-[27rem] w-[28rem] overflow-y-auto md:overflow-y-hidden">
+                      <div className="flex max-w-screen-md  relative z-10  top-2 sm:justify-center md:left-32 xl:left-14 h-auto bg-opacity-75">
+                        <nav className="fixed baCkground border-b-2 sm:w-full backdrop-blur-md h-auto xl:w-[42rem] md:w-[40rem] lg:w-[40rem] w-[28rem] overflow-y-auto md:overflow-y-hidden">
                           <ul>
                             {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') ? (
                               <li className={`flex cursor-pointer relative items-center h-12 space-x-2 ${isScrolled ? 'hidden md:flex' : 'flex'}`}>
@@ -399,24 +458,24 @@ function HomePage() {
                           </ul>
 
                           {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && (
-                            <div className="flex sm:ml-5 ml-11 relative">
+                            <div className="flex sm:ml-5  mx-10 max-sm:px-10 max-sm:pl-0 justify-between   relative">
                               <button
                                 onClick={() => setSelectCategory('Latest')}
                                 type="button"
                                 className={`${selectCategory === "Latest" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
                                   'opacity-80 hover:bg-[#dddbdb]'
-                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 py-2.5 mr-2 mb-2 text-base`}
+                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px- py-2.5 mr-2 mb-2 text-base`}
                               >
                                 Latest Posts
                               </button>
                               <button
-                                onClick={() => { username ? setSelectCategory('Recommended') : setIsModalOpen(true) }}
+                                onClick={() => { username ? slecetedCategory('Recommended') : setIsModalOpen(true) }}
                                 type="button"
                                 className={`${selectCategory === "Recommended" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
                                   'opacity-80 hover:bg-[#dddbdb]'
-                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 py-2.5  mr-5 mb-2 text-base`}
+                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg  py-2.5  mr-5 mb-2 text-base`}
                               > Recommended Post</button>
                             </div>
                           )}
@@ -424,14 +483,13 @@ function HomePage() {
                       </div>
 
 
-                      <div className="p-4 md:left-52 lg:left-0 sm:left-0 top-28 relative sm:w-screen lg:w-full md:w-full bg-[#e1e5eb]">
+                      <div className="p-4 md:left-32 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28 md:w-screen  xl:left-14   relative sm:w-screen  lg:max-w-2xl  bg-[#e1e5eb]">
 
                         <div>
 
                           <p className="bg-white mx-4 ">
                             {clickedHashtag !== null && clickedHashtag ? 'HashTag' : 'Posts'}
                           </p>
-
 
                           {HomePosts && HomePosts.map((post: any, index) => (
                             <div className="p-4 bg-[#e1e5eb]" key={index}>
@@ -834,9 +892,6 @@ function HomePage() {
                                                     {comment.Comment}
                                                   </p>
 
-
-
-
                                                   {/* <button className="text-blue-500 mr-2">Like</button>
                                                   <button className="text-red-500 mr-2">Dislike</button>
 
@@ -857,26 +912,69 @@ function HomePage() {
                               </div>
                             </div>
                           ))}
+                          {SelectHashtag && (
+
+                            <div className="fixed top-0 left-0 z-50 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={() => setmodal(true)}>
+                              <div className=" p-1 rounded-lg w-[50rem] left-10 relative shadow-lg  max-w-2xl max-h-full" onClick={() => setmodal(true)}>
+                                <div className="relative bg-white rounded-lg shadow dark:bg-gray-" onClick={() => setmodal(true)}>
+                                  <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600" onClick={() => setmodal(true)}>
+                                    <h3 className="text-xl font-semibold text-gray-900 ">
+                                      Add Hashtag
+                                    </h3>
+                                    <button
+                                      onClick={() => setSelectHashtag(false)}
+                                      type="button" className="text-white bg-gray-700 hover:bg-gray-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-700 dark:hover:bg-gray-700focus:outline-none dark:focus:ring-blue-800">
+                                      Skip</button>
+
+
+                                  </div>
+                                  <form onSubmit={submitForm}
+                                    className="p-10 relative">
+                                    <div className="grid pb-10  md:grid-cols-2 p-4 md:gap-6">
+                                      {fetchHashTag && fetchHashTag.map((tag, index) => (
+                                        <div className="flex items-center bg-gray-200 p-2 rounded-md space-x-2" key={index}>
+                                          <label className="inline-flex items-center">
+                                            <input
+                                              onChange={() => handleCheckboxChange(tag?._id)}
+                                              type="checkbox" className="form-checkbox  cursor-pointer text-green-500" />
+                                            <span className="ml-2 text-black">{tag?.Hashtag}</span>
+                                          </label>
+                                        </div>
+                                      ))}
+                                      {formError && <p className="text-red-500">{formError}</p>}
+                                    </div>
+                                    <div className="pl-4">
+                                      <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+
+                                    </div>
+                                  </form>
+                                </div>
+                                <ToastContainer />
+                              </div>
+                            </div>
+
+
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Options Div */}
-                  <div className="hidden md:block  xl:w-[16.5rem] 2xl:w-[17rem] ">
-                    <div className="fixed top-0 left-0 h-full hidden md:block xl:w-[16.5rem] 2xl:w-[17rem] md:w-[13rem] overflow-hidden lg:mx-28 xl:mx-20 md:mx-28 z-10">
-                      <div className="h-full overflow-y-auto bg-white
+                  <div className="hidden md:block relative xl:w-[16.5rem] 2xl:w-[17rem] ">
+                    <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:w-[18rem]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[16rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
+                      <div className="h-full overflow-y-auto  relative bg-white
                   
-                  border-r-2 p-2 ">
-                        <nav className="flex flex-col top-44 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
+                  border-r-2 px-2 ">
+                        <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl`}>
+                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
-                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
-                              <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" onClick={() => Navigate('/comments')} />
-                              <h1 onClick={() => Navigate('/comments')} className="font-bold text-base">Community</h1>
+                            <li onClick={() => Navigate('/Community')} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                              <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
+                              <h1 className="font-bold text-base">Community</h1>
                             </li>
                             <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
@@ -887,44 +985,13 @@ function HomePage() {
                       </div>
                     </div>
                   </div>
-
-
                 </div>
-
-
-
-
               </div>
             </div>
           </main>
 
-
-
-
           {/* Footer */}
-          <footer className="bg-gray-800 md:hidden text-white p-4 fixed bottom-0 left-0 w-full">
-            <nav className="container mx-auto flex items-center justify-center">
-              <div className="md:hidden">
-                <div className="flex space-x-4">
-                  <a href="#" className="hover:text-gray-400">
-                    <AiFillHome className='text-2xl mx-5' onClick={() => Navigate('/')} />
-                  </a>
-                  <a href="#" className="hover:text-gray-400">
-                    <AiOutlineMessage className='text-2xl mx-5' onClick={() => Navigate('/')} />
-                  </a>
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <span className="text-sm">
-                  © 2023 DevColab. All rights reserved.
-                </span>
-              </div>
-            </nav>
-          </footer>
-
-
-
-
+          <Footer />
         </div>
 
         <ToastContainer />

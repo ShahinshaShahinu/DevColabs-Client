@@ -12,12 +12,10 @@ import { updateUser } from "../../../redux/user/userSlice";
 import { notificationType } from '../../../../../DevColab-Server/src/domain/models/Notification';
 import { DeletNotification, GetNotification, Readed } from "../../../services/API functions/UserApi";
 import Loading from "../isLoading/Loading";
-import { Socket, io } from "socket.io-client";
 import { useSocket } from '../../../Context/WebsocketContext'
 
 
 function Navbar() {
-  const [socketss, setSocket] = useState<Socket | null>(null);
   const { userEmail, username } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const Navigate = useNavigate();
@@ -34,7 +32,7 @@ function Navbar() {
 
 
   const socket = useSocket();
-
+  const navigate = useNavigate()
   useEffect(() => {
     socket.on('adminMessage', (data) => {
       console.log('Admin message received:', data);
@@ -45,6 +43,36 @@ function Navbar() {
     };
   }, [socket]);
 
+  // useEffect(() => {
+  //   const getAuth = async () => {
+  //     try {
+  //       console.log('user auth auth');
+      
+        
+        
+  //       const data:any = await api.post('/auth', null, { withCredentials: true });
+  //       console.log(data ,'akuth get auth');
+        
+  //       if(data?.data?.error==='Invalid'){
+  //         console.log('invalid');
+          
+  //         localStorage.removeItem('user');
+  //         navigate('/login')
+  //       }
+
+  //       if (!data?.status) {
+  //         console.log('nnnnnnnnnnnnnnnnoooooooooooooooooooo');
+          
+  //         localStorage.removeItem('user');
+  //         navigate('/login')
+  //       }
+  //     } catch (error) {
+
+  //     }
+  //   }
+  //   getAuth();
+
+  // }, []);
 
 
 
@@ -84,10 +112,10 @@ function Navbar() {
         setIsLoading(true); // Start loading
 
         const Notifications = await GetNotification();
-        
+
         setNotification(Notifications?.data);
 
-        const hasUnread =await Notifications?.data?.some((notification: { read: any }) => !notification?.read);
+        const hasUnread = await Notifications?.data?.some((notification: { read: any }) => !notification?.read);
         sethasUnreadNotifications(hasUnread);
 
         if (isNotificationModalOpen) {
@@ -225,10 +253,10 @@ function Navbar() {
   return (
     <>
       <div className="fixed w-screen bg-[#D4E7FA]">
-        <div className="lg:mx-28 xl:mx:28 md:mx-28 ">
+        <div className="lg:mx-3 ">
           <nav className={` bg-[#D4E7FA] p-4  md:flex md:items-center md:justify-between  `}>
             <div className="flex justify-between items-center">
-              <span className="text-2xl font-[Poppins] cursor-pointer">
+              <span className="sm:text-2xl text-lg font-[Poppins] cursor-pointer">
                 DevColab
                 <img className="h-10 inline " src="" alt="" />
               </span>
@@ -240,8 +268,8 @@ function Navbar() {
                   <div className=" flex items-center justify-start    rounded-full  ">
                     <div className="md:hidden   flex items-center justify-start  rounded-full px-2  ">
                       <img
-                        onClick={UserCircleButton}
-                        className="w-10 h-10 rounded-full "
+                        onClick={() => { setshowUserCircle(!showUserCircle), setShowSearch(false) }}
+                        className="sm:w-10 sm:h-10 w-7 rounded-full "
                         src={image}
                         alt="Rounded avatar"
                       />
@@ -261,10 +289,10 @@ function Navbar() {
                           className="py-2 text-sm text-gray-700 dark:text-gray-200"
                           aria-labelledby="avatarButton"
                         >
-                          <li>
+                          <li >
                             <a
                               href="#"
-                              className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
+                              className="block  px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
                               Dashboard
                             </a>
@@ -300,12 +328,13 @@ function Navbar() {
 
                   {!showSearch && (
                     <button
-                      onClick={searchButton}
+
+                      onClick={() => { searchButton(), setshowUserCircle(false) }}
                       type="submit"
-                      className="p-2  md:hidden  font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      className="p-1.5 sm:p-2  md:hidden  font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="sm:w-4 sm:h-4 w-2.5"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -325,7 +354,7 @@ function Navbar() {
 
                   <span
                     onClick={toggleMenu}
-                    className="text-3xl cursor-pointer md:hidden block ml-2"
+                    className="sm:text-3xl text-2xl cursor-pointer md:hidden block ml-2"
                   >
                     <AiOutlineMenu />
                   </span>
@@ -359,7 +388,7 @@ function Navbar() {
 
             {/* search given below */}
 
-            <div className="flex md:left-60   absolute px-8 w-1/4">
+            <div className="flex md:left-40   absolute px-8 w-1/4">
               <form
                 onSubmit={handleSearchSubmit}
                 className={`flex items-center md:flex md:items-center top-0 z-[3] md:z-auto md:static absolute  w-full md:w-auto md:max-w-[100%] sm:w-96  xl:w-96 md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 ${showMenu
@@ -425,7 +454,7 @@ function Navbar() {
             {/* oper---- show Search button true small size */}
 
             {showSearch && (
-              <form className="flex lg:hidden xl:hidden items-center">
+              <form onSubmit={handleSearchSubmit} className="flex lg:hidden xl:hidden items-center">
                 <>
                   <label htmlFor="simple-search" className="sr-only">
                     Search
@@ -453,7 +482,8 @@ function Navbar() {
                       id="simple-search"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Search branch name..."
-
+                      value={searchTerm}
+                      onChange={handleSearchChange}
                     />
                   </div>
                   <button
@@ -601,7 +631,7 @@ function Navbar() {
                           <li>
                             <a
                               onClick={() => Navigate("/profile")}
-                       
+
                               className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
                               Profile

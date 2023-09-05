@@ -22,8 +22,9 @@ interface SocketProviderProps {
 }
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  // const socket = io(import.meta.env.VITE_BASE_URL);/
-  const socket = io('http://localhost:3000');
+  const socket = io(import.meta.env.VITE_BASE_URL);
+  // const socket = io('http://localhost:3000');
+  // const socket = io('http://10.4.3.143:4000');
 
   // useEffect(() => {
   //   return () => {

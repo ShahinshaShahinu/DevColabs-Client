@@ -9,22 +9,7 @@ import Navbar from "../Navbar/Navbar";
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 
-// interface Posts {
-//   _id: string;
-//   title: string;
-//   Date: string;
-//   HashTag: string[];
-//   // ... other properties
-// }
 
-// interface AllUsers {
-//   userId: {
-//     _id: string;
-//     UserName: string;
-//     profileImg: string;
-//   };
-//   // ... other properties
-// }
 
 function Search() {
     const Navigate = useNavigate();
@@ -41,7 +26,7 @@ function Search() {
             const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
             const allUsersResponse = await api.get(`/GetUsers`, { withCredentials: true });
             setHomePosts(userResponse.data);
-            setAllusers(allUsersResponse.data);
+            setAllusers(allUsersResponse?.data);
         };
 
         fetchData();

@@ -50,8 +50,14 @@ function ImplementJodit() {
 
 
     const handleChange = (newChips: string[]) => {
-        const modifiedTags = newChips.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
-        setHashTag(modifiedTags);
+
+        const hasSpaces = newChips.some(tag => /\s/.test(tag));
+        if (hasSpaces) {
+            PostErr('Spaces are not allowed in tags');
+          } else {
+              const modifiedTags = newChips.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
+              setHashTag(modifiedTags);
+          }
     };
 
 

@@ -89,3 +89,13 @@ export const DeletNotification = async () => {
 
     }
 }
+
+export const GetUsers = async () => {
+    try {
+        const allUsersResponse = await api.get(`/GetUsers`, { withCredentials: true });
+        return allUsersResponse
+    } catch (error) {
+        console.log(error);
+
+    }
+}
