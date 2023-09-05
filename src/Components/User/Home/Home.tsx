@@ -912,7 +912,7 @@ function HomePage() {
                               </div>
                             </div>
                           ))}
-                          {SelectHashtag && (
+                          {SelectHashtag && (   
 
                             <div className="fixed top-0 left-0 z-50 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={() => setmodal(true)}>
                               <div className=" p-1 rounded-lg w-[50rem] left-10 relative shadow-lg  max-w-2xl max-h-full" onClick={() => setmodal(true)}>
