@@ -1,5 +1,5 @@
-import { Chats } from "../../../../DevColab-Server/src/domain/models/Chats"
-import { SendMessagess } from "../../../../DevColab-Server/src/domain/models/Community"
+import { Chats } from "../../utils/interfaceModel/userInfra"
+import { SendMessagess } from "../../utils/interfaceModel/userInfra"
 import { api } from "../axios"
 
 

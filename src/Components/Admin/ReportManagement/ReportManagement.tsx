@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { BlockReportedPost, DeleteRePortPost, SendNotification, UnBlockReportedPost, getReportedPosts } from "../../../services/API functions/AdminApi"
-import { ReportPostData } from '../../../../../DevColab-Server/src/domain/models/ReportPost';
+import { ReportPostData } from '../../../utils/interfaceModel/userInfra';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { format } from "date-fns";
 import { useSocket } from "../../../Context/WebsocketContext";

@@ -1,4 +1,5 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from 'mongoose';
+
 
 export interface CommunityUser {
     _id: any;
@@ -106,3 +107,57 @@ export interface User {
   
   
   
+export  interface ReportPostData {
+    _id:  string| null | undefined;
+    userId:{
+        profile: any;
+        UserBackgroundImage: string | undefined;
+        _id:string
+        UserName: string;
+        profileImg:string
+    },
+    ReportReason:string
+    ReportDate?:string
+    PostId: {
+        Date: string;
+        image: string | undefined;
+        content: string;
+        title: string;
+        status?:Boolean;
+        _id:string ;
+        userId?:{
+            profileImg:string;
+            UserName:string
+            _id?:string | undefined
+        }
+    }
+    status?:Boolean
+}
+export interface Chats {
+    _id?: string;
+    userId: mongoose.Types.ObjectId | string 
+    senderId?: mongoose.Types.ObjectId | string 
+    Message?: [{
+        text?: string;
+        senderId: mongoose.Types.ObjectId | string;
+        image?: String ,
+        video?:String,
+        timestamp?: string;
+        readBy?: string[]
+    }];
+    CreatedDate?: string;
+}
+export interface communityNames {
+    Name:string
+}
+
+export interface SendMessagess {
+    Message: [{
+        text?: string;
+        senderId?: string
+        image?:string
+        video?:String,
+        timestamp?: string
+       
+    }]
+}

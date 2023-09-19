@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { api } from "../../../services/axios"
 import { useNavigate } from "react-router-dom";
-import { User } from "../../../../../DevColab-Server/src/domain/models/user";
+import { User } from "../../../utils/interfaceModel/userInfra";
 import {  UserManageMentBlock, UserManageMentUNBlock } from "../../../services/API functions/AdminApi";
 
 

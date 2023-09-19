@@ -2,7 +2,6 @@ import { SetStateAction, useState } from "react";
 import { FaEdit, FaEllipsisH } from "react-icons/fa";
 import { Comment } from "../../../../utils/interfaceModel/comment";
 import { EditComment } from "../../../../services/API functions/UserApi";
-import Loading from "../../isLoading/Loading";
 import LoaderAbsolute from "../../isLoading/LoaderAbsolute";
 
 
