@@ -20,7 +20,7 @@ function JaaSMeetingVideoCall() {
         email: '', // Include an empty email or a placeholder value
     };
 
-    const appId = 'localhost:5173'; // Replace with your local server address
+    // const appId = 'localhost:5173'; // Replace with your local server address
 
     return (
         <>
@@ -30,7 +30,7 @@ function JaaSMeetingVideoCall() {
                 configOverwrite={configOverwrite}
                 interfaceConfigOverwrite={interfaceConfigOverwrite}
                 userInfo={userInfo}
-                onApiReady={(externalApi) => {
+                onApiReady={() => {
                     // Here you can attach custom event listeners to the Jitsi Meet External API
                     // You can also store it locally to execute commands
                 }}
