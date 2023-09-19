@@ -43,38 +43,38 @@ function App() {
 
       <Routes>
         {/* Users Routes */}
-        <Route path='/DevColabs-Client/' element={<HomePage />} />
-        <Route path='/DevColabs-Client/signup' element={<SignupPage />} />
-        <Route path='/DevColabs-Client/login' element={<LoginPage />} />
-        <Route path='/DevColabs-Client/ForgotPassword' element={<ForgotPasswordPage />} />
-        <Route path='/DevColabs-Client/VerifyEmail' element={<VerifyEmailPage />} />
-        <Route path='/DevColabs-Client/UpdatePassWord' element={<UpdatePasswordPage />} />
-        <Route path='/DevColabs-Client/profile' element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
-        <Route path="/DevColabs-Client/PostCreation" element={<ProtectedRoute><JoditPostCreationPage /></ProtectedRoute>} />
+        <Route path='/' element={<HomePage />} />
+        <Route path='/signup' element={<SignupPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/ForgotPassword' element={<ForgotPasswordPage />} />
+        <Route path='/VerifyEmail' element={<VerifyEmailPage />} />
+        <Route path='/UpdatePassWord' element={<UpdatePasswordPage />} />
+        <Route path='/profile' element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
+        <Route path="/PostCreation" element={<ProtectedRoute><JoditPostCreationPage /></ProtectedRoute>} />
       
-        <Route path='/DevColabs-Client/UserPostsView/:postId' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
-        <Route path='/DevColabs-Client/UserPostsView' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
-        <Route path='/DevColabs-Client/SavedPosts' element={<ProtectedRoute><UserSavedPostsPage /></ProtectedRoute>} />
-        <Route path='/DevColabs-Client/Hashtags' element={<ProtectedRoute><UserHashtagPage /></ProtectedRoute>} />
-        <Route path='/DevColabs-Client/search-results' element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-        <Route path='/DevColabs-Client/Community' element={<ChatPage />} />
-        <Route path='/DevColabs-Client/VideoCall' element={<VideoCallPage />} />
-        <Route path='/DevColabs-Client/room/:roomId' element={<RoomVideoCallPage/>} />
+        <Route path='/UserPostsView/:postId' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
+        <Route path='/UserPostsView' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
+        <Route path='/SavedPosts' element={<ProtectedRoute><UserSavedPostsPage /></ProtectedRoute>} />
+        <Route path='/Hashtags' element={<ProtectedRoute><UserHashtagPage /></ProtectedRoute>} />
+        <Route path='/search-results' element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+        <Route path='/Community' element={<ChatPage />} />
+        <Route path='/VideoCall' element={<VideoCallPage />} />
+        <Route path='/room/:roomId' element={<RoomVideoCallPage/>} />
 
 
      
-        <Route path='/DevColabs-Client/jasMeetingVideoCall' element={<JaaSMeetingVideoCall />} />
+        <Route path='/jasMeetingVideoCall' element={<JaaSMeetingVideoCall />} />
 
 
 
 
         {/* Admin Routes */}
 
-        <Route path='/DevColabs-Client/admin/login' element={<AdminLoginPage />} />
-        <Route path='/DevColabs-Client/admin/UserManageMent' element={<AdminProtectedRoute><AdminUserManagementPage /></AdminProtectedRoute>} />
-        <Route path='/DevColabs-Client/admin/Dashboard' element={<AdminProtectedRoute><AdminDashboardPage /></AdminProtectedRoute>} />
-        <Route path='/DevColabs-Client/admin/HashTagManageMent' element={<AdminProtectedRoute><AdminHashTagPage /></AdminProtectedRoute>} />
-        <Route path='/DevColabs-Client/admin/ReportManageMent' element={<AdminProtectedRoute><AdminReportManagementPage /></AdminProtectedRoute>} />
+        <Route path='/admin/login' element={<AdminLoginPage />} />
+        <Route path='/admin/UserManageMent' element={<AdminProtectedRoute><AdminUserManagementPage /></AdminProtectedRoute>} />
+        <Route path='/admin/Dashboard' element={<AdminProtectedRoute><AdminDashboardPage /></AdminProtectedRoute>} />
+        <Route path='/admin/HashTagManageMent' element={<AdminProtectedRoute><AdminHashTagPage /></AdminProtectedRoute>} />
+        <Route path='/admin/ReportManageMent' element={<AdminProtectedRoute><AdminReportManagementPage /></AdminProtectedRoute>} />
 
 
         <Route path='*' element={<ErrorPage/>}/>
