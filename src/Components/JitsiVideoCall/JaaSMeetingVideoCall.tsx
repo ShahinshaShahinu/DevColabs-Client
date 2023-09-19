@@ -1,4 +1,3 @@
-import React from 'react';
 import { JaaSMeeting } from '@jitsi/react-sdk';
 
 function JaaSMeetingVideoCall() {
