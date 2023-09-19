@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AlreadyexistingCommunity, CreateCommunity } from "../../services/API functions/CommunityChatApi";
 import { format } from "date-fns";
 import { uploadImage } from "../../services/Cloudinary/Cloud";
-import { AllUsers } from "../../../../DevColab-Server/src/domain/models/user";
+import { AllUsers } from "../../utils/interfaceModel/comment";
 import { GetUsers } from "../../services/API functions/UserApi";
 import { useSelector } from "react-redux";
 import { MuiChipsInput } from "mui-chips-input";
@@ -11,6 +11,12 @@ interface datas {
     data?: string; // You might want to adjust the type as needed
     // Add other properties if applicable
   }
+  interface HashTag {
+    HshTagId: {
+        Hashtag: string;
+    };
+
+}
 
   interface SidebarProps {
     sendDataToParent: (data: boolean) => void;
@@ -128,7 +134,7 @@ function Sidebar({sendDataToParent}:SidebarProps) {
             newFilteredItems = Allusers.filter(user => {
 
                 const isUserNameMatch = user?.UserName?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase());
-                const isHashTagMatch = user?.UserHshTag?.SelectedTags?.some(tag =>
+                const isHashTagMatch = user?.UserHshTag?.SelectedTags?.some((tag: HashTag) =>
                     tag?.HshTagId?.Hashtag?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
                 );
                 return user._id !== userId && (isUserNameMatch || isHashTagMatch);

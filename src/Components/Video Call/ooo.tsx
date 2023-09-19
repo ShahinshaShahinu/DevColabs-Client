@@ -23,7 +23,7 @@ function RoomVideoCall() {
   const socket = useSocket();
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteEmailId, setRemoteEmailId] = useState<string>('');
-  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue = usePeer();
+  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue|any = usePeer();
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
 
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {

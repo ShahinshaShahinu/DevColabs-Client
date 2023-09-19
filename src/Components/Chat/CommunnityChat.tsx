@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { BsImageFill, BsThreeDotsVertical } from "react-icons/bs";
 import { MdVideoLibrary } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { SendMessagess } from "../../../../DevColab-Server/src/domain/models/Community";
+import { SendMessagess } from "../../utils/interfaceModel/AdminInfra";
 import { uploadImage, uploadVideo } from "../../services/Cloudinary/Cloud";
 import { useSocket } from "../../Context/WebsocketContext";
 import RightSidebar from "./RightSidebar";
@@ -265,7 +265,7 @@ function CommunnityChat({ selectedChatss, MessagesFrt, setBackFromChat }: Select
                                             onChange={(e) => {
                                                 setMessageInputmodal(e?.target?.value);
                                                 const newText = e.target.value;
-                                                setMessage((prevMessage) => {
+                                                setMessage((prevMessage:any) => {
                                                     if (prevMessage && prevMessage?.Message) {
                                                         return {
                                                             ...prevMessage,
@@ -559,7 +559,7 @@ function CommunnityChat({ selectedChatss, MessagesFrt, setBackFromChat }: Select
                                     onChange={(e) => {
                                         const newText = e.target.value;
                                         setMessageInput(newText); setSendImages(null);
-                                        setMessage(prevMessage => {
+                                        setMessage((prevMessage:any) => {
                                             if (prevMessage && prevMessage?.Message) {
                                                 return {
                                                     ...prevMessage,

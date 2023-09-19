@@ -96,7 +96,7 @@ function ImplementJodit() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            const videoFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+            const videoFiles = Array.from(files).filter((file:File) => file.type.startsWith('video/'));
             setSelectedVideos(videoFiles);
         }
     };

@@ -2,13 +2,13 @@ import React from 'react';
 import { MdClose, MdVerifiedUser } from 'react-icons/md';
 
 // Define the props for the RightSidebar component
-interface RightSidebarProps {
+interface RightSidebarPropsdata {
     isVisible: boolean;
     toggleSidebar: () => void;
     selected: any
 }
 
-const RightSidebar: React.FC<RightSidebarProps> = ({ isVisible, toggleSidebar, selected }) => {
+const RightSidebar: React.FC<RightSidebarPropsdata> = ({ isVisible, toggleSidebar, selected }: RightSidebarPropsdata) => {
    
 
 

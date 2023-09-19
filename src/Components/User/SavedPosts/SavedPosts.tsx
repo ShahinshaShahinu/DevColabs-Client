@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
-import { AiFillDelete, AiFillHome, AiOutlineDelete, AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
-import { ToastContainer, toast } from 'react-toastify'
+import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
 import Navbar from '../Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { api } from '../../../services/axios';
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
 import UsersSaved from './UsersSaved';
 import CommunitySection from '../Home/CommunitySection';
@@ -21,6 +19,7 @@ function SavedPosts() {
     useEffect(() => {
 
         const fetchSaves = async () => {
+            setRefreshGrp(false)
             const findUserSave = await api.get(`/SavedPosts/${userId}`)
             SetSaved(findUserSave.data.findUserSave)
             console.log(findUserSave.data.findUserSave, 'findUserSavefindUserSave');

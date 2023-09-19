@@ -7,17 +7,18 @@ import { format } from "date-fns";
 import { ChatNotificationPOST, Communities, Getchats, ReadedPersonalChat, SendMessages } from "../../services/API functions/CommunityChatApi";
 import Sidebar from "./Sidebar";
 import { GetUsers } from "../../services/API functions/UserApi";
-import { AllUsers } from "../../../../DevColab-Server/src/domain/models/user";
-import { Chats, UserIdObject } from '../../../../DevColab-Server/src/domain/models/Chats';
+
+import { Chats, UserIdObject } from '../../utils/interfaceModel/comment';
 import { useSelector } from "react-redux";
 import { uploadImage, uploadVideo } from "../../services/Cloudinary/Cloud";
 import LoaderAbsolute from "../User/isLoading/LoaderAbsolute";
 import { useSocket } from "../../Context/WebsocketContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdVideoLibrary } from "react-icons/md";
-import { CommunityUser } from '../../../../DevColab-Server/src/domain/models/Community';
+import { CommunityUser } from "../../utils/interfaceModel/comment";
 import CommunnityChat from "./CommunnityChat";
-import VoiceRecorder from "./VoiceRecorder";
+import { AllUsers } from "../../utils/interfaceModel/comment";
+
 
 function Chat() {
     const socket = useSocket(); const Navigate = useNavigate();
@@ -219,8 +220,7 @@ function Chat() {
                 const latestMessageData = messages[messages.length - 1];
                 await ReadedPersonalChat(latestMessageData?._id);
 
-                const senderId = response?.data[0]?.senderId?._id
-                const SendUserId = response?.data[0]?.userId?._id
+
                 let SendNotification
 
 
@@ -298,9 +298,16 @@ function Chat() {
             newFilteredItems = Allusers.filter(user => {
                 const isUserInChat = ChatMessage.some((message: AllUsers) => message?.userId?._id === user._id || message?.senderId?._id === user?._id);
                 const isUserNameMatch = user?.UserName?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase());
-                const isHashTagMatch = user?.UserHshTag?.SelectedTags?.some(tag =>
-                    tag?.HshTagId?.Hashtag?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
-                );
+                const isHashTagMatch = user?.UserHshTag?.SelectedTags?.some((tag: unknown) => {
+                    if (typeof tag === 'object' && tag !== null) {
+                        const hashtag = (tag as any)?.HshTagId?.Hashtag;
+                        if (typeof hashtag === 'string') {
+                            return hashtag.trim().toLowerCase().includes(searchTerm.trim().toLowerCase());
+                        }
+                    }
+                    return false;
+                });
+
                 return !isUserInChat && user._id !== userId && (isUserNameMatch || isHashTagMatch);
             });
             setFilteredItemsp(newFilteredItems);
@@ -507,7 +514,7 @@ function Chat() {
                                                                     <div className="text-gray-600 w-64 overflow-hidden"> {/* Set the width constraint on the outer container */}
                                                                         <div className="mr-2 flex">
                                                                             <div className="flex overflow-hidden overflow-ellipsis break-words">
-                                                                                {CommunityData?.HashTag?.map((tag, tagIndex) => (
+                                                                                {CommunityData?.HashTag?.map((tag: string | undefined, tagIndex: number) => (
                                                                                     <div
                                                                                         key={tagIndex}
                                                                                         className="overflow-hidden overflow-ellipsis break-words"
@@ -518,6 +525,7 @@ function Chat() {
                                                                                         {tag}
                                                                                     </div>
                                                                                 ))}
+
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -654,7 +662,7 @@ function Chat() {
                                                         onChange={(e) => {
                                                             const newText = e.target.value;
                                                             setMessageInput(newText);
-                                                            setMessage(prevMessage => {
+                                                            setMessage((prevMessage: any) => {
                                                                 if (prevMessage && prevMessage?.Message) {
                                                                     return {
                                                                         ...prevMessage,
@@ -921,7 +929,7 @@ function Chat() {
                                             onChange={(e) => {
                                                 const newText = e.target.value;
                                                 setMessageInput(newText);
-                                                setMessage(prevMessage => {
+                                                setMessage((prevMessage: any) => {
                                                     if (prevMessage && prevMessage?.Message) {
                                                         return {
                                                             ...prevMessage,
@@ -1118,9 +1126,10 @@ function Chat() {
 
                                                                                                             }}
                                                                                                         >
-                                                                                                            {CommunityData?.HashTag?.map((tag, tagIndex) => (
+                                                                                                            {CommunityData?.HashTag?.map((tag: string, tagIndex: number) => (
                                                                                                                 <div key={tagIndex}>{tag}</div>
                                                                                                             ))}
+
                                                                                                         </div>
 
                                                                                                     </div>

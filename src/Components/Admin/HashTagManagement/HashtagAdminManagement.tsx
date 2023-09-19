@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import UserPostHashtagManage from "./UserPostHashtagManage";
 import { BiLeftArrowAlt } from "react-icons/bi";
-import Loading from "../../User/isLoading/Loading";
-import LoaderAbsolute from "../../User/isLoading/LoaderAbsolute";
 
 
 
@@ -28,7 +26,7 @@ function HashtagAdminManagement() {
     const [DeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteItemId, setDeleteItemId] = useState('');
     const [PostHashtag, setPostHashtag] = useState(false)
-    const [isLoading, setisLoading] = useState(false)
+  
 
     const HandleDate = (DAte: string | undefined) => {
         setSelectedDate(DAte)
@@ -181,9 +179,7 @@ function HashtagAdminManagement() {
 
     }, [deleteItemId, DeleteModalOpen, isModalOpen]);
 
-    const handleLoader = () => {
-
-    }
+   
 
 
 

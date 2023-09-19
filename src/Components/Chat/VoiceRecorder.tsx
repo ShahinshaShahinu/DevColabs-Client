@@ -1,12 +1,12 @@
-import { MediaHTMLAttributes, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 
 
 function VoiceRecorder() {
     const [permission, setPermission] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
-    const mediaRecorders = useRef<MediaStream | null>(null);
+    // const mediaRecorders = useRef<MediaStream | null>(null);
     // const [recording, setRecording] = useState(false);
-    const [recordingStatus, setRecordingStatus] = useState<boolean | 'inactive' | 'recording'>("inactive");
+    // const [recordingStatus, setRecordingStatus] = useState<boolean | 'inactive' | 'recording'>("inactive");
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
     const [audio, setAudio] = useState<string>('');
@@ -153,21 +153,3 @@ export default VoiceRecorder
 
 
 
-
-
-
-{/* {permission && recordingStatus === "inactive" ? (
-                            <button onClick={startRecording} type="button">
-                                Start Recording
-                            </button>
-                        ) : null}
-                        {recordingStatus === "recording" ? (
-                            <button onClick={stopRecording} type="button">
-                                Stop Recording
-                            </button>
-                        ) : null}
-                        {permission ? (
-                            <button type="button">
-                                Record
-                            </button>
-                        ) : null} */}

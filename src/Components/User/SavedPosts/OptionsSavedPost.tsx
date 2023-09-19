@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { Posts } from '../../../utils/interfaceModel/PostsInfra'
 import { ChangeEvent, useEffect, useState } from "react";
 import { UserBlock_UnBlock } from "../../../services/API functions/UserApi";
 import { updateUser } from "../../../redux/user/userSlice";
@@ -49,7 +49,7 @@ function OptionsSavedPost({ post, HomePosts, index, userId, SendData }: OptionPr
 
     useEffect(() => {
         SendData(reftesh)
-    }, [reftesh])
+    }, [reftesh,isModalOpen])
 
     useEffect(() => {
         console.log(post, 'post');

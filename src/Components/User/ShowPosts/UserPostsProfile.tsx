@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { AiFillHome, AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
+import {  AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../../services/axios';
-// import { User } from '../../../../../DevColab-Server/src/domain/models/user';
-// import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
-
-// import SyntaxHighlighter from 'react-syntax-highlighter';
-// import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // You can choose a different style here
-// import prettier from 'prettier';
-// import parserBabel from 'prettier/parser-babel';
 import { ToastContainer, toast } from 'react-toastify';
 import RichTextEditor from '../PostCreation/ModalEditJoDitEditor';
 import { Box, TextField } from '@material-ui/core';
 import { EditPostValidation } from '../../../utils/userValidation/PostValidation';
 import { uploadImage, uploadVideo } from '../../../services/Cloudinary/Cloud';
 import { MuiChipsInput } from 'mui-chips-input'
-import { UrlData } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { UrlData } from '../../../utils/interfaceModel/userInfra';
 import { RiVideoUploadFill } from 'react-icons/ri';
 import { DeletePostVideo } from '../../../services/API functions/UserApi';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
@@ -168,7 +161,7 @@ function UserPostsProfile() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            const videoFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+            const videoFiles = Array?.from(files)?.filter((file:File) => file?.type.startsWith('video/'));
             setSelectedVideos(videoFiles);
         }
     };
@@ -214,18 +207,6 @@ function UserPostsProfile() {
 
         <>
             <div className="  flex top-20 relative items-center justify-center  ">
-
-                {/* <div className="grid   grid-cols-1  max-h-[400px]  overflow-hidden relative left-12 w-[20rem] ">
-                    <div className="fixed ml-0 pt-1 top-64 flex flex-col justify-around rounded-lg shadow-lg md:w-[16rem] bg-gray-200">
-                        <ul>
-                            <li className="flex  cursor-pointer items-center  md:w-2/5 h-12">
-                                <AiFillHome className='text-3xl mx-auto' onClick={() => Navigate('/')} />
-                                <h1 onClick={() => Navigate('/')} className="font-bold text-base">Home</h1>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div> */}
 <div
                     style={{ zIndex: '0' }}
                     className="">
@@ -727,127 +708,3 @@ export default UserPostsProfile
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// <>
-
-//     <div className='bg-white h-screen'>
-//         <div>
-
-//             <div className='w-full h-screen flex' >
-//                 <div className="grid   grid-cols-1  max-h-[400px]  overflow-hidden relative left-12 w-[20rem] ">
-//                     <div className="fixed ml-0 pt-1 top-64 flex flex-col justify-around rounded-lg shadow-lg md:w-[16rem] bg-gray-200">
-//                         <ul>
-//                             <li className="flex  cursor-pointer items-center  md:w-2/5 h-12">
-//                                 <AiFillHome className='text-3xl mx-auto' onClick={() => Navigate('/')} />
-//                                 <h1 onClick={() => Navigate('/')} className="font-bold text-base">Home</h1>
-//                             </li>
-
-//                         </ul>
-//                     </div>
-//                 </div>
-
-//                 <div className='grid xl:right-16 h-auto grid-cols-1 bg-gray-100     right-0 relative md:grid-cols-2 m-auto mt-24  shadow-sm mx-auto shadow-gray-600 sm:max-w-[900px]' style={{ width: '100%' }}>
-//                     <div className='p-4 h-auto flex flex-col justify-around'>
-//                         <div className="flex p-5 absolute top-0 left-0 w-auto h-52 bg-opacity-50">
-//                             <img src={clickData?.image} alt="Background Image" className="h-full object-cover md:h-full w-full md:object-center" />
-//                         </div>
-
-//                         <h2 className='text-4xl font-bold text-center mb-8'></h2>
-
-//                         <div className='text-start top-44  justify-start px-4 relative'>
-//                             <img src={image} alt='User Profile' className='w-12 inline rounded-full mx-auto ' />
-//                             <h1 className='inline-block pl-1 top-3 text-lg absolute'>{username}</h1>
-//                         </div>
-
-
-//                         <div className='top-10 relative bg-black'>
-//                             <div className='bg-black  relative flex'>
-//                             <div className="flex bg-black flex-col items-center justify-center left-72 top-52 relative">
-//                                 <h2 className="w-full text-4xl font-bold text-start absolute mb-8">{clickData?.title}</h2>
-
-//                             </div>
-
-//                             </div>
-
-
-//                             {/* <div style={{ width: '900px' }} className='relative top-80 h-auto right-4   bg-gray-100 shadow-sm   shadow-gray-600 '>
-//                                 <div className='w-full h-auto lg:w-96  relative justify-center items-center flex'>
-//                                     <div className="w-auto  mx-auto p-2 left-64 relative bottom-20 bg-gray-200 ">
-//                                         <div style={{ width: '50rem' }} className="preview mt-4 h-auto bg-white p-0 rounded-lg overflow-y-auto">
-//                                             <h3 className="text-xl font-bold mb-2 text-gray-900"></h3>
-//                                             <div>
-
-//                                             </div>
-//                                             <br />
-//                                             <div style={{ maxHeight: '950px' }}>
-//                                                 <div className='pl-3' dangerouslySetInnerHTML={{ __html: clickData.content }} />
-//                                             </div>
-//                                         </div>
-//                                     </div>
-//                                 </div>
-//                             </div> */}
-//                         </div>
-
-//                     </div>
-
-//                 </div>
-
-//             </div>
-//         </div>
-
-//     </div>
-
-// </>
-
-
-
-
-
-
-
-
-
-{/* <div className='grid  xl:right-16 grid-cols-1 bg-white right-0 relative  md:grid-cols-2 m-auto mt-24 h-[550px]  shadow-sm  mx-auto shadow-gray-600 sm:max-w-[900px]' style={{ width: '100%' }}>
-                            <div className='p-4 flex flex-col justify-around '>
-                                <div className="flex p-5 absolute top-0 left-0 w- h-52 bg-opacity-50 ">
-                                    <img src={clickData?.image} alt="Background Image"
-                                        className=" h-full object-cover md:h-full w-full md:object-center" />
-
-                                </div>
-
-                                <h2 className='text-4xl font-bold text-center mb-8'></h2>
-                                <div>
-                                    <div className='text-start justify-start right-20 relative'>
-
-                                        <img
-                                            src={userImage}
-                                            alt='User Profile'
-                                            className='w-12  inline rounded-full mx-auto my-4'
-                                        />
-                                        <h1 className='inline-block'>UserName</h1>
-                                    </div>
-
-                                </div>
-                                <button className='w-full py-2 my-4 bg-green-600 hover:bg-green-500'>Sign In</button>
-
-
-                            </div>
-
-                        </div> */}

@@ -33,7 +33,7 @@ const RoundedChart: React.FC = () => {
     options: {
       plugins: {
         datalabels: {
-          formatter: (value: number, ctx: any) => {
+          formatter: (value: number) => {
             let sum = 0;
             // Assign the data to the variable and format it according to your needs
             let dataArr = dataChartDataLabelsExample.data.datasets[0].data;

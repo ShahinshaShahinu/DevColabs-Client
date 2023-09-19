@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "../../Context/WebsocketContext";
 import { usePeer } from "../../Provider/Peer";
-import { FcEndCall } from "react-icons/fc";
 import { MdCallEnd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +22,7 @@ function RoomVideoCall() {
   const naviagte= useNavigate()
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteEmailId, setRemoteEmailId] = useState<string>('');
-  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue = usePeer();
+  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue|any = usePeer();
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
 
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { DeletingPostHashtag, FindHomePost } from "../../../services/API functions/UserApi";
 import { CIHashtag } from "../../../utils/interfaceModel/PostsInfra";
-import ButtonLoadingLoader from "../../User/isLoading/buttonLoadingLoader";
+
 
 
 
@@ -53,7 +53,7 @@ function UserPostHashtagManage() {
 
 
 
-                        {fetchHashTag && fetchHashTag.map((tag, index) => (
+                        {fetchHashTag && fetchHashTag.map((tag) => (
                             tag?.HashTag?.map((tags: string, index: number) => (
                                 <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                     <td className="px-6 py-4">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Communities, JoinCommunity, RcomendedCommunities } from "../../../services/API functions/CommunityChatApi";
-import { CommunityUser } from "../../../../../DevColab-Server/src/domain/models/Community";
+import { CommunityUser } from "../../../utils/interfaceModel/userInfra"
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 

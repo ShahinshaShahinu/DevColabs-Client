@@ -5,7 +5,7 @@ import Navbar from "../Navbar/Navbar";
 import { api } from "../../../services/axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { Posts } from '../../../utils/interfaceModel/PostsInfra';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";

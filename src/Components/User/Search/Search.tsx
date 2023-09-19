@@ -1,6 +1,6 @@
 
-import { Posts } from "../../../../../DevColab-Server/src/domain/models/Posts";
-import { AllUsers } from '../../../../../DevColab-Server/src/domain/models/user';
+import { Posts } from "../../../utils/interfaceModel/PostsInfra"
+import { AllUsers } from '../../../utils/interfaceModel/comment';
 import { api } from "../../../services/axios";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; // Make sure you import necessary hooks
@@ -77,17 +77,17 @@ function Search() {
 
         if (category === 'posts') {
             newFilteredItems = HomePosts.filter(post =>
-                post?.title?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase()) || post?.HashTag?.some(tag =>
-                    tag.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())) || (
+                post?.title?.trim()?.toLowerCase()?.includes(searchTerm?.trim()?.toLowerCase()) || post?.HashTag?.some((tag: any) =>
+                    tag?.trim()?.toLowerCase()?.includes(searchTerm?.trim()?.toLowerCase())) || (
                     typeof post?.userId === 'object' &&
-                    typeof post.userId?.UserName === 'string' &&
-                    post.userId.UserName.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
+                    typeof post?.userId?.UserName === 'string' &&
+                    post?.userId?.UserName?.trim()?.toLowerCase()?.includes(searchTerm?.trim()?.toLowerCase())
                 )
             );
         } else {
             newFilteredItems = Allusers.filter(user =>
-                user?.UserName?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase()) || user?.UserHshTag?.SelectedTags?.some(tag =>
-                    tag.HshTagId?.Hashtag?.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
+                user?.UserName?.trim()?.toLowerCase()?.includes(searchTerm?.trim()?.toLowerCase()) || user?.UserHshTag?.SelectedTags?.some((tag: any) =>
+                    tag?.HshTagId?.Hashtag?.trim()?.toLowerCase()?.includes(searchTerm?.trim()?.toLowerCase())
                 )
             );
 
@@ -105,9 +105,12 @@ function Search() {
     }
 
     function loginModalOpen(data: boolean): void {
+        console.log(data,'lll');
+        
         throw new Error("Function not implemented.");
     }
     const receiveDataFromChild = (data: boolean) => {
+        setRefreshGrp(false)
         setRefresh(data)
     };
 

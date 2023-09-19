@@ -1,30 +1,29 @@
 import { useEffect, useState } from "react"
-import { AiOutlineDelete } from "react-icons/ai"
 import { useNavigate } from "react-router-dom"
-import { ToastContainer, toast } from "react-toastify"
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
-import { api } from "../../../services/axios"
+import { ToastContainer } from "react-toastify"
+import { Posts } from '../../../utils/interfaceModel/PostsInfra';
+
 
 import { useSelector } from "react-redux"
 import LikeSection from "../Home/LikeSection";
 import OptionsSavedPost from "./OptionsSavedPost";
 
-interface SavedPost {
-    // Define the structure of a saved post object
-    PostId: {
-        userId: {
-            _id: string;
-            profileImg: string;
-            UserName: string;
-        };
-        Date: string;
-        title: string;
-        image: string;
-        hashtags: string[];
-        // Add any other properties here
-    };
-    // Add any other properties here
-}
+// interface SavedPost {
+//     // Define the structure of a saved post object
+//     PostId: {
+//         userId: {
+//             _id: string;
+//             profileImg: string;
+//             UserName: string;
+//         };
+//         Date: string;
+//         title: string;
+//         image: string;
+//         hashtags: string[];
+//         // Add any other properties here
+//     };
+//     // Add any other properties here
+// }
 
 interface UsersSavedProps {
     Saved: Posts[]; // Use the SavedPost interface as the type for Saved
@@ -66,6 +65,7 @@ function UsersSaved({ Saved, sendRefresh }: UsersSavedProps) {
 
 
     useEffect(()=>{
+        setIsLoading(false)
         console.log(Saved ,'ddddddddddddddddddddddddddd');
         
     },[])

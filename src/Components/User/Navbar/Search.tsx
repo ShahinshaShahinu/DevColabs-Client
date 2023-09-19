@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../../../services/axios';
-import { AllUsers } from '../../../../../DevColab-Server/src/domain/models/user';
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { AllUsers } from '../../../utils/interfaceModel/comment';
+import { Posts } from '../../../utils/interfaceModel/PostsInfra';
 import { FcSearch } from 'react-icons/fc';
 
 function Search() {

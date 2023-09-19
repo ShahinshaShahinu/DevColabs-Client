@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
 import { api } from "../../../services/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { User } from "../../../../../DevColab-Server/src/domain/models/user";
+import { User } from "../../../utils/interfaceModel/userInfra";
 import { updateUser } from "../../../redux/user/userSlice";
-import { ChatnotificationReactType, ChatnotificationType, notificationType } from '../../../../../DevColab-Server/src/domain/models/Notification';
+import { ChatnotificationReactType } from "../../../utils/interfaceModel/userInfra";
 import { DeletNotification, GetNotification, Readed } from "../../../services/API functions/UserApi";
 import Loading from "../isLoading/Loading";
 import { useSocket } from '../../../Context/WebsocketContext'
-import { Getchats } from "../../../services/API functions/CommunityChatApi";
+
 
 
 function Navbar() {

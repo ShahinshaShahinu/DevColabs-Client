@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import { AiFillDelete, AiFillHome, AiOutlineHome, AiOutlineUser } from "react-icons/ai"
+import { AiFillDelete, AiOutlineHome, AiOutlineUser } from "react-icons/ai"
 import { BiEdit } from "react-icons/bi"
 import { BsFillInfoCircleFill } from "react-icons/bs"
 import { useDispatch, useSelector } from "react-redux";
@@ -9,9 +9,9 @@ import { api } from "../../../services/axios"
 import { ProfileValidation } from "../../../utils/userValidation/userProfileValidation"
 import { toast, ToastContainer } from "react-toastify"
 import { TextField } from "@material-ui/core"
-import { Data } from '../../../../../DevColab-Server/src/domain/models/user';
+import { Data } from '../../../utils/interfaceModel/PostsInfra';
 import { uploadImage } from "../../../services/Cloudinary/Cloud"
-import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
+import { Posts } from '../../../utils/interfaceModel/PostsInfra';
 import { useSocket } from '../../../Context/WebsocketContext';
 import { googleLogout } from '@react-oauth/google';
 import { updateUser } from '../../../redux/user/userSlice';
