@@ -16,7 +16,6 @@ import { GoReport } from "react-icons/go";
 import { updateUser } from "../../../redux/user/userSlice";
 import { googleLogout } from "@react-oauth/google";
 import { UserBlock_UnBlock, UserFolowers, userRecomended } from '../../../services/API functions/UserApi';
-import NotificationPage from "../../../Pages/NotificationPage";
 import Footer from "../Navbar/Footer";
 import CommunitySection from "./CommunitySection";
 import LikeSection from "./LikeSection";
@@ -416,7 +415,6 @@ function HomePage() {
         <div className="min-h-screen flex flex-col">
           <div className=" relative z-20 ">
             <Navbar />
-            <NotificationPage />
           </div>
           <main className="flex-grow  bg-white  ">
 
