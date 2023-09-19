@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 interface SocketContextType {
@@ -10,7 +10,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export const useSocket = () => {
   const context = useContext(SocketContext);
 
-  
+
   if (!context) {
     throw new Error('useSocket must be used within a SocketProvider');
   }
@@ -22,15 +22,10 @@ interface SocketProviderProps {
 }
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-  const socket = io(import.meta.env.VITE_BASE_URL);
-  // const socket = io('http://localhost:3000');
-  // const socket = io('http://10.4.3.143:4000');
+  const socket = useMemo(() => io(import.meta.env.VITE_BASE_URL), []);
+  // const socket = useMemo(() => io('http://10.4.3.143:3000'), []);
 
-  // useEffect(() => {
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+
 
   const contextValue: SocketContextType = {
     socket,

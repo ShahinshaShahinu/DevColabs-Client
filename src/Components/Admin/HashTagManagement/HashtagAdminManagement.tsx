@@ -1,9 +1,14 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavbarSidebar from "../NavbarSidebar/NavbarSidebar"
 import { api } from "../../../services/axios";
 import { HashtagVAlidation } from "../../../utils/adminValidation/adminLoginValidation";
 import { toast, ToastContainer } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa";
+import UserPostHashtagManage from "./UserPostHashtagManage";
+import { BiLeftArrowAlt } from "react-icons/bi";
+import Loading from "../../User/isLoading/Loading";
+import LoaderAbsolute from "../../User/isLoading/LoaderAbsolute";
 
 
 
@@ -15,14 +20,16 @@ interface IHashtag {
 
 
 function HashtagAdminManagement() {
-
-
+    const navigate = useNavigate()
     const [selectedDate, setSelectedDate] = useState<string | undefined>();
     const [hashtag, setHashtag] = useState<string>('');
     const [isModalOpen, setModalOpen] = useState(false);
     const [fetchHashTag, setfetchHashTag] = useState<IHashtag[]>([])
     const [DeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteItemId, setDeleteItemId] = useState('');
+    const [PostHashtag, setPostHashtag] = useState(false)
+    const [isLoading, setisLoading] = useState(false)
+
     const HandleDate = (DAte: string | undefined) => {
         setSelectedDate(DAte)
     }
@@ -146,34 +153,37 @@ function HashtagAdminManagement() {
         }
     }
 
+
+
     useEffect(() => {
+
         const fetchHashtags = async () => {
+            try {
 
-            const Hashtags = await api.get('/admin/HashTagManageMent', { withCredentials: true });
+                const Hashtags = await api.get('/admin/HashTagManageMent', { withCredentials: true });
+                console.log(Hashtags, 'hahshsh');
 
-            setfetchHashTag(Hashtags.data)
+                setfetchHashTag(Hashtags.data)
+            } catch (error) {
+                const errorWithResponse = error as { response?: { data?: { error?: string } } };
+                console.log(error, 'eere');
+
+                if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
+                    localStorage.removeItem('admin');
+                    navigate('/admin/login')
+                }
+
+            }
+
         }
+
         fetchHashtags()
-    }, [deleteItemId, DeleteModalOpen, HashtagSucess]);
 
+    }, [deleteItemId, DeleteModalOpen, isModalOpen]);
 
+    const handleLoader = () => {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
@@ -191,13 +201,37 @@ function HashtagAdminManagement() {
                         type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                         Add HashTag</button>
 
+
+                    {PostHashtag ? (
+                        <>
+                            <button
+                                onClick={() => setPostHashtag(false)}
+                                type="button"
+                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                            >
+                                <BiLeftArrowAlt className="mr-1 text-xl  inline-block" />
+                                Admin HashTag
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={() => setPostHashtag(true)}
+                            type="button"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                        >
+                            Post HashTag <FaArrowRight className="ml-1 inline-block" />
+                        </button>
+                    )}
+
+
+
+
+
+
+
+
                     <div className="flex-1 pt-3 pl-3 overflow-x-auto">
-
-
-
-
                         <div>
-
                             {isModalOpen && (
                                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
                                     <div className=" p-1 rounded-lg w-[50rem] left-10 relative shadow-lg  max-w-2xl max-h-full">
@@ -345,65 +379,73 @@ function HashtagAdminManagement() {
 
 
 
+                    {PostHashtag ? (
+                        <>
+                            <UserPostHashtagManage  />
+                        </>
+                    ) : (
+
+                        <div className="flex-1 overflow-x-auto">
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+
+                                        <th scope="col" className="px-6 py-3">
+                                            # HashTags
+                                        </th>
 
 
-
-                    <div className="flex-1 overflow-x-auto">
-                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-
-                                    <th scope="col" className="px-6 py-3">
-                                        # HashTags
-                                    </th>
-
-
-                                    <th scope="col" className="px-6 py-3">
-                                        Date
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Delete
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-
-
-                                {fetchHashTag && fetchHashTag.map((tag, index) => (
-                                    <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-
-
-                                        <td className="px-6 py-4">
-                                            {tag?.Hashtag}
-                                        </td>
-
-                                        <td className="px-6 py-4">
-                                            {formatDate(tag?.createdAt)}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <button
-                                                //  onClick={() => DeleteTAg(tag?._id)}
-                                                onClick={() => openDeleteModal(tag?._id)}
-                                                type="button" className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
-                                                Delete</button>
-                                        </td>
-
+                                        <th scope="col" className="px-6 py-3">
+                                            Date
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Delete
+                                        </th>
                                     </tr>
-                                ))}
+                                </thead>
+
+                                <tbody>
 
 
 
-                            </tbody>
-                        </table>
+                                    {fetchHashTag && fetchHashTag.map((tag, index) => (
+                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
 
-                    </div>
+
+                                            <td className="px-6 py-4">
+                                                {tag?.Hashtag}
+                                            </td>
+
+                                            <td className="px-6 py-4">
+                                                {formatDate(tag?.createdAt)}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    //  onClick={() => DeleteTAg(tag?._id)}
+                                                    onClick={() => openDeleteModal(tag?._id)}
+                                                    type="button" className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+                                                    Delete</button>
+                                            </td>
+
+                                        </tr>
+                                    ))}
+
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    )}
+
+
+
 
 
                 </div>
             </div>
-
+           
         </>
     )
 }

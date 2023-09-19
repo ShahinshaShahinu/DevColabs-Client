@@ -1,12 +1,12 @@
-import { AiFillHome, AiOutlineComment, AiOutlineHome, AiOutlineMessage, AiOutlineUser } from "react-icons/ai"
+import { AiOutlineComment, AiOutlineHome, AiOutlineUser } from "react-icons/ai"
 import { HiOutlineUserGroup } from "react-icons/hi2"
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from "../Navbar/Navbar";
 import { api } from "../../../services/axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { Posts } from '../../../../../DevColab-Server/src/domain/models/Posts';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
@@ -15,10 +15,16 @@ import ShareButtons from "./ShareButtons";
 import { GoReport } from "react-icons/go";
 import { updateUser } from "../../../redux/user/userSlice";
 import { googleLogout } from "@react-oauth/google";
-import { UserBlock_UnBlock, userRecomended } from "../../../services/API functions/UserApi";
+import { UserBlock_UnBlock, UserFolowers, userRecomended } from '../../../services/API functions/UserApi';
 import NotificationPage from "../../../Pages/NotificationPage";
 import Footer from "../Navbar/Footer";
 import CommunitySection from "./CommunitySection";
+import LikeSection from "./LikeSection";
+import Box from "@mui/material/Box";
+import { Pagination } from "@mui/material";
+import CommentEdit from "./HomeOptions/CommentEdit";
+import { Comment } from "../../../utils/interfaceModel/comment";
+
 
 
 interface IHashtag {
@@ -45,16 +51,21 @@ function HomePage() {
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [reftesh, setrefresh] = useState(false)
   const [liked, setliked] = useState(false);
-  const [refreshGrp,setRefreshGrp] = useState(false)
+  const [refreshGrp, setRefreshGrp] = useState(false)
   const [selectCategory, setSelectCategory] = useState<'Latest' | 'Recommended' | ''>('Latest')
-  const [isScrolled, setIsScrolled] = useState(false);
   const [clickedHashtag, setClickedHashtag] = useState<string | null>(null);
   const [Tag, setTag] = useState({
     HashtagName: '',
     CountPost: 0,
   });
   const [refresh, setRefresh] = useState(false);
-
+  const location = useLocation();
+  const getClicketHashtag = location?.state;
+  useMemo(() => {
+    if (getClicketHashtag) {
+      setClickedHashtag(getClicketHashtag);
+    }
+  }, [getClicketHashtag]);
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentDate(new Date());
@@ -66,9 +77,6 @@ function HomePage() {
   }, []);
   const CommentDate = format(currentDate, "d MMMM yyyy hh:mm a");
   const ReportDate = format(currentDate, "d MMMM yyyy hh:mm a");
-
-
-
 
   const slecetedCategory = async (Categorys: 'Recommended') => {
 
@@ -182,17 +190,10 @@ function HomePage() {
     });
   };
 
-
-
-
-
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
 
   };
-
-
-
 
   const handleClick = async (PostId: Posts) => {
     try {
@@ -210,8 +211,6 @@ function HomePage() {
         console.log(response?.data?.liked);
       }
 
-
-
     } catch (error) {
       console.log(error);
 
@@ -220,44 +219,40 @@ function HomePage() {
 
 
   const [showCommentBox, setShowCommentBox] = useState<number | null>(null);
-
   const toggleCommentBox = (index: number) => {
-
-    console.log('number ', index, 'inde');
-
     setShowCommentBox(prevState => (prevState === index ? null : index));
   };
 
 
   useEffect(() => {
-
-
     const fetchData = async () => {
       try {
         if (selectCategory === 'Latest') {
-
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-
           setHomePosts(userResponse?.data);
         } else if (selectCategory === 'Recommended') {
           const userHashtag = await userRecomended();
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-
-
           const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
-          const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-            const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+          const filteredPosts = userResponse?.data?.filter((post: {
+            userId: any; HashTag: string[]
+          }) => {
+            const postTagsCleaned = post?.HashTag?.map(tag => tag?.trim());
             const userHashTagsCleaned = userHashTags.map((tag: string) => tag.trim());
-            return postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag));
+            return (
+              post.userId?._id !== userId &&
+              postTagsCleaned.some(tag => userHashTagsCleaned.includes(tag))
+            );
           });
-          setHomePosts(filteredPosts);
-
+          const userFollowersPost = await UserFolowers();
+          const followersPost = userResponse?.data?.filter((post: { userId: { _id: string; }; }) =>
+            userFollowersPost?.data?.Userfollowers?.some((follower: { _id: string; }) => follower?._id === post?.userId?._id && follower?._id !== userId)
+          );
+          setHomePosts([...filteredPosts, ...followersPost]);
         }
-
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-
     }
     setRefreshGrp(true)
 
@@ -296,7 +291,7 @@ function HomePage() {
 
         setHomePosts(filteredPosts);
       }
-      
+
     }
     fetchData();
   }, [refresh, clickedHashtag, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment, selectCategory]);
@@ -353,7 +348,6 @@ function HomePage() {
   }, [refresh])
 
 
-
   const SubmitComments = async (postId: string) => {
 
     try {
@@ -376,20 +370,7 @@ function HomePage() {
     }
 
   }
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const [clickedPostIndex, setClickedPostIndex] = useState<number>(Number);
   const [rows, setRows] = useState(1);
@@ -403,9 +384,27 @@ function HomePage() {
     setRows(calculatedRows);
   };
 
-  const loginModalOpen = ()=>{
+  const loginModalOpen = () => {
     setIsModalOpen(!isModalOpen);
   }
+
+
+
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPosts = HomePosts.slice(startIndex, endIndex);
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
+    setPage(newPage);
+  };
+
+
+
+
+
+
 
 
 
@@ -419,30 +418,30 @@ function HomePage() {
             <Navbar />
             <NotificationPage />
           </div>
-          <main className="flex-grow  bg-white">
+          <main className="flex-grow  bg-white  ">
 
-            <div className="lg:mx-28 xl:mx:28 md:mx-28 ">
+            <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
               <div className="mx-auto max-w-screen-xl overflow">
                 <div className="flex md:flex-row-reverse ">
-                  <div className="bg-white 
-                  border-l-2  fixed  z-10 ">
-                    <CommunitySection  datas={refreshGrp} loginModalOpen={loginModalOpen}/>
+                  <div className="bg-white border-l-2  fixed  z-10 ">
+                    <CommunitySection datas={refreshGrp} loginModalOpen={loginModalOpen} />
                   </div>
-                  <div className="w-full   md:h-screen flex relative">
+                  <div className="w-full   md:h-screen flex relative mb-[12rem] " >
                     {/* Outer Div with Black Background */}
-                    <div className="w-auto absolute md:h-screen md:scree max-w-screen-md top-16 bg-white ml-0 ">
+
+                    <div className="w-auto absolute md:h-screen md:scree max-w-screen-md mb-96 top-12 md:top-16 bg-white ml-0 ">
                       {/* Inner Content */}
-                      <div className="flex max-w-screen-md  relative z-10  top-2 sm:justify-center md:left-32 xl:left-14 h-auto bg-opacity-75">
-                        <nav className="fixed baCkground border-b-2 sm:w-full backdrop-blur-md h-auto xl:w-[42rem] md:w-[40rem] lg:w-[40rem] w-[28rem] overflow-y-auto md:overflow-y-hidden">
+                      <div className="flex   relative z-10   top-2 sm:justify-center md:left-32 lg:left-44 xl:left-14 h-auto bg-opacity-75">
+                        <nav className="fixed baCkground border-b-2 sm:w-full backdrop-blur-md h-auto xl:w-[42rem] md:w-[35rem] lg:w-[40rem] w-[28rem] overflow-y-auto md:overflow-y-hidden">
                           <ul>
                             {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') ? (
-                              <li className={`flex cursor-pointer relative items-center h-12 space-x-2 ${isScrolled ? 'hidden md:flex' : 'flex'}`}>
+                              <li className={`flex cursor-pointer relative items-center h-12 space-x-2 `}>
                                 <h1 onClick={() => Navigate('/')} className="font-bold ml-3 p-3 relative text-xl">Home</h1>
                               </li>
                             ) : (
                               <>
                                 <div className="ml-8 mb-2">
-                                  <li className={`flex cursor-pointer relative items-center  mt-3   h-12 space-x-2 ${isScrolled ? 'hidden md:flex' : 'flex'}`}>
+                                  <li className={`flex cursor-pointer relative items-center  mt-3   h-12 space-x-2 `}>
                                     <h1 onClick={() => Navigate('/')} className="font-semibold ml-3   relative text-3xl">{Tag?.HashtagName}</h1>
                                   </li>
                                   <div className="flex sm:ml-5 ml-11 relative">
@@ -465,7 +464,7 @@ function HomePage() {
                                 className={`${selectCategory === "Latest" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
                                   'opacity-80 hover:bg-[#dddbdb]'
-                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px- py-2.5 mr-2 mb-2 text-base`}
+                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg  py-2.5 mr-2 mb-2 text-base`}
                               >
                                 Latest Posts
                               </button>
@@ -483,15 +482,16 @@ function HomePage() {
                       </div>
 
 
-                      <div className="p-4 md:left-32 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28 md:w-screen  xl:left-14   relative sm:w-screen  lg:max-w-2xl  bg-[#e1e5eb]">
 
-                        <div>
+                      <div className="p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
+
+                        <div >
 
                           <p className="bg-white mx-4 ">
                             {clickedHashtag !== null && clickedHashtag ? 'HashTag' : 'Posts'}
                           </p>
 
-                          {HomePosts && HomePosts.map((post: any, index) => (
+                          {HomePosts && currentPosts.map((post: any, index) => (
                             <div className="p-4 bg-[#e1e5eb]" key={index}>
                               <div className="bg-white p-4 rounded-md shadow-md" key={index}>
                                 <div
@@ -526,14 +526,17 @@ function HomePage() {
                                       </div>
 
                                     </div>
+                                    <p
+                                      onClick={() => Navigate('/profile', { state: post?.userId?._id })}
+                                      className="font-medium cursor-pointer text-base sm:text-base overflow-hidden whitespace-wrap break-words"
+                                    >
+                                      {post?.userId?.UserName}
+                                    </p>
 
-                                    <p onClick={() => Navigate('/profile', { state: post?.userId?._id })}
-                                      className="font-semibold cursor-pointer">{post?.userId?.UserName}</p>
-
-                                    <p className="text-sm text-gray-500">{post?.Date}</p>
+                                    <p className="text-sm text-gray-500 sm:text-base">
+                                      {post?.Date}
+                                    </p>
                                   </div>
-
-
                                   {ShareSocialMediaModal && clickedPostIndex === index && (
                                     <div key={index}
                                       id="popup-modal"
@@ -580,7 +583,7 @@ function HomePage() {
                                           <div className="p-2 text-center">
                                             <div className="mb-5">
 
-                                              <ShareButtons url={`http://localhost:5173/UserPostsView/${post?._id}`} title={post?.title} />
+                                              <ShareButtons url={`${import.meta.env?.VITE_REACT_URL}/UserPostsView/${post?._id}`} title={post?.title} />
 
                                             </div>
 
@@ -600,6 +603,7 @@ function HomePage() {
                                       </div>
                                     </div>
                                   )}
+
 
 
                                   {ReportModal && clickedPostIndex === index && (
@@ -708,12 +712,25 @@ function HomePage() {
 
 
                                 </div>
-                                <div className="flex">
-                                  <p onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
-                                    className="text-lg cursor-pointer overflow-hidden whitespace-wrap break-words">
-                                    {post?.title}
-                                  </p>
+
+                                <div className="flex flex-col">
+                                  <div className="ml-4">
+                                    <p
+                                      onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
+                                      className="text-lg cursor-pointer overflow-hidden whitespace-wrap break-words"
+                                    >
+                                      {post?.title}
+                                    </p>
+                                  </div>
+                                  <div className="mt-2 flex-1 border-2">
+                                    <img onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
+                                      src={post?.image}
+                                      alt={post?.Image}
+                                      className="w-full cursor-pointer h-auto"
+                                    />
+                                  </div>
                                 </div>
+
 
 
                                 <div className="mt-4">
@@ -723,7 +740,7 @@ function HomePage() {
                                       return (
                                         <span
                                           key={index}
-                                          className={`text-blue-500 inline-block cursor-pointer ${index > 0 ? 'ml-2' : ''
+                                          className={`inline-block px-3 py-1 text-sm bg-blue-100 text-blue-500 rounded-full mr-2 hover:bg-blue-200 cursor-pointer m-0.5 ${index > 0 ? 'ml-2' : ''
                                             } ${index > 0 ? 'sm:relative sm:right-2' : ''
                                             }`}
                                           onClick={() => setClickedHashtag(trimmedTag)}
@@ -788,9 +805,16 @@ function HomePage() {
                                 )}
 
 
+                                <div className="top-2 relative">
+                                  <LikeSection data={post} />
+                                </div>
+
+
+
+
+
                                 <div className="mt-4  flex items-center justify-between">
                                   <div className="flex items-center space-x-4">
-
                                     <div className="flex items-center space-x-4">
                                       <button
                                         onClick={() => { username ? handleClick(post._id) : setIsModalOpen(true) }}
@@ -800,7 +824,7 @@ function HomePage() {
                                           type="button"
                                           className={`${post.likes.LikedUsers.some(
                                             (likedUser: any) =>
-                                              likedUser.userId === userId && likedUser?.liked)
+                                              likedUser?.userId?._id === userId && likedUser?.liked)
                                             ? 'text-white bg-blue-500 darkhover:text-white dark:focus:ring-blue-800'
                                             : 'text-blue-700 border border-blue-700 dark:focus:ring-blue-800'
                                             } focus:ring-4 focus:outline-none font-medium rounded-full text-sm p-2 text-center inline-flex items-center`}
@@ -846,6 +870,7 @@ function HomePage() {
 
                                 </div>
 
+
                                 {/* comments  given add  */}
 
                                 {showCommentBox === index && (
@@ -874,11 +899,7 @@ function HomePage() {
 
                                       </form>
 
-
-
-                                      <div className=" pt-5">
-                                        <div className="pt-5 pl-5">
-                                          {HomePosts[index]?.Comments.map((comment: any, commentIndex: number) => (
+                                      {/* {HomePosts[index]?.Comments.map((comment: any, commentIndex: number) => (
                                             <div key={comment._id}>
                                               <div className="flex items-start mb-5" key={commentIndex}>
                                                 <img
@@ -889,17 +910,41 @@ function HomePage() {
                                                 <div>
                                                   <p className="font-semibold">{comment.userId.UserName}</p>
                                                   <p className="flex-auto text-gray-600 overflow-hidden break-words  break-all">
-                                                    {comment.Comment}
+                                                    {comment.Comment} 
                                                   </p>
 
-                                                  {/* <button className="text-blue-500 mr-2">Like</button>
-                                                  <button className="text-red-500 mr-2">Dislike</button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ))} */}
+                                      {/* <button className="text-blue-500 mr-2">Like</button>
+                                          <button className="text-red-500 mr-2">Dislike</button>
+                                          <button className="text-gray-500 mr-2">Reply</button>
+                                          <button className="text-gray-500">Delete</button> */}
 
-                                                
-                                                  <button className="text-gray-500 mr-2">Reply</button>
 
-                                    
-                                                  <button className="text-gray-500">Delete</button> */}
+                                      <div className="pt-5">
+                                        <div className="pt-5 pl-5">
+                                          {HomePosts[index]?.Comments.map((comment: Comment, commentIndex: number) => (
+                                            <div key={ commentIndex} className="mb-2 bg-white ">
+                                              <div className="flex items-start p-3 border border-gray-300 rounded-lg hover:shadow-md">
+                                                <img onClick={() => Navigate('/profile', { state: comment?.userId?._id })}
+                                                  src={comment.userId.profileImg}
+                                                  alt="Commenter Profile"
+                                                  className="w-10 h-10 rounded-full mr-3  cursor-pointer"
+                                                />
+                                                <div
+                                                  className="flex-grow">
+                                                  <p onClick={() => Navigate('/profile', { state: comment?.userId?._id })}
+                                                    className="font-semibold cursor-pointer text-blue-500 hover:underline">
+                                                    {comment.userId.UserName}
+                                                  </p>
+                                                  <p className="text-gray-600 break-all mt-1">{comment.Comment}</p>
+                                                </div>
+                                                <div className="ml-auto">
+                                                {comment?.userId?._id===userId && (
+                                                    <CommentEdit data={comment} onClose={()=>setrefresh(!reftesh)}/>
+                                                )}
                                                 </div>
                                               </div>
                                             </div>
@@ -909,10 +954,16 @@ function HomePage() {
                                     </div>
                                   </div>
                                 )}
+
+
+
                               </div>
                             </div>
+
                           ))}
-                          {SelectHashtag && (   
+
+
+                          {SelectHashtag && (
 
                             <div className="fixed top-0 left-0 z-50 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={() => setmodal(true)}>
                               <div className=" p-1 rounded-lg w-[50rem] left-10 relative shadow-lg  max-w-2xl max-h-full" onClick={() => setmodal(true)}>
@@ -943,6 +994,7 @@ function HomePage() {
                                       ))}
                                       {formError && <p className="text-red-500">{formError}</p>}
                                     </div>
+
                                     <div className="pl-4">
                                       <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
 
@@ -952,27 +1004,56 @@ function HomePage() {
                                 <ToastContainer />
                               </div>
                             </div>
-
-
                           )}
                         </div>
+                        <div className="hidden md:block ">
+                          <div className="bg top-10 lg:w-[110%]  h-32  lg:right-10 relative flex justify-center ">
+                            <div className="bg-white w-full h-full z-0   flex ">
+                              <Box
+                                sx={{
+                                  margin: "auto",
+                                  width: "fit-content",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Pagination count={10} page={page} onChange={handleChange} />
+                              </Box>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="sm:hidden">
+                          <div className=" top-0 w-screen  h-14 p-1  right-4  mb-10  relative flex justify-center ">
+                            <div className="bg-white w-full h-fullrounded-xl  flex ">
+                              <Box
+                                sx={{
+                                  margin: "auto",
+                                  width: "fit-content",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Pagination count={10} page={page} onChange={handleChange} />
+                              </Box>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
 
+
                   {/* Options Div */}
                   <div className="hidden md:block relative xl:w-[16.5rem] 2xl:w-[17rem] ">
                     <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:w-[18rem]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[16rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
-                      <div className="h-full overflow-y-auto  relative bg-white
-                  
-                  border-r-2 px-2 ">
+                      <div className="h-full overflow-y-auto  relative bg-white  border-r-2 px-2 ">
                         <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
                             <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
-                            <li onClick={() => Navigate('/Community')} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                            <li onClick={() => { username ? Navigate('/Community') : setIsModalOpen(true) }} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
                               <h1 className="font-bold text-base">Community</h1>
                             </li>
@@ -988,15 +1069,23 @@ function HomePage() {
                 </div>
               </div>
             </div>
-          </main>
 
+          </main>
           {/* Footer */}
-          <Footer />
+          <div className="top-10 relative mt-10">
+            <Footer
+              SelectCategory={(data) => (data === 'Latest' ? setSelectCategory('Latest') : 'Recommended')}
+              ClickedHashtag={(data) => setClickedHashtag(data)}
+            />
+
+
+          </div>
         </div>
 
         <ToastContainer />
 
       </div>
+
     </>
   )
 }

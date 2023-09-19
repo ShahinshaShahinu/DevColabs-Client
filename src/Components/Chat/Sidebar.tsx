@@ -6,7 +6,6 @@ import { AllUsers } from "../../../../DevColab-Server/src/domain/models/user";
 import { GetUsers } from "../../services/API functions/UserApi";
 import { useSelector } from "react-redux";
 import { MuiChipsInput } from "mui-chips-input";
-import LoaderAbsolute from "../User/isLoading/LoaderAbsolute";
 import Loading from "../User/isLoading/Loading";
 interface datas {
     data?: string; // You might want to adjust the type as needed
@@ -156,7 +155,7 @@ function Sidebar({sendDataToParent}:SidebarProps) {
             {/* <LoaderAbsolute /> */}
 
 
-            <div className="bg-white p-4">
+            <div className="bg-white p-4  overflow-auto h-full bottom-1  relative">
                 <form onSubmit={handleCommunitySubmit}>
                     <div className="mb-4">
 
@@ -202,7 +201,8 @@ function Sidebar({sendDataToParent}:SidebarProps) {
                     <div className=" justify-center relative  flex">
                         <p className="text-red-700 font-semibold">{ErrorMsg === 'add Community HashTags' && ErrorMsg}{ErrorMsg === 'Spaces are not allowed in tags' && ErrorMsg}</p>
                     </div>
-
+         
+          
                     <div className="flex mb-4 -space-x-4 ">
                         <div className="flex m-2">
                             {addUser &&
@@ -222,7 +222,7 @@ function Sidebar({sendDataToParent}:SidebarProps) {
                                 ))}
                         </div>
                     </div>
-
+                   
                     <div className="mb-4">
                         <label htmlFor="guests" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Invite guests</label>
                         <div className="relative">
@@ -240,7 +240,7 @@ function Sidebar({sendDataToParent}:SidebarProps) {
                         </div>
 
                     </div>
-
+                 
 
                     <div className="space-y-2 top-1 my-5 relative">
                         {filteredItemsp.length > 0 &&
@@ -277,7 +277,8 @@ function Sidebar({sendDataToParent}:SidebarProps) {
                     </div>
 
 
-                    
+                          
+          
                 </form>
             </div>
 

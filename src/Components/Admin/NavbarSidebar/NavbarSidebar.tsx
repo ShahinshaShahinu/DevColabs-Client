@@ -1,42 +1,51 @@
 import { useEffect, useState } from "react"
 import { GoSidebarExpand, GoSidebarCollapse } from 'react-icons/go'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaHashtag } from "react-icons/fa";
 function NavbarSidebar() {
    const navigate = useNavigate();
 
 
+   const location = useLocation();
 
-
+const pathnameWithoutAdmin = location.pathname.replace('/admin/', '');
+console.log(pathnameWithoutAdmin,'pppppppppppp');
    const [ShowAdminCircle, setShowAdminCircle] = useState(false);
    const [ShowSidebar, setShowSidebar] = useState(true);
    const [ChangeBtn, setChangeBrn] = useState(false);
-   const [activeLink, setactiveLink] = useState('Dashboard');
-
+   const [activeLink, setactiveLink] = useState(pathnameWithoutAdmin);
+   const [active, setActive] = useState(false)
 
    const signOut = () => {
       localStorage.removeItem('admin')
       navigate('/admin/login')
    }
 
+
    useEffect(() => {
       const admin = localStorage.getItem('admin')
-
       if (!admin) {
          navigate('/admin/login')
       }
    }, []);
 
    const handleLinkClick = (key: string) => {
-      setactiveLink(key);
+      setActive(true)
+     
       reset(key);
       navigate(`/admin${key}`);
    };
+
 
    const reset = (key: string) => {
       setactiveLink(key);
       navigate(`/admin${key}`);
    };
+
+   useEffect(() => {
+      setactiveLink(activeLink)
+   }, [active])
+
 
 
 
@@ -127,13 +136,12 @@ function NavbarSidebar() {
 
 
                      <li
-                        onClick={() => handleLinkClick('/Dashboard')}
+                        onClick={() => { navigate('/admin/Dashboard') }}
                         role="menuitem"
-                        className={activeLink === '/Dashboard' ? 'bg-gray-700' : ''}
+                        className={activeLink === 'Dashboard' ? 'bg-gray-700' : ''}
                      >
                         <a
-                           href="#"
-                           className="flex items-center p-2  'dark:hover:bg-gray-700'
+                           className="flex items-center p-2 cursor-pointer 'dark:hover:bg-gray-700'
                               hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 rounded-lg dark:text-whitegroup"
                         >
                            <svg
@@ -150,13 +158,13 @@ function NavbarSidebar() {
                      </li>
 
                      <li
-                        onClick={() => handleLinkClick('/Usermanagement')}
+                        onClick={() =>navigate('/admin/Usermanagement')}
                         role="menuitem"
-                        className={activeLink === '/Usermanagement' ? 'bg-gray-700' : ''}
+                        className={activeLink === 'Usermanagement' ? 'bg-gray-700' : ''}
                      >
                         <a
                            href="#"
-                           className={`flex items-center p-2 ${activeLink === '/Usermanagement' ? 'bg-gray-700' : 'dark:hover:bg-gray-700'
+                           className={`flex items-center p-2 ${activeLink === 'Usermanagement' ? 'bg-gray-700' : 'dark:hover:bg-gray-700'
                               } hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 rounded-lg dark:text-whitegroup`}
                         >
                            <svg
@@ -171,16 +179,16 @@ function NavbarSidebar() {
                            <span className="flex-1 ml-3 whitespace-nowrap text-cyan-100">Users</span>
                         </a>
                      </li>
-                     <li onClick={() => handleLinkClick('/HashTagManageMent')} className={activeLink === '/HashTagManageMent' ? 'bg-gray-700' : ''} >
+                     <li onClick={() => navigate('/admin/HashTagManageMent')} className={activeLink === 'HashTagManageMent' ? 'bg-gray-700' : ''} >
                         <button onClick={() => handleLinkClick('/HashTagManageMent')}
                            className=" flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                            <FaHashtag className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white' />
                            <span className="flex-1 ml-3 whitespace-nowrap text-cyan-100">HashTag</span>
                         </button>
                      </li>
-                     <li onClick={() => handleLinkClick('/ReportManageMent')} className={activeLink === '/ReportManageMent' ? 'bg-gray-700' : ''}
+                     <li onClick={() => navigate('/admin/ReportManageMent')} className={activeLink === 'ReportManageMent' ? 'bg-gray-700' : ''}
                      >
-                        <button onClick={() => handleLinkClick('/ReportManageMent')}
+                        <button 
                            className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                            <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z" />
@@ -189,10 +197,7 @@ function NavbarSidebar() {
                            </svg>
                            <span className="flex-1 ml-3 whitespace-nowrap">Reported Posts</span>
                         </button>
-                     </li>
-
-
-
+                     </li>                 
                   </ul>
                </div>
             </aside>

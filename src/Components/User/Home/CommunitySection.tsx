@@ -1,29 +1,31 @@
 import { useEffect, useState } from "react";
-import { JoinCommunity, RcomendedCommunities } from "../../../services/API functions/CommunityChatApi";
+import { Communities, JoinCommunity, RcomendedCommunities } from "../../../services/API functions/CommunityChatApi";
 import { CommunityUser } from "../../../../../DevColab-Server/src/domain/models/Community";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 interface fetch {
     datas: boolean
-    loginModalOpen:(data:boolean)=>void
+    loginModalOpen: (data: boolean) => void
 }
 interface UserCount {
     userIdCount: number
 }
 
-function CommunitySection({ datas,loginModalOpen }: fetch) {
+function CommunitySection({ datas, loginModalOpen }: fetch) {
     const Navigate = useNavigate();
     const { userId } = useSelector((state: any) => state.user);
-    const [isCommunities, setCommunities] = useState<CommunityUser[]>([])
-    const [isUserIdCounts, setUsersCount] = useState<UserCount[]>([])
+    const [isRecomendedCommunities, setRecomendedCommunities] = useState<CommunityUser[]>([])
+    const [isRecomendedUserIdCounts, setRecomendedCommunityUsersCount] = useState<UserCount[]>([]);
+    const [isCommunities, setCommunities] = useState<CommunityUser[]>([]);
     useEffect(() => {
         const fetchChats = async () => {
-            const fetchedCommunities = await RcomendedCommunities();
-            setCommunities(fetchedCommunities?.data?.[0]);
-            setUsersCount(fetchedCommunities?.data?.[1])
-            console.log(fetchedCommunities
-                , 'RcomendedCommunities');
+            const fetchedRecomendedCommunities = await RcomendedCommunities();
+            setRecomendedCommunities(fetchedRecomendedCommunities?.data?.[0]);
+            setRecomendedCommunityUsersCount(fetchedRecomendedCommunities?.data?.[1])
+            const fetchedCommunities = await Communities(); console.log(fetchedCommunities?.data[0],'fetchedCommunities?.data[0]');
+            
+            setCommunities(fetchedCommunities?.data[0]);
 
         }
         fetchChats();
@@ -37,24 +39,24 @@ function CommunitySection({ datas,loginModalOpen }: fetch) {
     return (
         <>
             <div>
-                <div className="  xl:w-[16.5rem] 2xl:w-[17rem] hidden sm:block ">
-                    <div className="fixed right-0 h-full lg:w-60 max-lg:w-80 xl:w-96 xl:96  2xl:w-[24rem] md:w-[13rem] overflow-hidden lg:mx-5   xl:mx-14 md:mx-28 z-10">
+                <div className=" mt-1 xl:w-[16.5rem] 2xl:w-[17rem] hidden  lg:block">
+                    <div className="fixed right-0 h-full lg:w-60 max-lg:w-80  xl:96 lg:block  2xl:w-[24rem] md:w-[13rem] overflow-hidden lg:mx-5   xl:mx-14 md:mx-28 z-10">
                         <div className="h-full  
                    ">
                             <nav className="flex flex-col top-44 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                                 <h2 className="text-xl font-medium ">{userId ? ('Communities that may interest you') : ('Communities')}</h2>
-                                {isCommunities && isCommunities?.map((group, index) => (
+                                {isRecomendedCommunities && isRecomendedCommunities?.length != 0 ? isRecomendedCommunities?.map((group, index) => (
                                     <div key={index}>
-                                        <hr className="my-4 border-t border-gray-300" />
+                                        <hr className="my-4  border-t border-gray-300" />
                                         <div className="flex items-center space-x-4">
                                             <div className="w-10 h-10 rounded-full overflow-hidden">
                                                 <img src={group.Image} alt={group.Name} className="w-full h-full object-cover" />
                                             </div>
                                             <div className="flex-1">
                                                 <h3 className="text-md font-semibold">{group.Name}</h3>
-                                                {isUserIdCounts && isUserIdCounts[index] && (
+                                                {isRecomendedUserIdCounts && isRecomendedUserIdCounts[index] && (
                                                     <div className=" text-gray-600 text-sm">
-                                                        {isUserIdCounts[index]?.userIdCount} Members
+                                                        {isRecomendedUserIdCounts[index]?.userIdCount} Members
                                                     </div>
                                                 )}
                                             </div>
@@ -66,7 +68,43 @@ function CommunitySection({ datas,loginModalOpen }: fetch) {
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                )) : (
+                                    <>
+                                        {isCommunities &&
+                                            isCommunities.map((CommunityData, index) => (
+                                                <li
+                                                    key={index}
+                                                    className='p-2 top-2 relative border hover:bg-gray-200 flex cursor-pointer rounded-lg shadow-md mb-2 '
+                                                    onClick={() => {
+                                                        Navigate('/Community',{state:CommunityData})
+                                                    }}
+                                                >
+                                                    <div className="flex items-center mb-2">
+                                                        <img
+                                                            src={CommunityData?.Image}
+                                                            alt={CommunityData?.Image}
+                                                            className="w-8 h-8 rounded-full mr-2"
+                                                        />
+                                                        <div>
+                                                            <p className="text-lg font-normal">{CommunityData?.Name}</p>
+                                                            <div className="text-gray-600 w-64 overflow-hidden"> {/* Set the width constraint on the outer container */}
+                                                                <div className="mr-2 flex">
+                                                                    <div className="flex overflow-hidden overflow-ellipsis break-words">
+                                                                            <div className=" text-gray-600 text-sm">
+                                                                                {CommunityData?.userId?.length} Members
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                    </>
+                                )}
+
+
+
                             </nav>
                         </div>
                     </div>

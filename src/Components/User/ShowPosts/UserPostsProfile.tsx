@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AiFillHome } from 'react-icons/ai'
+import { AiFillHome, AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../../services/axios';
@@ -19,6 +19,7 @@ import { MuiChipsInput } from 'mui-chips-input'
 import { UrlData } from '../../../../../DevColab-Server/src/domain/models/Posts';
 import { RiVideoUploadFill } from 'react-icons/ri';
 import { DeletePostVideo } from '../../../services/API functions/UserApi';
+import { HiOutlineUserGroup } from 'react-icons/hi2';
 
 
 
@@ -214,7 +215,7 @@ function UserPostsProfile() {
         <>
             <div className="  flex top-20 relative items-center justify-center  ">
 
-                <div className="grid   grid-cols-1  max-h-[400px]  overflow-hidden relative left-12 w-[20rem] ">
+                {/* <div className="grid   grid-cols-1  max-h-[400px]  overflow-hidden relative left-12 w-[20rem] ">
                     <div className="fixed ml-0 pt-1 top-64 flex flex-col justify-around rounded-lg shadow-lg md:w-[16rem] bg-gray-200">
                         <ul>
                             <li className="flex  cursor-pointer items-center  md:w-2/5 h-12">
@@ -224,10 +225,37 @@ function UserPostsProfile() {
 
                         </ul>
                     </div>
+                </div> */}
+<div
+                    style={{ zIndex: '0' }}
+                    className="">
+                    <div className="hidden md:block mx-2 xl:mx-5 relative sm:w-66 md:w-82 lg:w-66 sm:w-72  md:w-ful xl:w-66 2xl:w-68">
+                        <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:max-w-[900px]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[18rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
+                            <div className="h-full overflow-y-auto  relative bg-  border-r-2 px-2 ">
+                                <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
+                                    <ul>
+                                        <li className="flex cursor-pointer items-center w-auto h-12 space-x-2 hover:bg-sky- rounded-xl hover:bg-sky-100">
+                                            <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
+                                            <h1 onClick={() => Navigate('/')} className="font-bold text-base">Home</h1>
+                                        </li>
+                                        <li onClick={() => Navigate('/Community')} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                                            <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
+                                            <h1 className="font-bold text-base">Community</h1>
+                                        </li>
+                                        <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                                            <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
+                                            <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
-                <div className="w-screen h-auto flex relative bottom-10  top-0 md:right-32 rounded-sm ">
+
+                <div className="w-screen h-auto flex relative bottom-10  top-0 md:right-16 rounded-sm ">
                     <div className="relative h-auto grid grid-cols-1 md:grid-cols-2 pb-32 m-auto min-h-auto  bg-gray-100   overflow-hidden     shadow-md shadow-gray-600 w-[904px] rounded-xl ">
 
                         <div className="flex w-[904px] flex-col bg-opacity-50 p-5">
@@ -378,7 +406,7 @@ function UserPostsProfile() {
                 {EditDatas && (
 
                     <>
-                        <div id="loadingModal" aria-hidden="true" className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+                        <div id="loadingModal" aria-hidden="true" className="fixed top-10 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
                             <form onSubmit={HandleEditPostDatas}>
                                 <div className="max-w-6xl mx-auto mt-10 p-4 bg-white rounded-lg shadow-md overflow-auto " style={{ height: '45rem' }}>
                                     <div className="mb-4">

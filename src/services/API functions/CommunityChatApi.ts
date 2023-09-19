@@ -20,7 +20,15 @@ export const Getchats = async () => {
 
     }
 }
+export const ReadedPersonalChat = async (ChatId: string) => {
+    try {
+        const data = await api.post('/RadedPersonalMessage', { ChatId }, { withCredentials: true });
+        return data
+    } catch (error) {
+        console.log(error);
 
+    }
+}
 export const CreateCommunity = async (userId: string[], Name: string, Image: string, HashTag: string[], Date: string) => {
     try {
         const data = await api.post('/CreateCommunities', { userId, Name, Image, HashTag, Date }, { withCredentials: true })
@@ -65,11 +73,11 @@ export const RcomendedCommunities = async () => {
 export const JoinCommunity = async (communityId: string) => {
     try {
         console.log('joinnnnn');
-        
+
         const res = await api.post('/JoinCommunity', { communityId }, { withCredentials: true });
         return res
     } catch (error) {
-        console.log(error);   
+        console.log(error);
 
     }
 }
@@ -94,3 +102,14 @@ export const ClearChat = async (CommunityId: string) => {
 }
 
 
+export const  ChatNotificationPOST =async (ChatMessage:any,senderId:string) =>{
+    try {
+       console.log('requested requested ');
+       
+       const SendedNotificaion = await api.post('/sendChatNotification',{ChatMessage,senderId},{withCredentials:true});
+       return SendedNotificaion
+    } catch (error) {
+       console.log(error);
+       
+    }
+   }

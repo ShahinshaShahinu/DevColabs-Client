@@ -43,10 +43,12 @@ function AdminUserManaging() {
     try {
       const { data } = await api.get('/admin/UserManageMent/Users', { withCredentials: true });
       setUserData(data.Users);
-     
-      
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      const errorWithResponse = error as { response?: { data?: { error?: string } } };
+      if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
+        localStorage.removeItem('admin');
+        navigate('/admin/login')
+    }
     }
   };
 

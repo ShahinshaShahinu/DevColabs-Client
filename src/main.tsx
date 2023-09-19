@@ -8,6 +8,7 @@ import { Store, persistor } from './redux/store.ts';
 import { PersistGate } from 'redux-persist/integration/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { SocketProvider } from './Context/WebsocketContext.tsx';
+import { PeerProvider } from './Provider/Peer.tsx';
 
 
 
@@ -16,13 +17,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={Store}>
       <SocketProvider>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLECLIENTID} >
-          <PersistGate loading={null} persistor={persistor}>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
-          </PersistGate>
-        </GoogleOAuthProvider>
+        <PeerProvider >
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLECLIENTID} >
+            <PersistGate loading={null} persistor={persistor}>
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </PersistGate>
+          </GoogleOAuthProvider>
+        </PeerProvider>
       </SocketProvider>
     </Provider>
   </React.StrictMode>

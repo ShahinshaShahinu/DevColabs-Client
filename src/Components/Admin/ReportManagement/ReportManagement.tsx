@@ -4,10 +4,11 @@ import { ReportPostData } from '../../../../../DevColab-Server/src/domain/models
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { format } from "date-fns";
 import { useSocket } from "../../../Context/WebsocketContext";
+import { useNavigate } from "react-router-dom";
 
 function ReportManagement() {
 
-
+  const navigate =useNavigate()
   const [ReportPosts, setReportPosts] = useState<ReportPostData[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<number | null>(null);
   const [Refresh, setRefresh] = useState(false);
@@ -62,7 +63,11 @@ function ReportManagement() {
         setRefresh(true)
       }
     } catch (error) {
-
+      const errorWithResponse = error as { response?: { data?: { error?: string } } };
+      if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
+        localStorage.removeItem('admin');
+        navigate('/admin/login')
+    }
     }
   }
 

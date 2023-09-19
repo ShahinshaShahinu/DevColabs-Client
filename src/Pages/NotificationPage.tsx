@@ -1,4 +1,4 @@
-import NotificationTool from "../Components/User/Notification/notification"
+import NotificationTool from "../Components/User/Notification/BrowserNotification"
 
 
 

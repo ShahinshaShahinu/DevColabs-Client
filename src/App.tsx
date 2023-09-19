@@ -2,7 +2,7 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import SignupPage from './Pages/SignupPage'
 import LoginPage from './Pages/LoginPage'
 import HomePage from './Pages/HomePage'
@@ -15,7 +15,6 @@ import UserProfilePage from './Pages/UserProfilePage'
 import AdminDashboardPage from './Pages/AdminDashboardPage'
 import ProtectedRoute from './Components/User/ProtectedRoute'
 import JoditPostCreationPage from './Pages/joditPostCreationPage';
-import JoditPostCreation from './Components/User/PostCreation/joditPostCreation'
 import UserProfilePostsPage from './Pages/UserProfilePostsPage'
 import UserSavedPostsPage from './Pages/UserSavedPostsPage'
 import AdminHashTagPage from './Pages/AdminHashTagPage'
@@ -24,9 +23,13 @@ import AdminReportManagementPage from './Pages/AdminReportManagementPage'
 import SearchPage from './Pages/SearchPage'
 import ChatPage from './Pages/ChatPage'
 import ErrorPage from './Pages/ErrorPage'
+import AdminProtectedRoute from './Components/Admin/AdminProtectedRoute'
+import VideoCallPage from './Pages/VideoCallPage';
+import RoomVideoCallPage from './Pages/RoomVideoCallPage'
 
 
-// import QuillEditorPostCreation from './Components/User/PostCreation/QuillEditorPostCreation'
+
+import JaaSMeetingVideoCall from './Components/JitsiVideoCall/JaaSMeetingVideoCall'
 
 
 
@@ -48,15 +51,19 @@ function App() {
         <Route path='/UpdatePassWord' element={<UpdatePasswordPage />} />
         <Route path='/profile' element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
         <Route path="/PostCreation" element={<ProtectedRoute><JoditPostCreationPage /></ProtectedRoute>} />
-        <Route path="/QuillEditor" element={< JoditPostCreation initialValue={''} getValue={function (_newValue: string): void {
-          throw new Error('Function not implemented.')
-        }} />} />
+      
         <Route path='/UserPostsView/:postId' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
         <Route path='/UserPostsView' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
         <Route path='/SavedPosts' element={<ProtectedRoute><UserSavedPostsPage /></ProtectedRoute>} />
         <Route path='/Hashtags' element={<ProtectedRoute><UserHashtagPage /></ProtectedRoute>} />
         <Route path='/search-results' element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
         <Route path='/Community' element={<ChatPage />} />
+        <Route path='/VideoCall' element={<VideoCallPage />} />
+        <Route path='/room/:roomId' element={<RoomVideoCallPage/>} />
+
+
+     
+        <Route path='/jasMeetingVideoCall' element={<JaaSMeetingVideoCall />} />
 
 
 
@@ -64,10 +71,10 @@ function App() {
         {/* Admin Routes */}
 
         <Route path='/admin/login' element={<AdminLoginPage />} />
-        <Route path='/admin/UserManageMent' element={<AdminUserManagementPage />} />
-        <Route path='/admin/Dashboard' element={<AdminDashboardPage />} />
-        <Route path='/admin/HashTagManageMent' element={<AdminHashTagPage />} />
-        <Route path='/admin/ReportManageMent' element={<AdminReportManagementPage />} />
+        <Route path='/admin/UserManageMent' element={<AdminProtectedRoute><AdminUserManagementPage /></AdminProtectedRoute>} />
+        <Route path='/admin/Dashboard' element={<AdminProtectedRoute><AdminDashboardPage /></AdminProtectedRoute>} />
+        <Route path='/admin/HashTagManageMent' element={<AdminProtectedRoute><AdminHashTagPage /></AdminProtectedRoute>} />
+        <Route path='/admin/ReportManageMent' element={<AdminProtectedRoute><AdminReportManagementPage /></AdminProtectedRoute>} />
 
 
         <Route path='*' element={<ErrorPage/>}/>

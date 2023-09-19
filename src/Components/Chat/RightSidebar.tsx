@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
+import { MdClose, MdVerifiedUser } from 'react-icons/md';
 
 // Define the props for the RightSidebar component
 interface RightSidebarProps {
@@ -9,26 +9,8 @@ interface RightSidebarProps {
 }
 
 const RightSidebar: React.FC<RightSidebarProps> = ({ isVisible, toggleSidebar, selected }) => {
-    // Replace with actual user data
-    const user = {
-        name: 'John Doe',
-        profileImage: 'path_to_profile_image.jpg',
-    };
+   
 
-    // Replace with a list of users
-    const users = [
-        { name: 'User 1', profileImage: 'user1_image.jpg' },
-        { name: 'User 2', profileImage: 'user2_image.jpg' },
-        { name: 'User 1', profileImage: 'user1_image.jpg' },
-        { name: 'User 2', profileImage: 'user2_image.jpg' },
-        { name: 'User 1', profileImage: 'user1_image.jpg' },
-        { name: 'User 2', profileImage: 'user2_image.jpg' },
-        { name: 'User 1', profileImage: 'user1_image.jpg' },
-        { name: 'User 2', profileImage: 'user2_image.jpg' },
-
-        // Add more users as needed
-    ];
-    console.log(selected, 'selectedselected');
 
     const handleLogout = () => {
         toggleSidebar()
@@ -38,35 +20,71 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ isVisible, toggleSidebar, s
         <>
             {isVisible == true && (
                 <>
-                    <div id="drawer-right-example" className="relative bottom-0  right-80 z-50 ml-auto h-full  p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-200" tabIndex={-1} aria-labelledby="drawer-right-label">
-                        <div className='left-0'>
-                            <AiOutlineClose onClick={handleLogout} className='cursor-pointer text-lg' />
-                        </div>
-                        {/* User Profile */}
-                        <div className="flex flex-col items-center mb-4">
-                            <img src={selected.Image} alt={selected.Name} className="w-20 h-20 rounded-full mb-2" />
-                            <p className="text-xl font-semibold">{selected.Name}</p>
-                        </div>
-
-                        {selected.CreatedAdmin && (
-                            <div className="bg-blue-300 shadow-md rounded-md p-2 flex  items-center">
-                                <img src={selected?.CreatedAdmin?.profileImg} alt={selected?.CreatedAdmin?.UserName} className="w-8 h-8 rounded-full mr-2" />
-                                <span>{selected?.CreatedAdmin?.UserName} </span> <span className="text-sm  text-gray-600  ml-1">(Admin)</span>
+                    <div
+                        id="drawer-right-example"
+                        className="absolute top-32 right-4 z-10 flex items-center justify-end self-end bg-transparent bg-opacity-50"
+                        tabIndex={-1}
+                        aria-labelledby="drawer-right-label"
+                    >
+                        <div className="relative w-80  bg-white rounded-lg p-4 border-2 shadow-md">
+                            <div className="absolute top-2">
+                                <button
+                                    onClick={handleLogout}
+                                    className="cursor-pointer bg-gray-200 rounded-full p-2 transition-transform transform hover:scale-110"
+                                >
+                                    <MdClose className="text-gray-600 text-lg" />
+                                </button>
                             </div>
-                        )}
 
-                        <hr className="my-4 border-gray-500 border " />
-                        {/* List of Users */}
-                        <ul className="space-y-2  ">
-                            {selected && selected?.userId.map((user: any, index: number) => (
-                                <li key={index} className="flex items-center bg-white shadow-md rounded-md  ">
-                                    <img src={user.profileImg} alt={user.UserName} className="w-8 h-8 rounded-full mr-2" />
-                                    <span>{user.UserName}</span>
-                                </li>
-                            ))}
-                        </ul>
+
+                            <div className="flex flex-col items-center mb-4">
+                                <img
+                                    src={selected.Image}
+                                    alt={selected.Name}
+                                    className="w-20 h-20 rounded-full border-2 border-gray-600 shadow-md hover:shadow-md transform hover:scale-105 transition-transform duration-300 mb-2"
+                                />
+                                <p className="text-xl font-semibold">{selected.Name}</p>
+                            </div>
+                            {selected.CreatedAdmin && (
+                                <div className="bg-blue-200 shadow-md rounded-md p-2 flex items-center">
+                                    <div className="flex items-center">
+                                        <div className="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center">
+                                            <img
+                                                src={selected?.CreatedAdmin?.profileImg}
+                                                alt={selected?.CreatedAdmin?.UserName}
+                                                className="w-8 h-8 rounded-full"
+                                            />
+                                        </div>
+                                        <div className="ml-3">
+                                            <span className="text-lg font-semibold c text-gray-800">{selected?.CreatedAdmin?.UserName}</span>
+                                            <div className="flex items-center mt-1">
+                                                <span className="text-sm text-gray-600">(Admin)</span>
+                                                <MdVerifiedUser className="h-4 w-4 ml-1 text-blue-700" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <hr className="my-4 border-gray-500 border " />
+                            <ul className="space-y-2 overflow-y-auto max-h-80">
+                                {selected &&
+                                    selected?.userId.map((user: any, index: number) => (<>
+                                        <li
+                                            key={index}
+                                            className="flex items-center bg-white shadow-md rounded-md"
+                                        >
+                                            <img
+                                                src={user.profileImg}
+                                                alt={user.UserName}
+                                                className="w-8 h-8 rounded-full mr-2"
+                                            />
+                                            <span>{user.UserName}</span>
+                                        </li>
+                                    </>
+                                    ))}
+                            </ul>
+                        </div>
                     </div>
-
                 </>
             )
             }

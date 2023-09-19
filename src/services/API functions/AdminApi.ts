@@ -23,6 +23,15 @@ export const DeleteRePortPost = async (PostId: string) => {
 
     }
 }
+export const DashbordDAtas =async ()=>{
+    try {
+        const Dashbord  = await api.get('/admin/DashbordDAta',{withCredentials:true});
+        return Dashbord
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
 
 
 

@@ -65,12 +65,6 @@ function ShareButtons({ url, title }: ShareButtonsProps) {
                 <EmailShareButton url={url}>
                     <MdOutlineMailOutline className="mr-2  text-4xl  relative bg-slate-600  rounded-full text-white hover:text-gray -800" />
                 </EmailShareButton>
-
-                {/* <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
-                    <FaInstagram className="relative text-4xl text-purple-600 hover:text-purple-800" />
-                </a> */}
-
-
                 <br />
                 <br />
                 <button onClick={handleCopyLink}>

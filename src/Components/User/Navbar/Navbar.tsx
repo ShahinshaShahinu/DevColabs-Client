@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { IoIosNotifications, IoIosNotificationsOutline } from "react-icons/io";
 import { IoCreateOutline } from "react-icons/io5";
@@ -9,14 +9,15 @@ import { api } from "../../../services/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { User } from "../../../../../DevColab-Server/src/domain/models/user";
 import { updateUser } from "../../../redux/user/userSlice";
-import { notificationType } from '../../../../../DevColab-Server/src/domain/models/Notification';
+import { ChatnotificationReactType, ChatnotificationType, notificationType } from '../../../../../DevColab-Server/src/domain/models/Notification';
 import { DeletNotification, GetNotification, Readed } from "../../../services/API functions/UserApi";
 import Loading from "../isLoading/Loading";
 import { useSocket } from '../../../Context/WebsocketContext'
+import { Getchats } from "../../../services/API functions/CommunityChatApi";
 
 
 function Navbar() {
-  const { userEmail, username } = useSelector((state: any) => state.user);
+  const { userEmail, username, userId } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const Navigate = useNavigate();
   const { image } = useSelector((state: any) => state.user);
@@ -26,43 +27,61 @@ function Navbar() {
   const [showUserCircle, setshowUserCircle] = useState(false);
   const [userData, setUserData] = useState<User>();
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  const [Notification, setNotification] = useState<notificationType[]>()
+  const [Notification, setNotification] = useState<ChatnotificationReactType[]>()
   const [hasUnreadNotifications, sethasUnreadNotifications] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
 
 
   const socket = useSocket();
-  const navigate = useNavigate()
+
   useEffect(() => {
-    socket.on('adminMessage', (data) => {
+    socket.on('adminMessage', async (data) => {
       console.log('Admin message received:', data);
-      sethasUnreadNotifications(true)
+      const Notifications = await GetNotification();
+      setNotification(Notifications?.data);
+      sethasUnreadNotifications(true);
+    });
+    socket.on('chat', async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const Notifications = await GetNotification();
+        setNotification(Notifications?.data);
+        console.log(Notifications?.data,'noti fif cso socket ');
+        const hasUnread = !!(Notifications?.data?.[0] && !Notifications?.data[0]?.read);
+        sethasUnreadNotifications(hasUnread);
+      } catch (error) {
+        console.error('Error fetching chat data:', error);
+      }
     });
     return () => {
       socket.off('adminMessage');
+      // socket.off('chat');
     };
   }, [socket]);
+
+
+  
 
   // useEffect(() => {
   //   const getAuth = async () => {
   //     try {
   //       console.log('user auth auth');
-      
-        
-        
+
+
+
   //       const data:any = await api.post('/auth', null, { withCredentials: true });
   //       console.log(data ,'akuth get auth');
-        
+
   //       if(data?.data?.error==='Invalid'){
   //         console.log('invalid');
-          
+
   //         localStorage.removeItem('user');
   //         navigate('/login')
   //       }
 
   //       if (!data?.status) {
   //         console.log('nnnnnnnnnnnnnnnnoooooooooooooooooooo');
-          
+
   //         localStorage.removeItem('user');
   //         navigate('/login')
   //       }
@@ -106,18 +125,16 @@ function Navbar() {
 
 
 
+
+
   useEffect(() => {
     const fetchNotification = async () => {
       try {
         setIsLoading(true); // Start loading
-
         const Notifications = await GetNotification();
-
         setNotification(Notifications?.data);
-
-        const hasUnread = await Notifications?.data?.some((notification: { read: any }) => !notification?.read);
+        const hasUnread = await Notifications?.data?.some((notification: { read: boolean }) => !notification?.read);
         sethasUnreadNotifications(hasUnread);
-
         if (isNotificationModalOpen) {
           await Readed();
         }
@@ -132,35 +149,48 @@ function Navbar() {
     };
 
     fetchNotification();
-  }, [isNotificationModalOpen, userData]);
+  }, [isNotificationModalOpen, userData,socket]);
 
 
 
-  useEffect(() => {
-    const fetch = async () => {
-      const Notifications = await GetNotification();
-      setNotification(Notifications?.data);
-      const hasUnread = Notifications?.data?.some((notification: { read: any }) => !notification?.read);
-      sethasUnreadNotifications(hasUnread);
-    }
-    fetch();
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const Notifications = await GetNotification();
+  //     setNotification(Notifications?.data);
+  //     const hasUnread = Notifications?.data?.some((notification: { read: any }) => !notification?.read);
+  //     console.log('sssssssssssssssssssssssss',hasUnread);
 
-  }, [userData, setNotification, isNotificationModalOpen])
+  //     sethasUnreadNotifications(hasUnread);
+  //   }
+  //   fetch();
 
-
-
+  // }, [userData, setNotification, isNotificationModalOpen])
 
   const closeModal = () => {
     setIsLoading(false);
     sethasUnreadNotifications(false)
     setNotificationModalOpen(false);
+
+
+    const fetchNotification = async () => {
+      try {
+        const Notifications = await GetNotification();
+        setNotification(Notifications?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchNotification();
+
+
   };
 
 
 
   useEffect(() => {
+    console.log(Notification, 'Notification Notification NotificationNotification');
     fetchUserData();
-  }, []);
+  }, [socket,setNotification]);
 
 
 
@@ -213,20 +243,33 @@ function Navbar() {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  const RemoveSearchTerm = () => {
+    console.log('removed removed Searched');
+
+    localStorage.removeItem('searchTerm');
+    setSearchTerm('')
+  }
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    localStorage.removeItem('searchTerm');
     setSearchTerm(event.target.value);
   };
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent the form from submitting normally
-
+    event.preventDefault();
+    localStorage.setItem('searchTerm', searchTerm);
     try {
       Navigate('/search-results', { state: { searchTerm } });
+      setSearchTerm(searchTerm)
     } catch (error) {
 
     }
   };
 
-
+  useEffect(() => {
+    const storedSearchTerm = localStorage.getItem('searchTerm');
+    if (storedSearchTerm) {
+      setSearchTerm(storedSearchTerm);
+    }
+  }, []);
 
 
   const deleteNotification = async () => {
@@ -268,62 +311,65 @@ function Navbar() {
                   <div className=" flex items-center justify-start    rounded-full  ">
                     <div className="md:hidden   flex items-center justify-start  rounded-full px-2  ">
                       <img
-                        onClick={() => { setshowUserCircle(!showUserCircle), setShowSearch(false) }}
+                        onClick={() => {
+                          setshowUserCircle(!showUserCircle), setShowSearch(false)
+                        }}
                         className="sm:w-10 sm:h-10 w-7 rounded-full "
-                        src={image}
-                        alt="Rounded avatar"
+                        src={image} alt=""
                       />
+
                     </div>
                     {showUserCircle && (
                       <div
                         id="userDropdown"
-                        className="classDropDownOutsideNaveRESPONSIVE md:hidden    right-0 top-16 drop-shadow-none border-2 border-sky-600  divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-50 dark:divide-gray-600"
+                        className="classDropDownOutsideNaveSM md:hidden right-0 top-16 drop-shadow-none border-2 border-sky-600 divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-50 dark:divide-gray-600"
                       >
                         <div className="px-4 py-3 text-sm text-gray-900 ">
-                          <div className="font-mono">{username}</div>
-                          <div className="font-medium truncate">
-                            {userEmail}
-                          </div>
+                          <div className="font-mono break-all">{username}</div>
+                          <div className="flex font-medium break-all">{userEmail}</div>
                         </div>
-                        <ul
-                          className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                          aria-labelledby="avatarButton"
-                        >
-                          <li >
+                        <ul className="list-none">
+                          <li className="border-b border-gray-400">
                             <a
-                              href="#"
-                              className="block  px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
-                            >
-                              Dashboard
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              href="#"
+                              onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}
                               className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
-                              Settings
+                              Profile
                             </a>
                           </li>
-                          <li>
-                            <a
-                              href="#"
-                              className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
+                          <li className="border-b border-gray-400">
+                            <button
+                              onClick={() => {
+                                Navigate("/SavedPosts"), RemoveSearchTerm();
+                              }}
+                              className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
-                              Earnings
+                              <span className="text-sm font-medium">Saved</span>
+                              <svg
+                                className="w-3.5 h-3.5 mr-2 left-2 relative"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
+                                <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+                              </svg>
+                            </button>
+                          </li>
+                          <li className="border-b border-gray-400">
+                            <a
+                              onClick={() => { handleSignOutClick(), RemoveSearchTerm() }}
+                              className="block px-4 py-2 text-sm text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
+                            >
+                              Sign out
                             </a>
                           </li>
                         </ul>
-                        <div className="py-1">
-                          <a
-                            onClick={handleSignOutClick}
-                            className="block px-4 py-2 text-sm text-gray-700  dark:hover:bg-gray-600  dark:hover:text-white font-medium"
-                          >
-                            Sign out
-                          </a>
-                        </div>
                       </div>
                     )}
+
+
                   </div>
 
                   {!showSearch && (
@@ -362,7 +408,7 @@ function Navbar() {
               ) : (
                 <div className="lg:hidden  md:hidden">
                   <button
-                    onClick={() => Navigate("/login")}
+                    onClick={() => { Navigate("/login"), RemoveSearchTerm() }}
                     className="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ml-3"
                   >
                     Log in
@@ -520,7 +566,7 @@ function Navbar() {
                   <li className="mx-4 items-center flex flex-col justify-center relative my-6 md:my-0">
                     <button
                       onClick={() => {
-                        Navigate("/PostCreation");
+                        Navigate("/PostCreation"), RemoveSearchTerm();
                       }}
                       className="text-xl  hover:text-cyan-500 duration-500"
                     >
@@ -533,12 +579,16 @@ function Navbar() {
                   <div className="items-center flex justify-end rounded-full relative">
                     <li className="mx-6 items-center flex relative my-6 md:my-0 rounded-full hover:bg-white">
                       <button onClick={() => setNotificationModalOpen(!isNotificationModalOpen)} className="text-xl hover:text-cyan-500 duration-500 relative">
-                        {isNotificationModalOpen || hasUnreadNotifications ? (
+                        {/* {isNotificationModalOpen || (hasUnreadNotifications && Notification && !Notification[0]?.ReportPostId && Notification[0]?.senderId?._id === userId) || */}
+                        {isNotificationModalOpen || (hasUnreadNotifications && Notification && Notification[0]?.senderId?._id === userId) ? (
+                          // (hasUnreadNotifications && Notification && Notification[0]?.ReportPostId?.userId === userId) ? (
                           <>
                             <IoIosNotifications className="w-9 h-9" />
-                            {hasUnreadNotifications && (
+                            {/* {(hasUnreadNotifications && Notification && !Notification[0]?.ReportPostId && Notification[0]?.senderId?._id == userId || hasUnreadNotifications && Notification && Notification[0]?.ReportPostId?.userId === userId) && ( */}
+                            {(hasUnreadNotifications && Notification && Notification[0]?.senderId?._id === userId) && (
                               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                             )}
+
                           </>
                         ) : (
                           <IoIosNotificationsOutline className="w-9 h-9" />
@@ -564,25 +614,44 @@ function Navbar() {
 
 
                           </div>
-                          <div className="p-4 mt-12">
+                          <div className="p-4 mt-12 z-10 relative">
                             {Notification && Notification.map((notfication: any, index: number) => (
                               <div className="py-5" key={index}>
-                                <div className="flex items-start space-x-4">
+                                <div className="flex items-start space-x-4 cursor-pointer">
                                   <div className="flex-shrink-0">
-                                    <img className="w-10 h-10 rounded-full" src={notfication?.ReportPostId?.image} alt="Notification" />
+                                    <img className="w-10 h-10 rounded-full" src={notfication?.ReportPostId?.image || notfication?.userId?.profileImg} alt="Notification" />
                                   </div>
                                   <div className="flex-grow">
-                                    <p className="text-gray-800" onClick={() => Navigate('/UserPostsView', { state: { UserPost: notfication?.ReportPostId } })} >{notfication?.ReportPostId?.title}</p>
-                                    <div className="flex justify-between items-center">
-                                      <p className="text-xs text-gray-500">{notfication?.NotifyDate}</p>
-                                      <p className="text-sm font-serif text-rose-800" onClick={() => Navigate("/profile")}>{notfication?.Message}</p>
-                                    </div>
+                                    {notfication?.ReportPostId ? (<>
+                                      <p className="text-gray-800" onClick={() => { Navigate('/UserPostsView', { state: { UserPost: notfication?.ReportPostId } }), RemoveSearchTerm() }} >{notfication?.ReportPostId?.title}</p>
+                                      <div className="flex justify-between items-center">
+                                        <p className="text-xs text-gray-500">{notfication?.NotifyDate}</p>
+                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
+                                      </div></>
+                                    ) : (<>
+                                      <div className="flex justify-between">
+                                        <p className="text-gray-800 inline-block" onClick={() => { Navigate('/Community', { state: { chat: notfication?.senderId?._id } }), RemoveSearchTerm() }} >{notfication?.senderId?._id !== userId ? notfication?.senderId?.UserName : notfication?.userId?.UserName}</p>
+                                        <p className="text-xs text-gray-500 inline-block">
+                                          {notfication?.ChatMessage?.timestamp &&
+                                            new Date(notfication?.ChatMessage?.timestamp).toLocaleTimeString([], {
+                                              hour: '2-digit',
+                                              minute: '2-digit',
+                                              hour12: true,
+                                            })}
+                                        </p>
+                                      </div>
+                                      <div className="flex justify-between items-center">
+                                        <p className="text-xs text-gray-500 bg-gray-200 rounded-lg p-1">{notfication?.ChatMessage?.text}</p>
+                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
+                                      </div></>
+                                    )}
                                   </div>
                                 </div>
-
-
                               </div>
                             ))}
+
+
+
                           </div>
                           {Notification && Notification.length !== 0 ? (
                             <div className="relative w-full  p-2  bg-gray-100 flex justify-end items-center ">
@@ -622,17 +691,16 @@ function Navbar() {
                           className="classDropDownOutsideNave  top-8 drop-shadow-none border-2 border-sky-600  divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-50 dark:divide-gray-600"
                         >
                           <div className="px-4 py-3 text-sm text-gray-900 ">
-                            <div className="font-mono">{username}</div>
-                            <div className="flex font-medium truncate">
+                            <div className="font-mono break-all">{username}</div>
+                            <div className="flex font-medium break-all">
                               {userEmail}
                             </div>
                           </div>
-                          {/* <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton"> */}
                           <li>
                             <a
-                              onClick={() => Navigate("/profile")}
+                              onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}
 
-                              className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
+                              className="block px-4 py-2  text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
                               Profile
                             </a>
@@ -640,7 +708,7 @@ function Navbar() {
                           <li>
                             <button
                               onClick={() => {
-                                Navigate("/SavedPosts");
+                                Navigate("/SavedPosts"), RemoveSearchTerm()
                               }}
                               className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
@@ -659,14 +727,15 @@ function Navbar() {
                           </li>
 
                           {/* </ul> */}
-                          <li className="mx-4 my-6 md:my-0 ">
+                          <li >
                             <a
-                              onClick={handleSignOutClick}
+                              onClick={() => { handleSignOutClick(), RemoveSearchTerm() }}
                               className="block px-4 py-2 text-sm text-gray-700  dark:hover:bg-gray-600  dark:hover:text-white font-medium"
                             >
                               Sign out
                             </a>
                           </li>
+
                         </div>
                       )}
 

@@ -1,9 +1,10 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "../User/Navbar/Navbar";
 import { BiArrowBack } from "react-icons/bi";
-import { BsImageFill, BsThreeDotsVertical } from "react-icons/bs";
+import { SiGooglemeet } from "react-icons/si";
+import { BsFillCameraVideoFill, BsImageFill, BsThreeDotsVertical } from "react-icons/bs";
 import { format } from "date-fns";
-import { Communities, Getchats, SendMessages } from "../../services/API functions/CommunityChatApi";
+import { ChatNotificationPOST, Communities, Getchats, ReadedPersonalChat, SendMessages } from "../../services/API functions/CommunityChatApi";
 import Sidebar from "./Sidebar";
 import { GetUsers } from "../../services/API functions/UserApi";
 import { AllUsers } from "../../../../DevColab-Server/src/domain/models/user";
@@ -16,6 +17,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MdVideoLibrary } from "react-icons/md";
 import { CommunityUser } from '../../../../DevColab-Server/src/domain/models/Community';
 import CommunnityChat from "./CommunnityChat";
+import VoiceRecorder from "./VoiceRecorder";
 
 function Chat() {
     const socket = useSocket(); const Navigate = useNavigate();
@@ -32,7 +34,7 @@ function Chat() {
         };
     }, []);
     const CurrentDAte = format(currentDate, "d MMMM yyyy hh:mm a");
-    const [ispersonal, setPersonal] = useState(false)
+    const [ispersonal, setPersonal] = useState(true)
     const [isCommunities, setCommunities] = useState<CommunityUser[]>([])
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [Allusers, setAllusers] = useState<AllUsers[]>([]);
@@ -51,7 +53,8 @@ function Chat() {
     const [selectCommunity, setSelectCommunity] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const chatContainerRef = useRef<HTMLDivElement | null>(null);
-    const hiddenFileInput = useRef<HTMLInputElement | null>(null);
+    const hiddenImageFileInput = useRef<HTMLInputElement | null>(null);
+    const hiddenVideoFileInput = useRef<HTMLInputElement | null>(null);
     useEffect(() => {
         if (chatContainerRef.current) {
             const container = chatContainerRef.current;
@@ -72,17 +75,23 @@ function Chat() {
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
     };
+    const videoRef = useRef<HTMLVideoElement | null>(null);
     const location = useLocation();
     const communityId = location?.state;
-  
-    useEffect(()=>{
-        if(communityId){
+    const ChatSelectId = location?.state?.chat;
+
+    useEffect(() => {
+
+        if (communityId) {
+
             setSelectCommunity(true);
             setselectedCommunityChat(communityId);
-           
+
         }
-    },[selectedCommunityChat])
+    }, [selectedCommunityChat]);
+
     useEffect(() => {
+
         socket.on('CommunityChat', async () => {
             try {
                 const fetchedCommunities = await Communities();
@@ -108,9 +117,8 @@ function Chat() {
         setRefresh(data)
     }
     useEffect(() => {
-        socket.on('chat', async (data) => {
+        socket.on('chat', async () => {
             try {
-                console.log('chat message received:', data);
                 const datas = await Getchats();
                 setSelectedChat(datas?.data?.[0]);
             } catch (error) {
@@ -161,8 +169,6 @@ function Chat() {
                         socket.emit('Chat', true)
                     }
                 } else if (Message && Message != null && Message.Message?.[0].text?.trim() != '') {
-                    console.log('mess valu message', Message);
-
                     res = await SendMessages(selectedChat?.userId?._id, Message, CurrentDAte);
                     socket.emit('Chat', true)
                 }
@@ -203,18 +209,78 @@ function Chat() {
                         setSelectedChat(data?.data?.[0]);
                     }
                 }
+                setIsMenuOpen(false)
                 setIsImageSelected(false)
                 setisLoading(false)
                 setRefresh(false)
+                const response = await Getchats();
+
+                const messages = response?.data[0]?.Message || [];
+                const latestMessageData = messages[messages.length - 1];
+                await ReadedPersonalChat(latestMessageData?._id);
+
+                const senderId = response?.data[0]?.senderId?._id
+                const SendUserId = response?.data[0]?.userId?._id
+                let SendNotification
+
+
+                if (selectedChat?.userId?._id !== userId) {
+
+                    SendNotification = latestMessageData?.readBy?.includes(selectedChat?.userId?._id)
+
+                    if (SendNotification != true) {
+                        const processedLatestMessage = {
+                            image: latestMessageData?.image,
+                            text: latestMessageData?.text,
+                            timestamp: latestMessageData?.timestamp,
+                            senderId: latestMessageData?.senderId?._id,
+                        };
+
+                        ChatNotificationPOST(processedLatestMessage, selectedChat?.userId?._id)
+                    }
+                }
+                if (selectedChat?.userId?._id == userId) {
+                    SendNotification = latestMessageData?.readBy?.includes(selectedChat?.senderId?._id)
+
+                    if (SendNotification != true) {
+                        const processedLatestMessage = {
+                            image: latestMessageData?.image,
+                            text: latestMessageData?.text,
+                            timestamp: latestMessageData?.timestamp,
+                            senderId: latestMessageData?.senderId?._id,
+                        };
+
+                        ChatNotificationPOST(processedLatestMessage, selectedChat?.senderId?._id)
+                    }
+                }
+
+
             }
         } catch (error) {
             console.log(error);
         }
     }
 
+    useEffect(() => {
+        const fetchChats = async () => {
+            if (ChatSelectId !== null) {
+                try {
+                    const data = await Getchats();
+                    const [filteredChats] = data?.data.filter((chat: { userId: { _id: string; }; }) => ChatSelectId === chat?.userId?._id);
+
+                    setSelectedChat(filteredChats);
+                    console.log('filtered chats:', filteredChats);
+                } catch (error) {
+                    console.error('Error fetching and filtering chats:', error);
+                }
+            }
+        };
+
+        fetchChats();
+    }, [ChatSelectId]);
+
 
     useEffect(() => {
-      
         const fetchChats = async () => {
             const data = await Getchats();
             setChatMessages(data?.data);
@@ -245,7 +311,28 @@ function Chat() {
     const receiveDataFromChild = (data: boolean) => {
         setSidebarOpen(data)
     };
+    const videoElement = useMemo(() => {
+        if (sendVideos) {
+            return (
+                <div className="lg:max-w-lg sm:max-w-sm md:max-w-md h-auto pt-1 mx-auto rounded-lg shadow-lg">
+                    <video ref={videoRef} src={URL.createObjectURL(sendVideos)} controls className="w-full h-auto rounded-lg">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            );
+        }
+        return null;
+    }, [sendVideos]);
 
+    const ReadedMessage = async (ChatId: string) => {
+        console.log('coming chatid', ChatId);
+
+        const res = await ReadedPersonalChat(ChatId);
+        if (res) {
+            return true
+        }
+
+    }
 
 
     return (
@@ -256,11 +343,17 @@ function Chat() {
                     <Navbar />
                 </div>
 
-                <div className="flex h-screen bg-white  relative">
-                    <div className="md:w-1/4 bg-white md:mt-20 md:ml-4  hidden md:block rounded-t-lg border">
-                        <div className="p-3 border-b flex bg-[#f0f2f5] justify-between items-center">
+                <div className="flex h-screen bg-white  relative md:px-6">
+                    <div className="md:w-1/4 bg-white md:mt-20   hidden md:block rounded-t-lg border">
+                        <div className="p-3 border-b flex z-20 relative bg-[#f0f2f5] justify-between items-center">
                             <div className="items-center flex ">
-                                <BiArrowBack onClick={() => Navigate('/')} className='w-5 h-5 inline cursor-pointer relative ' />
+                                {isSidebarOpen != true ? (
+
+                                    <BiArrowBack onClick={() => Navigate('/')} className='w-5 h-5 inline cursor-pointer relative ' />
+                                ) : (
+                                    <BiArrowBack onClick={() => setSidebarOpen(false)} className='w-5 h-5 inline cursor-pointer relative ' />
+
+                                )}
                                 <h2 className="text-lg font-semibold inline-block px-1 ">Chats</h2>
                             </div>
                             <div className={`h-7 w-7 ${isDropdownOpen ? 'text-gray-400 rounded-full bg-gray-200 items-center flex justify-center' : 'items-center flex justify-center'}`}>
@@ -270,6 +363,44 @@ function Chat() {
                                 />
                             </div>
                         </div>
+                        {isDropdownOpen && (
+                            <div className="relative top-0 dropdown-menu z-10">
+                                <ul className="border bg-white shadow-lg absolute right-0 w-48 rounded-lg">
+                                    <li
+                                        onClick={() => {
+                                            setSidebarOpen(!isSidebarOpen);
+                                            setDropdownOpen(!isDropdownOpen);
+                                        }}
+                                        className="p-3 cursor-pointer hover:bg-gray-100 transition duration-300 border-b border-gray-200"
+                                    >
+                                        <a className="block">New Community</a>
+                                    </li>
+                                    <li
+                                        onClick={() => {
+                                            Navigate('/videocall')
+                                        }}
+                                        className="p-3 cursor-pointer hover:bg-gray-100 transition duration-300 border-b border-gray-200"
+                                    >
+                                        <a className="flex items-center space-x-2">
+                                            <BsFillCameraVideoFill className="inline" />
+                                            <span className="text-base">Personal Meet</span>
+                                        </a>
+                                    </li>
+                                    <li
+                                        onClick={() => {
+                                            Navigate('/jasMeetingVideoCall')
+                                        }}
+                                        className="p-3 cursor-pointer hover:bg-gray-100 transition duration-300 border-b border-gray-200"
+                                    >
+                                        <a className="flex items-center space-x-2">
+                                            <SiGooglemeet className="inline" />
+                                            <span className="text-base">Meet Community</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        )}
                         <div className="px-5 border-b mt-2   ">
                             {isSidebarOpen != true && (
                                 <form >
@@ -281,41 +412,32 @@ function Chat() {
                                             </svg>
                                         </div>
                                         <input onChange={(e) => setSearchTerm(e.target.value)}
-                                            type="search" id="default-search" className="block w-full py-1 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+                                            type="search" id="default-search" className="block w-full py-1 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Users,Community..." required />
                                     </div>
                                 </form>
                             )}
-                            <div className="flex">
-                                <button onClick={() => setPersonal(!ispersonal)}
-                                    type="button"
-                                    className={`${ispersonal
-                                        ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
-                                        : 'opacity-80 hover:bg-[#dddbdb]'
-                                        } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 mr-2 mb-2 text-base`}
-                                >
-                                    Personal
-                                </button>
-                                <button onClick={() => setPersonal(!ispersonal)}
-                                    type="button"
-                                    className={`${!ispersonal
-                                        ? 'bg-[#b3bcc9] underline decoration-4 cursor-pointer decoration-[#7856FF] text-gray-900'
-                                        : 'opacity-80 hover:bg-[#dddbdb]'
-                                        } md:w-1/2 bg-transparent opacity-100 cursor-pointer font-medium rounded-lg px-5  mr-5 mb-2 text-base`}
-                                > Community</button>
-                            </div>
+                            {isSidebarOpen != true && (
+                                <div className="flex">
+                                    <button onClick={() => setPersonal(!ispersonal)}
+                                        type="button"
+                                        className={`${ispersonal
+                                            ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
+                                            : 'opacity-80 hover:bg-[#dddbdb]'
+                                            } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 mr-2 mb-2 text-base`}
+                                    >
+                                        Personal
+                                    </button>
+                                    <button onClick={() => setPersonal(!ispersonal)}
+                                        type="button"
+                                        className={`${!ispersonal
+                                            ? 'bg-[#b3bcc9] underline decoration-4 cursor-pointer decoration-[#7856FF] text-gray-900'
+                                            : 'opacity-80 hover:bg-[#dddbdb]'
+                                            } md:w-1/2 bg-transparent opacity-100 cursor-pointer font-medium rounded-lg px-5  mr-5 mb-2 text-base`}
+                                    > Community</button>
+                                </div>
+                            )}
                         </div>
-                        {isDropdownOpen && (
-                            <div className="relative dropdown-menu z-10">
-                                <ul className="border bg-white shadow-lg absolute right-0  w-40 rounded-lg">
-                                    <li onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                        className="p-3 cursor-pointer hover:bg-gray-100">
-                                        <a
-                                        >NewCommunity</a>
-                                    </li>
 
-                                </ul>
-                            </div>
-                        )}
                         {isSidebarOpen ? (
                             <Sidebar sendDataToParent={receiveDataFromChild} />
                         ) : (
@@ -335,7 +457,7 @@ function Chat() {
                                                                 className={`p-2 flex rounded-lg shadow-md mb-4  cursor-pointer ${selectedChat?._id === chat?._id ? 'bg-blue-200' : ''
                                                                     }`}
                                                                 onClick={() => {
-                                                                    delete location.state,  setSelectedChat(chat), setDropdownOpen(false), setSelectCommunity(false), setSelectedIndex(index), setIsImageSelected(false)
+                                                                    delete location.state, setSelectedChat(chat), setDropdownOpen(false), setSelectCommunity(false), setSelectedIndex(index), setIsImageSelected(false)
                                                                 }}
                                                             >
                                                                 {chat?.senderId?._id === userId ? (
@@ -366,9 +488,10 @@ function Chat() {
                                                             key={index}
                                                             className={`p-2 border flex cursor-pointer rounded-lg shadow-lg mb-4 ${selectedCommunityChat?._id === CommunityData?._id ? 'bg-blue-200' : 'bg-white'
                                                                 }`}
-                                                            onClick={() => { delete location.state, 
-                                                                setselectedCommunityChat(CommunityData),
-                                                                setSelectCommunity(true), setSelectedChat(false)
+                                                            onClick={() => {
+                                                                delete location.state,
+                                                                    setselectedCommunityChat(CommunityData),
+                                                                    setSelectCommunity(true), setSelectedChat(false)
                                                             }}
                                                         >
                                                             <div className="flex items-center mb-2">
@@ -485,7 +608,7 @@ function Chat() {
                                         </div>
                                     </div>
                                 </div>
-                                <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto scroll-m snap-end bg-white " key={selectedChat?._id} >
+                                <div ref={chatContainerRef} className="flex-1 p-4 overflow-y-auto border-r-2   scroll-m snap-end bg-white " key={selectedChat?._id} >
 
                                     <div className={`absolute  flex ${isImageSelected ? 'visible' : 'hidden'}  overflow-y-auto overflow-x-hidden inset-0 flex items-center top-32 mt-3 justify-center bg-[#f0f2f5]  z-10`}>
                                         {isLoading === true && (<LoaderAbsolute />)}
@@ -522,14 +645,7 @@ function Chat() {
                                                                 className="lg:max-w-lg sm:max-w-sm md:max-w-md  h-auto mx-auto rounded-lg shadow-lg"
                                                             />
                                                         )}
-                                                        {sendVideos && (
-                                                            <div className="lg:max-w-lg sm:max-w-sm md:max-w-md  h-auto pt-1 mx-auto rounded-lg shadow-lg">
-                                                                <video src={URL.createObjectURL(sendVideos)} controls className="w-full h-auto rounded-lg">
-                                                                    Your browser does not support the video tag.
-                                                                </video>
-                                                            </div>
-                                                        )}
-
+                                                        {videoElement}
                                                     </div>
 
                                                 </div>
@@ -597,9 +713,8 @@ function Chat() {
                                                     (
                                                         <>
                                                             <div className="p-2 rounded-lg grid shadow-md max-w-[75%]  bg-green-200 text-black self-end   flex-col">
-                                                                <span className="mb-1 text-sm font-semibold sm:w-full text-blue-500">{selectedChat.name}</span>
+                                                                {/* <span className="mb-1 text-sm font-semibold sm:w-full text-blue-500">{message.senderId?.name}</span> */}
                                                                 {message?.image?.trim() !== '' && message.image !== undefined && (
-
                                                                     <>
                                                                         <div onClick={() => setShowBigImageId(message?._id)} className="aspect-[4/3] relative cursor-pointer">
                                                                             <img
@@ -619,7 +734,7 @@ function Chat() {
                                                                         )}
                                                                     </>
                                                                 )}
-                                                                {message?.video?.trim() !== '' && message.video !== undefined && (
+                                                                {message?.video?.trim() !== '' && message?.video !== undefined && (
                                                                     <>
                                                                         <div
                                                                             onClick={() => setShowBigImageId(message?._id)}
@@ -647,7 +762,7 @@ function Chat() {
                                                                         )}
                                                                     </>
                                                                 )}
-                                                                <h1 className="mb-1 my-2 overflow-hidden min-w-full whitespace-wrap break-words">
+                                                                <h1 className="mb-1  overflow-hidden min-w-full whitespace-wrap break-words">
                                                                     {message.text}
                                                                 </h1>
 
@@ -707,20 +822,19 @@ function Chat() {
 
                                     {/* <div  ref={chatContainerRef} /> */}
                                 </div>
-                                <div className="sm:p-3 p-2 text-xs sm:text-sm md:p-4 border-t -z-  relative bg-gray-200">
+                                <div className="sm:p-3 p-2 text-xs sm:text-sm md:p-4  border-t   relative bg-gray-200">
                                     <form onSubmit={SendMessage}
                                         className="flex items-center sm:space-x-1" >
                                         {/* Image Video UPload  */}
-                                        {/* Image Video UPload  */}{/* Image Video UPload  */}{/* Image Video UPload  */}
 
-                                        <div className=" bottom-5   group">
+                                        <div className="  group bottom-5  ">
                                             <div
                                                 id="speed-dial-menu-default"
                                                 className={`flex absolute bottom-11  flex-col items-center ${isMenuOpen ? "" : "hidden"
-                                                    } mb-4 space-y-2`}
+                                                    } mb-4 space-y-2 `}
                                             >
                                                 <button
-                                                    onClick={() => { hiddenFileInput?.current?.click(); }}
+                                                    onClick={() => { hiddenImageFileInput?.current?.click(); }}
                                                     type="button"
                                                     data-tooltip-target="tooltip-share"
                                                     data-tooltip-placement="left"
@@ -729,7 +843,7 @@ function Chat() {
                                                     <BsImageFill className="w-5 h-5" />
                                                     <input
                                                         type="file"
-                                                        ref={hiddenFileInput}
+                                                        ref={hiddenImageFileInput}
                                                         accept="image/*"
                                                         style={{ display: 'none' }}
                                                         onChange={async (e) => {
@@ -745,7 +859,7 @@ function Chat() {
                                                         }}
                                                     />
                                                 </button>
-                                                <button onClick={() => { hiddenFileInput?.current?.click(); }}
+                                                <button onClick={() => { hiddenVideoFileInput?.current?.click(); }}
                                                     type="button"
                                                     data-tooltip-target="tooltip-print"
                                                     data-tooltip-placement="left"
@@ -754,7 +868,7 @@ function Chat() {
                                                     <MdVideoLibrary className="w-5 h-5" />
                                                     <input
                                                         type="file"
-                                                        ref={hiddenFileInput}
+                                                        ref={hiddenVideoFileInput}
                                                         accept="Video/*"
                                                         style={{ display: 'none' }}
                                                         onChange={async (e) => {
@@ -776,10 +890,11 @@ function Chat() {
                                                 onClick={() => setIsMenuOpen((prevState) => !prevState)}
                                                 aria-controls="speed-dial-menu-default"
                                                 aria-expanded={isMenuOpen}
-                                                className="flex cursor-pointer  items-center justify-center text-white bg-blue-700 rounded-full w-8 h-8 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
+
+                                                className="flex cursor-pointer  items-center justify-center  text-white bg-blue-700 rounded-full sm:w-8 sm:h-8 w-6 h-6 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800"
                                             >
                                                 <svg
-                                                    className={`w-5 h-5 transition-transform  ${isMenuOpen ? "rotate-45" : ""
+                                                    className={`sm:w-5 sm:h-5 w-4 h-4 transition-transform  ${isMenuOpen ? "rotate-45" : ""
                                                         }`}
                                                     aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -825,7 +940,7 @@ function Chat() {
                                             placeholder="Type your message...  "
                                             className="flex-1 sm:px-4 py-0.5  relative md:py-1.5 rounded-lg border-2 border-gray-300 hover:border-gray-400 focus:outline-none focus:border-blue-500"
                                         />
-                                        {Message?.Message?.[0].text?.trim() != '' && (
+                                        {Message?.Message?.[0].text?.trim() != '' ? (
                                             <button
                                                 type="submit"
                                                 className="bg-blue-600 text-white p-2 md:p-2 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -834,6 +949,12 @@ function Chat() {
                                                     <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z" />
                                                 </svg>
                                             </button>
+
+                                        ) : (
+                                            <>
+                                                {/* <VoiceRecorder /> */}
+
+                                            </>
                                         )}
                                     </form>
                                 </div>
@@ -853,11 +974,6 @@ function Chat() {
                                         <p className="text-gray-500">Select a chat to start chatting.</p>
                                     </div><div className="md:w-1/4 bg-white md:mt-20 md:pt-3 mt-16 md:hidden  rounded-t-lg border-r">
                                             <div className=" border-b">
-
-                                                {/* again Search Comoponent                */}    {/* again Search Comoponent                */} {/* again Search Comoponent                */} {/* again Search Comoponent                */}
-                                                {/* again Search Comoponent                */} {/* again Search Comoponent                */} {/* again Search Comoponent                */} {/* again Search Comoponent                */}
-                                                {/* again Search Comoponent                */} {/* again Search Comoponent                */} {/* again Search Comoponent                */} {/* again Search Comoponent                */}
-
 
 
                                                 <div className="md:w-1/4 bg-white md:mt-20    md:block rounded-t-lg border-r">
@@ -905,26 +1021,28 @@ function Chat() {
                                                                 </svg>
                                                             </div>
                                                             <input onChange={(e) => setSearchTerm(e.target.value)}
-                                                                type="search" id="default-search" className="block w-full py-2 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+                                                                type="search" id="default-search" className="block w-full py-2 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Users,Community..." required />
                                                         </div>
-                                                        <div className="flex justify-between">
-                                                            <button onClick={() => setPersonal(!ispersonal)}
-                                                                type="button"
-                                                                className={`${ispersonal
-                                                                    ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
-                                                                    : 'opacity-80 hover:bg-[#dddbdb]'
-                                                                    } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 mr-2 mb-2 text-base`}
-                                                            >
-                                                                Personal
-                                                            </button>
-                                                            <button onClick={() => setPersonal(!ispersonal)}
-                                                                type="button"
-                                                                className={`${!ispersonal
-                                                                    ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
-                                                                    : 'opacity-80 hover:bg-[#dddbdb]'
-                                                                    } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5  mr-5 mb-2 text-base`}
-                                                            > Community</button>
-                                                        </div>
+                                                        {isSidebarOpen != true && (
+                                                            <div className="flex justify-between">
+                                                                <button onClick={() => setPersonal(!ispersonal)}
+                                                                    type="button"
+                                                                    className={`${ispersonal
+                                                                        ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
+                                                                        : 'opacity-80 hover:bg-[#dddbdb]'
+                                                                        } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5 mr-2 mb-2 text-base`}
+                                                                >
+                                                                    Personal
+                                                                </button>
+                                                                <button onClick={() => setPersonal(!ispersonal)}
+                                                                    type="button"
+                                                                    className={`${!ispersonal
+                                                                        ? 'bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900'
+                                                                        : 'opacity-80 hover:bg-[#dddbdb]'
+                                                                        } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg px-5  mr-5 mb-2 text-base`}
+                                                                > Community</button>
+                                                            </div>
+                                                        )}
 
                                                     </div>
 
@@ -948,7 +1066,7 @@ function Chat() {
                                                                                             key={index}
                                                                                             className={`p-2 flex rounded-lg  shadow-lg  cursor-pointer ${selectedChat?._id === chat?._id ? 'bg-blue-200' : ''}`}
                                                                                             onClick={() => {
-                                                                                                setSelectedChat(chat), setDropdownOpen(false), setSelectedIndex(index);
+                                                                                                setSelectedChat(chat), setDropdownOpen(false), setSelectedIndex(index), ReadedMessage(chat?._id);
                                                                                             }}
                                                                                         >
                                                                                             {chat?.senderId?._id === userId ? (
@@ -1016,12 +1134,11 @@ function Chat() {
 
                                                                 </ul>
                                                                 <ul className="space-y-2">
-                                                                    {filteredItemsp.length > 0 && filteredItemsp?.map((chat, index) => (
+                                                                    {filteredItemsp?.length > 0 && filteredItemsp?.map((chat, index) => (
                                                                         <li
                                                                             key={index}
                                                                             className={`p-2 flex rounded-lg cursor-pointer ${selectedChat?.userId?._id === chat?._id ? 'bg-blue-200' : ''}`}
                                                                             onClick={() => {
-                                                                                console.log(chat, 'log chat');
                                                                                 setSelectedChat({ userId: chat, filter: true });
                                                                                 setDropdownOpen(false);
                                                                             }}

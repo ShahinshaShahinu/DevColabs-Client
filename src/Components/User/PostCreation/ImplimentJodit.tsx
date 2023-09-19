@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import RichTextEditor from './joditPostCreation';
 import Navbar from '../Navbar/Navbar';
-import { AiFillHome } from 'react-icons/ai';
+import {  AiOutlineHome, AiOutlineUser } from 'react-icons/ai';
 import { RiVideoUploadFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField } from '@material-ui/core';
@@ -12,6 +12,9 @@ import { uploadImage, uploadVideo } from '../../../services/Cloudinary/Cloud';
 import { useSelector } from 'react-redux';
 import { MuiChipsInput } from 'mui-chips-input'
 import { format } from 'date-fns';
+import { HiOutlineUserGroup } from 'react-icons/hi2';
+import { BiArrowBack } from 'react-icons/bi';
+
 
 
 
@@ -22,17 +25,10 @@ function ImplementJodit() {
     const [plainText, setPlainText] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const Navigate = useNavigate();
-    const [previewVisible, setPreviewVisible] = useState(false);
     const [previewContent, setPreviewContent] = useState("");
     const [selectedVideos, setSelectedVideos] = useState<File[]>([]);
     const [showVideos, setShowVideos] = useState(false);
-
-
     const [HashTag, setHashTag] = useState<string[]>([]);
-
-
-
-
     const [currentDate, setCurrentDate] = useState(new Date());
 
 
@@ -54,10 +50,10 @@ function ImplementJodit() {
         const hasSpaces = newChips.some(tag => /\s/.test(tag));
         if (hasSpaces) {
             PostErr('Spaces are not allowed in tags');
-          } else {
-              const modifiedTags = newChips.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
-              setHashTag(modifiedTags);
-          }
+        } else {
+            const modifiedTags = newChips.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
+            setHashTag(modifiedTags);
+        }
     };
 
 
@@ -135,33 +131,19 @@ function ImplementJodit() {
                         uploadedVideoUrls.push(uploadedUrl);
                     }
                 }
-                console.log(uploadVideo, uploadedVideoUrls, 'uplaodasded videosss');
-
-
                 const data = await api.post('/PostCreation', { Taitle, previewContent, cloudImgUrl, userId, HashTag, PostedDate, uploadedVideoUrls }, { withCredentials: true });
 
-                console.log(data, 'datadatadatadata');
-
-                setIsLoading(false);
+                if (data) setIsLoading(false);
 
                 Navigate('/');
                 PostSucess('sucess');
             } else {
-
-
                 PostErr(err);
-
             }
-
-
-
-
         } catch (error) {
             console.log(error);
-
         }
     }
-
 
     const handleRemoveVideo = (index: number) => {
         setSelectedVideos((prevSelectedVideos) => {
@@ -182,33 +164,53 @@ function ImplementJodit() {
                 <Navbar />
             </div>
 
-            <div className="w-full flex bg-slate-100 ">
+            <div className="w-full flex bg-wh">
                 <div
                     style={{ zIndex: '0' }}
-                    className="h-16  bottom-40 flex m-auto max-h-[400px] w-0 rounded-lg shadow-lg bg-gray-300 relative md:z-50 lg:left-0 xl:left-28 md:left-0 overflow-hidden sm:w-[20rem] sm:max-w-[15rem] ml-1">
-                    <div className="p-4 px-5 z-0 flex flex-col justify-center md:order-first md:w-4">
-                        <ul>
-                            <div className="flex cursor-pointer items-center w-20 h-12 -z-10">
-                                <AiFillHome className="text-3xl" />
-                                <li onClick={() => Navigate('/')} className="ml-2 font-bold">
-                                    <h1 className="text-base">Home</h1>
-                                </li>
+                    className="">
+                    <div className="hidden md:block mx-2 xl:mx-5 relative sm:w-66 md:w-82 lg:w-66 sm:w-72  md:w-ful xl:w-66 2xl:w-68">
+                        <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:max-w-[900px]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[18rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
+                            <div className="h-full overflow-y-auto  relative bg-  border-r-2 px-2 ">
+                                <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
+                                    <ul>
+                                        <li className="flex cursor-pointer items-center w-auto h-12 space-x-2 hover:bg-sky- rounded-xl hover:bg-sky-100">
+                                            <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
+                                            <h1 onClick={() => Navigate('/')} className="font-bold text-base">Home</h1>
+                                        </li>
+                                        <li onClick={() => Navigate('/Community')} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                                            <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
+                                            <h1 className="font-bold text-base">Community</h1>
+                                        </li>
+                                        <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                                            <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
+                                            <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid xl:right-8 bg-gray-200   right-0 relative grid-cols-1 mt-24 md:grid-cols-2 mx-auto h-auto shadow-inner shadow-gray-600 sm:max-w-[900px]">
+
+
+
+                <div className="grid md:right-0 bottom-6 sm:bottom-2 lg:left-2 xl:right-8 bg-gray-200 rounded-md    relative grid-cols-1 mt-24 md:grid-cols-2 mx-auto h-auto shadow-md shadow-gray-600 sm:max-w-[1050px]">
                     <div className="col-span-1 md:col-span-2">
+                        {/* <BiArrowBack onClick={() => {  }} className=" md:hidden cursor-pointer inline-block" />/ */}
                         <div className="md:w-3/4 mx-auto mt-4">
-                            <div className="text-center">
-                                <h3 className="text-xl font-bold">Create Post</h3>
+                            <div className="md:w-3/4 mx-auto mt-4 flex items-center">
+                                <div className='flex cursor-pointer '>
+                                    <BiArrowBack onClick={() => { window?.history?.back(); }} className="text-xl left-2 relative md:hidden cursor-pointer inline-block" />
+                                </div>
+                                <div className="text-center w-full">
+                                    <h3 className="text-xl  font-serif">Create Post</h3>
+                                </div>
                             </div>
                             <br />
-
                         </div>
                         <form onSubmit={SubminAllPOstData}>
-                            <div className='flex justify-center'>
+                            <div className='flex justify-center sm:p-0 px-2'>
                                 <Box
                                     style={{
                                         display: 'flex',
@@ -230,32 +232,33 @@ function ImplementJodit() {
                                 <div className="max-w-6xl w-screen border-2 bg-white h-auto rounded-lg shadow-md p-4">
                                     <h2 className="text-2xl font-semibold mb-4"></h2>
                                     <RichTextEditor initialValue="" getValue={getValue} />
-                                    {/* <div dangerouslySetInnerHTML={{ __html: value }} /> */}
                                     <p className='hidden'>{plainText} </p>
                                 </div>
                             </div>
-
-
-                            <div className='flex'>
-                                <div className='flex-1 p-10'>
-                                    <div className='bg-white h-auto rounded-lg shadow-md p-4'>
-                                        <label className="block mb-0 text-sm font-extrabold text-gray-900  dark:text-white" htmlFor="outlined-required">HashTag</label>
+                            <div className="flex flex-col md:flex-row">
+                                <div className="flex-1 md:p-10">
+                                    <div className="bg-white h-auto rounded-lg shadow-md p-4 relative md:left-0 md:right-10">
+                                        <label className="block mb-0 text-sm font-extrabold text-gray-900 dark:text-white" htmlFor="outlined-required">HashTag</label>
                                         <MuiChipsInput
                                             inputProps={{
                                                 style: {
-                                                    fontSize: '1.5rem', // Adjust the font size as needed
+                                                    fontSize: '1.5rem',
                                                 },
-
                                             }}
-                                            value={HashTag} onChange={handleChange} id="" label="HashTag" />
-                                        <div className="w-24">
-                                            <label className="block  text-sm font-medium text-gray-900 dark:text-white" htmlFor="multiple_files">
+                                            value={HashTag}
+                                            onChange={handleChange}
+                                            id=""
+                                            label="HashTag"
+                                        />
+                                        <div className="md:w-32">
+                                            <label className="block text-sm font-medium text-gray-900 dark:text-white" htmlFor="multiple_files">
                                                 Upload multiple files
                                             </label>
                                             <div className="relative">
                                                 <label htmlFor="multiple_files" className="cursor-pointer">
                                                     <div className="flex items-center justify-center p-4 rounded-lg border-2 border-blue-500 hover:bg-blue-100 transition-colors duration-300">
                                                         <RiVideoUploadFill className="text-blue-500 text-4xl" />
+                                                        <span className="ml-2 text-blue-600 font-semibold">Upload</span>
                                                     </div>
                                                 </label>
                                                 <input
@@ -268,48 +271,73 @@ function ImplementJodit() {
                                                 />
                                             </div>
                                         </div>
-                                        
-                                        {selectedVideos?.length > 0 &&
-                                            <button type='button' className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" onClick={() => { showVideos == true ? setShowVideos(false) : setShowVideos(true) }} >
-                                                Show Videos
+
+                                        {selectedVideos?.length > 0 && (
+                                            <button
+                                                type="button"
+                                                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+                                                onClick={() => { setShowVideos(!showVideos) }}
+                                            >
+                                                {showVideos ? "Hide Videos" : "Show Videos"}
                                             </button>
-                                        }
+                                        )}
 
-
-                                        {showVideos &&
-                                            chunkArray(selectedVideos, 3).map((videoPair, pairIndex) => (
-                                                <div key={pairIndex} className="flex">
-                                                    {videoPair.map((video, index) => (
-                                                        <div key={index} className="w-1/2 px-2 mb-4">
-                                                            <video className="cursor-pointer rounded-lg shadow-md" controls>
-                                                                <source src={URL.createObjectURL(video)} type={video.type} />
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                            <button
-                                                                onClick={() => handleRemoveVideo(index + pairIndex * 3)}
-                                                                className="mt-2 bg-red-500 text-white px-2 py-1 rounded"
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ))}
-
+                                        {showVideos && (
+                                            <div className="flex pt-2 flex-wrap ">
+                                                {chunkArray(selectedVideos, 3).map((videoPair, pairIndex) => (
+                                                    <div key={pairIndex} className="w-full sm:w-1/2 space-x-2 flex md:w-1/3 lg:w-1/4 xl:w-1/2">
+                                                        {videoPair.map((video, index) => (
+                                                            <div key={index} className="mb-4">
+                                                                <video className="cursor-pointer rounded-lg shadow-md  " controls >
+                                                                    <source src={URL?.createObjectURL(video)} type={video.type} />
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                                <button type='button'
+                                                                    onClick={() => handleRemoveVideo(index + pairIndex * 3)}
+                                                                    className="mt-2 bg-red-500 text-white px-2 py-1 rounded"
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className='flex justify-end p-5'>
+                                    <div className="flex justify-center md:justify-end p-5">
                                         <button
                                             type="submit"
-                                            className="text-white bg-gradient-to-br cursor-pointer  from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                                            className="text-white bg-gradient-to-br cursor-pointer from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
                                         >
                                             Publish
                                         </button>
                                     </div>
+                                    <footer className="bg-gray-800 bottom-0 top-6 md:hidden text-white p-4 relative  left-0 w-full">
+                                        <nav className="container mx-auto flex items-center justify-center">
+                                            <div className="md:hidden">
+                                                <div className="flex space-x-4">
+                                                    <a className="hover:text-gray-400">
+                                                        <AiOutlineHome className='text-2xl mx-5' onClick={() => { Navigate('/') }} />
+                                                    </a>
+                                                    <a className="hover:text-gray-400">
+                                                        <HiOutlineUserGroup className='text-2xl mx-5' onClick={() => Navigate('/Community')} />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="hidden md:block">
+                                                <span className="text-sm">
+                                                    © 2023 DevColab. All rights reserved.
+                                                </span>
+                                            </div>
+                                        </nav>
+                                    </footer>
                                 </div>
-
                             </div>
 
+                            <div>
+                            </div>
 
 
 
@@ -347,21 +375,12 @@ function ImplementJodit() {
                                 <span className="sr-only">Loading...</span>
                             </div>
 
+
                         </div>
                     )}
 
                 </div>
-            </div>
-            <div>
-                {/* Existing code... */}
-                <button onClick={() => setPreviewVisible(true)} className='hidden'>Preview</button>
-                {previewVisible && (
-                    <div>
-                        <h3>Preview:</h3>
-                        <div dangerouslySetInnerHTML={{ __html: previewContent }} />
-                        <button onClick={() => setPreviewVisible(false)}>Close</button>
-                    </div>
-                )}
+
             </div>
 
 
@@ -381,181 +400,3 @@ export default ImplementJodit;
 
 
 
-
-
-
-
-{/* <div className="min-h-screen flex top-20 absolute items-center justify-center bg-white  "> */ }
-{/* <div className=" h-16   bottom-40    grid grid-cols-1 m-auto max-h-[400px] overflow-hidden rounded-lg shadow-lg bg-gray-200 relative left-10 w-[20rem] ml-1">
-                    <div className="p-4  flex flex-col justify-around md:order-first md:w-4">
-                        <ul>
-                            <div className="flex cursor-pointer    items-center w-20 h-12">
-
-                                <AiFillHome className='text-3xl' />
-                                <li onClick={() => Navigate('/')} className="ml-2  font-bold   ">
-                                    <h1 className="text-base"> Home </h1>
-                                </li>
-                            </div>
-                        </ul>
-                    </div>
-                </div>
-            </div> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <div className='w-full h-screen flex'>
-  <div className='grid grid-cols-1 md:grid-cols-2 mx-auto h-[750px] shadow-lg shadow-gray-600 sm:max-w-[900px]'>
-    <div className="col-span-1 md:col-span-2 flex justify-center items-center relative">
-      <div className="md:w-3/4 mx-auto mt-8">
-        <div className="text-center">
-          <h3 className="text-xl font-bold">Create Post</h3>
-        </div>
-        <div className="flex justify-center ">
-          <div className="max-w-6xl  w-screen border-2 border-gray-300 rounded-md p-2">
-            <RichTextEditor initialValue="" getValue={getValue} />
-          </div>
-        </div>
-        <br />
-        <div>{value}</div>
-      </div>
-    </div>
-  </div>
-</div> */}
-
-
-
-
-
-{/* <div className='w-full h-screen flex'>
-  <div className='grid grid-cols-1 md:grid-cols-2 mx-auto h-[750px] shadow-lg shadow-gray-600 sm:max-w-[900px]'>
-    <div className="col-span-1 md:col-span-2">
-      <div className="md:w-3/4 mx-auto mt-4"> 
-        <div className="text-center">
-          <h3 className="text-xl font-bold">Create Post</h3>
-        </div>
-        <div className="flex justify-center">
-          <div className="max-w-6xl w-full border-2 border-gray-300 rounded-md p-2">
-            <RichTextEditor initialValue="" getValue={getValue} />
-          </div>
-        </div>
-        <br />
-        <div>{value}</div>
-      </div>
-    </div>
-  </div>
-</div> */}
-
-
-
-
-
-
-
-{/* <div className='w-full  h-screen flex '>
-            <div className='grid grid-cols-1 md:grid-cols-2 m-auto h-[750px] shadow-lg shadow-gray-600 sm:max-w-[900px]'>
-                <div className="row  w-screen    right-72 relative">
-                    <div className="col-md-6" style={{ margin: "auto", marginTop: "50px" }}>
-                        <div style={{ textAlign: "center" }}>
-                            <h3>Rich Text Editor</h3>
-                        </div>
-                        <RichTextEditor initialValue="" getValue={getValue} />
-                        <br />
-                        <div>{value}</div>
-                    </div>
-                </div>
-                </div>
-            </div> */}
-
-
-{/* <div className='w-full h-screen flex mt-7'>
-                <div className='grid grid-cols-1 md:grid-cols-2 m-auto h-[750px] shadow-lg shadow-gray-600 sm:max-w-[900px]'>
-                    <div className='p-4 flex flex-col justify-center items-start relative'>
-
-                        <div className='bg-fuchsia-500 absolute md:-inset-x-32  -inset-x-0 md:left-56  left-0 top-0 flex justify-center items-center'>
-                            <h1 className=''>Create Post</h1>
-                        </div>
-
-                        <div className='bg-black w-full h-72 bottom-44 relative flex justify-start'>
-                            <h1>sssssssssssssss</h1>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div> */}
-
-// import React, { useState } from 'react'
-// import RichTextEditor from './joditPostCreation';
-
-// // Rest of the code
-
-// function ImplementJodit() {
-//     const [value, setValue] = useState<any>(""); // Provide type for the state
-
-//     const getValue: any = (newValue: any) => { // Provide type for the function
-//         setValue(newValue);
-//     };
-
-//     return (
-//         <div className="row">
-//             <div className="col-md-6" style={{ margin: "auto", marginTop: "50px" }}>
-//                 <div style={{ textAlign: "center" }}>
-//                     <h3>Rich Text Editor</h3>
-//                 </div>
-//                 <RichTextEditor initialValue="" getValue={getValue} />
-//                 <br />
-//                 <div>{value}</div>
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default ImplementJodit;
