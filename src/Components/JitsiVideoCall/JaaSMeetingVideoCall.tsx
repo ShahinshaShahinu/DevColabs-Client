@@ -24,7 +24,7 @@ function JaaSMeetingVideoCall() {
     return (
         <>
             <JaaSMeeting
-                appId={'meet.jit.si'}
+                appId={'https://dev-colabs-client.vercel.app/jasMeetingVideoCall'}
                 roomName={roomName}
                 configOverwrite={configOverwrite}
                 interfaceConfigOverwrite={interfaceConfigOverwrite}
