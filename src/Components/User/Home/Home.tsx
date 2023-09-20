@@ -203,7 +203,7 @@ function HomePage() {
         setliked(true)
         dispatch(updateUser({}));
         localStorage.removeItem("user");
-        Navigate('/DevColabs-Client/');
+        Navigate('/');
       } else {
         setliked(false);
         const response = await api.post(`/Postslike/${PostId}`);
@@ -434,13 +434,13 @@ function HomePage() {
                           <ul>
                             {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') ? (
                               <li className={`flex cursor-pointer relative items-center h-12 space-x-2 `}>
-                                <h1 onClick={() => Navigate('/DevColabs-Client/')} className="font-bold ml-3 p-3 relative text-xl">Home</h1>
+                                <h1 onClick={() => Navigate('/')} className="font-bold ml-3 p-3 relative text-xl">Home</h1>
                               </li>
                             ) : (
                               <>
                                 <div className="ml-8 mb-2">
                                   <li className={`flex cursor-pointer relative items-center  mt-3   h-12 space-x-2 `}>
-                                    <h1 onClick={() => Navigate('/DevColabs-Client/')} className="font-semibold ml-3   relative text-3xl">{Tag?.HashtagName}</h1>
+                                    <h1 onClick={() => Navigate('/')} className="font-semibold ml-3   relative text-3xl">{Tag?.HashtagName}</h1>
                                   </li>
                                   <div className="flex sm:ml-5 ml-11 relative">
                                     <p className="font-medium">{Tag?.CountPost}</p>
@@ -494,7 +494,7 @@ function HomePage() {
                               <div className="bg-white p-4 rounded-md shadow-md" key={index}>
                                 <div
                                   className="flex items-start mb-3 ">
-                                  <img onClick={() => Navigate('/DevColabs-Client/profile', { state: post?.userId?._id })}
+                                  <img onClick={() => Navigate('/profile', { state: post?.userId?._id })}
                                     src={post?.userId?.profileImg} alt="User Profile" className="w-10 h-10 rounded-full mr-3 cursor-pointer" />
 
                                   <div>
@@ -525,7 +525,7 @@ function HomePage() {
 
                                     </div>
                                     <p
-                                      onClick={() => Navigate('/DevColabs-Client/profile', { state: post?.userId?._id })}
+                                      onClick={() => Navigate('/profile', { state: post?.userId?._id })}
                                       className="font-medium cursor-pointer text-base sm:text-base overflow-hidden whitespace-wrap break-words"
                                     >
                                       {post?.userId?.UserName}
@@ -714,14 +714,14 @@ function HomePage() {
                                 <div className="flex flex-col">
                                   <div className="ml-4">
                                     <p
-                                      onClick={() => Navigate('/DevColabs-Client/UserPostsView', { state: { UserPost: post } })}
+                                      onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
                                       className="text-lg cursor-pointer overflow-hidden whitespace-wrap break-words"
                                     >
                                       {post?.title}
                                     </p>
                                   </div>
                                   <div className="mt-2 flex-1 border-2">
-                                    <img onClick={() => Navigate('/DevColabs-Client/UserPostsView', { state: { UserPost: post } })}
+                                    <img onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
                                       src={post?.image}
                                       alt={post?.Image}
                                       className="w-full cursor-pointer h-auto"
@@ -790,7 +790,7 @@ function HomePage() {
                                               </button>
                                               <button
                                                 className="ml-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                                                onClick={() => Navigate('/DevColabs-Client/login')}
+                                                onClick={() => Navigate('/login')}
                                               >
                                                 Login
                                               </button>
@@ -933,7 +933,7 @@ function HomePage() {
                                                 />
                                                 <div
                                                   className="flex-grow">
-                                                  <p onClick={() => Navigate('/DevColabs-Client/profile', { state: comment?.userId?._id })}
+                                                  <p onClick={() => Navigate('/profile', { state: comment?.userId?._id })}
                                                     className="font-semibold cursor-pointer text-blue-500 hover:underline">
                                                     {comment.userId.UserName}
                                                   </p>
@@ -1048,16 +1048,16 @@ function HomePage() {
                         <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
                             <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
-                              <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/DevColabs-Client/')} />
+                              <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
-                            <li onClick={() => { username ? Navigate('/DevColabs-Client/Community') : setIsModalOpen(true) }} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
+                            <li onClick={() => { username ? Navigate('/Community') : setIsModalOpen(true) }} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
                               <h1 className="font-bold text-base">Community</h1>
                             </li>
                             <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
-                              <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/DevColabs-Client/profile')} />
-                              <h1 onClick={() => Navigate('/DevColabs-Client/profile')} className="font-bold text-base">Profile</h1>
+                              <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
+                              <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
                             </li>
                           </ul>
                         </nav>

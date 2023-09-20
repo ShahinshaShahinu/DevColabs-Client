@@ -221,7 +221,7 @@ function Navbar() {
     googleLogout();
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
-    Navigate("/DevColabs-Client/login");
+    Navigate("/login");
   };
 
   const searchButton = () => {
@@ -257,7 +257,7 @@ function Navbar() {
     event.preventDefault();
     localStorage.setItem('searchTerm', searchTerm);
     try {
-      Navigate('/DevColabs-Client/search-results', { state: { searchTerm } });
+      Navigate('/search-results', { state: { searchTerm } });
       setSearchTerm(searchTerm)
     } catch (error) {
 
@@ -331,7 +331,7 @@ function Navbar() {
                         <ul className="list-none">
                           <li className="border-b border-gray-400">
                             <a
-                              onClick={() => { Navigate("/DevColabs-Client/profile"), RemoveSearchTerm() }}
+                              onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}
                               className="block px-4 py-2 text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
                               Profile
@@ -340,7 +340,7 @@ function Navbar() {
                           <li className="border-b border-gray-400">
                             <button
                               onClick={() => {
-                                Navigate("/DevColabs-Client/SavedPosts"), RemoveSearchTerm();
+                                Navigate("/SavedPosts"), RemoveSearchTerm();
                               }}
                               className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
@@ -408,7 +408,7 @@ function Navbar() {
               ) : (
                 <div className="lg:hidden  md:hidden">
                   <button
-                    onClick={() => { Navigate("/DevColabs-Client/login"), RemoveSearchTerm() }}
+                    onClick={() => { Navigate("/login"), RemoveSearchTerm() }}
                     className="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ml-3"
                   >
                     Log in
@@ -566,7 +566,7 @@ function Navbar() {
                   <li className="mx-4 items-center flex flex-col justify-center relative my-6 md:my-0">
                     <button
                       onClick={() => {
-                        Navigate("/DevColabs-Client/PostCreation"), RemoveSearchTerm();
+                        Navigate("/PostCreation"), RemoveSearchTerm();
                       }}
                       className="text-xl  hover:text-cyan-500 duration-500"
                     >
@@ -623,14 +623,14 @@ function Navbar() {
                                   </div>
                                   <div className="flex-grow">
                                     {notfication?.ReportPostId ? (<>
-                                      <p className="text-gray-800" onClick={() => { Navigate('/DevColabs-Client/UserPostsView', { state: { UserPost: notfication?.ReportPostId } }), RemoveSearchTerm() }} >{notfication?.ReportPostId?.title}</p>
+                                      <p className="text-gray-800" onClick={() => { Navigate('/UserPostsView', { state: { UserPost: notfication?.ReportPostId } }), RemoveSearchTerm() }} >{notfication?.ReportPostId?.title}</p>
                                       <div className="flex justify-between items-center">
                                         <p className="text-xs text-gray-500">{notfication?.NotifyDate}</p>
-                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/DevColabs-Client/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
+                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
                                       </div></>
                                     ) : (<>
                                       <div className="flex justify-between">
-                                        <p className="text-gray-800 inline-block" onClick={() => { Navigate('/DevColabs-Client/Community', { state: { chat: notfication?.senderId?._id } }), RemoveSearchTerm() }} >{notfication?.senderId?._id !== userId ? notfication?.senderId?.UserName : notfication?.userId?.UserName}</p>
+                                        <p className="text-gray-800 inline-block" onClick={() => { Navigate('/Community', { state: { chat: notfication?.senderId?._id } }), RemoveSearchTerm() }} >{notfication?.senderId?._id !== userId ? notfication?.senderId?.UserName : notfication?.userId?.UserName}</p>
                                         <p className="text-xs text-gray-500 inline-block">
                                           {notfication?.ChatMessage?.timestamp &&
                                             new Date(notfication?.ChatMessage?.timestamp).toLocaleTimeString([], {
@@ -642,7 +642,7 @@ function Navbar() {
                                       </div>
                                       <div className="flex justify-between items-center">
                                         <p className="text-xs text-gray-500 bg-gray-200 rounded-lg p-1">{notfication?.ChatMessage?.text}</p>
-                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/DevColabs-Client/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
+                                        <p className="text-sm font-serif text-rose-800" onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}>{notfication?.Message}</p>
                                       </div></>
                                     )}
                                   </div>
@@ -698,7 +698,7 @@ function Navbar() {
                           </div>
                           <li>
                             <a
-                              onClick={() => { Navigate("/DevColabs-Client/profile"), RemoveSearchTerm() }}
+                              onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}
 
                               className="block px-4 py-2  text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
@@ -708,7 +708,7 @@ function Navbar() {
                           <li>
                             <button
                               onClick={() => {
-                                Navigate("/DevColabs-Client/SavedPosts"), RemoveSearchTerm()
+                                Navigate("/SavedPosts"), RemoveSearchTerm()
                               }}
                               className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
@@ -746,7 +746,7 @@ function Navbar() {
                 </>
               ) : (
                 <button
-                  onClick={() => Navigate("/DevColabs-Client/login")}
+                  onClick={() => Navigate("/login")}
                   className="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ml-3"
                 >
                   Log in
