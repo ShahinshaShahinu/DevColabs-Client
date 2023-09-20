@@ -23,7 +23,8 @@ import Box from "@mui/material/Box";
 import { Pagination } from "@mui/material";
 import CommentEdit from "./HomeOptions/CommentEdit";
 import { Comment } from "../../../utils/interfaceModel/comment";
-
+import ReactPaginate from 'react-paginate';
+import CustomPagination from "./Pagination";
 
 
 interface IHashtag {
@@ -390,14 +391,24 @@ function HomePage() {
 
 
   const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = HomePosts.slice(startIndex, endIndex);
 
+
+  const itemsPerPage = 2;
+  const [currentPage, setCurrentPage] = useState(1);
   const handleChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
+
+
+  const pageCount = Math.ceil(HomePosts.length / itemsPerPage);
+
+  const handlePageChange = (selectedPage: number) => {
+    setCurrentPage(selectedPage);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPosts = HomePosts.slice(startIndex, endIndex);
 
 
 
@@ -924,7 +935,7 @@ function HomePage() {
                                       <div className="pt-5">
                                         <div className="pt-5 pl-5">
                                           {HomePosts[index]?.Comments.map((comment: Comment, commentIndex: number) => (
-                                            <div key={ commentIndex} className="mb-2 bg-white ">
+                                            <div key={commentIndex} className="mb-2 bg-white ">
                                               <div className="flex items-start p-3 border border-gray-300 rounded-lg hover:shadow-md">
                                                 <img onClick={() => Navigate('DevColabs-Client//profile', { state: comment?.userId?._id })}
                                                   src={comment.userId.profileImg}
@@ -940,9 +951,9 @@ function HomePage() {
                                                   <p className="text-gray-600 break-all mt-1">{comment.Comment}</p>
                                                 </div>
                                                 <div className="ml-auto">
-                                                {comment?.userId?._id===userId && (
-                                                    <CommentEdit data={comment} onClose={()=>setrefresh(!reftesh)}/>
-                                                )}
+                                                  {comment?.userId?._id === userId && (
+                                                    <CommentEdit data={comment} onClose={() => setrefresh(!reftesh)} />
+                                                  )}
                                                 </div>
                                               </div>
                                             </div>
@@ -1004,6 +1015,10 @@ function HomePage() {
                             </div>
                           )}
                         </div>
+
+
+
+                        {/* 
                         <div className="hidden md:block ">
                           <div className="bg top-10 lg:w-[110%]  h-32  lg:right-10 relative flex justify-center ">
                             <div className="bg-white w-full h-full z-0   flex ">
@@ -1018,7 +1033,24 @@ function HomePage() {
                               </Box>
                             </div>
                           </div>
+                        </div> */}
+
+                        <div className="hidden z-50 md:block ">
+                          <div className="bg top-10 lg:w-[110%] h-32 lg:right-10 relative flex justify-center ">
+                            <div className="bg-white w-full h-full items-center justify-center z-0 flex ">
+                              <CustomPagination pageCount={pageCount} onPageChange={handlePageChange} />
+                            </div>
+                          </div>
                         </div>
+
+
+
+
+
+
+
+
+
 
                         <div className="sm:hidden">
                           <div className=" top-0 w-screen  h-14 p-1  right-4  mb-10  relative flex justify-center ">
@@ -1078,11 +1110,11 @@ function HomePage() {
 
 
           </div>
-        </div>
+        </div >
 
         <ToastContainer />
 
-      </div>
+      </div >
 
     </>
   )

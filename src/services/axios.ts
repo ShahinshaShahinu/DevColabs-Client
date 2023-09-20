@@ -2,8 +2,6 @@ import axios from 'axios';
 
 export const api = axios.create({
     baseURL: import.meta.env?.VITE_BASE_URL
-    // baseURL: 'http://192.168.43.228:3000'
-
 })
 
 api.interceptors.request.use(

@@ -23,10 +23,6 @@ interface SocketProviderProps {
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }:SocketProviderProps|any) => {
   const socket = useMemo(() => io(import.meta.env.VITE_BASE_URL), []);
-  // const socket = useMemo(() => io('http://10.4.3.143:3000'), []);
-
-
-
   const contextValue: SocketContextType = {
     socket,
   };

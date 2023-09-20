@@ -292,25 +292,23 @@ function Profile() {
 
 
                 <div className="min-h-screen grid top-20 relative items-center justify-center  ">
-
-                    <div
-                        style={{ zIndex: '0' }}
+                    <div style={{ zIndex: '0' }}
                         className="">
                         <div className="hidden md:block mx-2 xl:mx-5 relative sm:w-66 md:w-82 lg:w-66 sm:w-72  md:w-ful xl:w-66 2xl:w-68">
                             <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:max-w-[900px]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[18rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
                                 <div className="h-full overflow-y-auto  relative bg-  border-r-2 px-2 ">
                                     <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                                         <ul>
-                                            <li className="flex cursor-pointer items-center w-auto h-12 space-x-2 hover:bg-sky- rounded-xl hover:bg-sky-100">
-                                                <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
+                                            <li onClick={() => Navigate('/')} className="flex cursor-pointer items-center w-auto h-12 space-x-2 hover:bg-sky- rounded-xl hover:bg-sky-100">
+                                                <AiOutlineHome className="text-3xl text-gray-800  ml-3 " />
                                                 <h1 onClick={() => Navigate('/')} className="font-bold text-base">Home</h1>
                                             </li>
                                             <li onClick={() => Navigate('/Community')} className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                                                 <HiOutlineUserGroup className="text-3xl text-gray-800 ml-3 mr-1" />
                                                 <h1 className="font-bold text-base">Community</h1>
                                             </li>
-                                            <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
-                                                <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
+                                            <li onClick={() => Navigate('/profile')} className="flex cursor-pointer items-center h-12 space-x-2 bg-sky-100 rounded-xl">
+                                                <AiOutlineUser className="text-3xl text-gray-800 ml-3" />
                                                 <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
                                             </li>
                                         </ul>
@@ -326,7 +324,6 @@ function Profile() {
 
 
                     <div className=' md:right-0    w-[904px ]   -z-0 left-1  right-0 relative    md:mx-44 md:left-28 lg:mx-72 xl:mx-2 xl:ml-6 xl:max-w-[100%] max-w-3xl:w-[100%] lg:right-0 border-1  '>
-                        {/* <div className="w-screen h-screen flex relative bottom-16 md:right-16 mr-4 rounded-sm "> */}
                         <div className="relative grid grid-cols-1 md:grid-cols-2 m-auto h-[550px]  bg-gray-100   overflow-hidden     shadow-md  w-[904px] rounded-xl ">
                             <div className="max-w-sm p-6 top-32 absolute   ">
 
@@ -374,16 +371,16 @@ function Profile() {
                                 <p className="mb-3 font-normal text-gray-800 dark:text-gray-600 inline-flex">&nbsp;   0 tags followed</p>
                             </div>
                             <div className="h-20 flex   w-screen relative justify-end">
-                                <div className="md:col-span-2 bg-black z-10 flex  items-center md:items-stretch md:w-16 md:mr-2">
+                                <div className="md:col-span-2  z-10 flex  items-center md:items-stretch md:w-16 md:mr-2">
                                     {(userProfileData?.userProfileData?._id === userId) && (
                                         <>
                                             <BiEdit className=" md:left-2/4 md:ml-[6rem] top-1  font-bold text-2xl w-7 h-7 md:w-7 md:h-7 bottom-2 md:bottom-0 bg-beige text-white bg-yellow-500 rounded-full p-1 md:absolute  md:self-center md:mx-auto overflow-hidden" />
 
-                                            <div className="relative bg-black  right-96 top-11">
+                                            <div className="relative cursor-pointer  right-96 top-11">
                                                 <input
                                                     onChange={handleBGImageChange}
                                                     accept="image/*"
-                                                    className="  z-0 text-sm  bg-black   right-56 opacity-0 bottom-10 w-12  relative  text-gray-900 border border-gray-300 rounded-lg cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input1" type="file" />
+                                                    className="  z-0 text-sm       right-56 opacity-0 bottom-10 w-12  relative  text-gray-900 border border-gray-300 rounded-lg cursor-pointer  dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input1" type="file" />
                                             </div></>
                                     )}
                                 </div>
@@ -407,24 +404,19 @@ function Profile() {
 
                             <div className="w-20 mx-auto md:w-24 absolute flex justify-start top-20  left-16  md:left-16">
 
-                                <div className="relative md:justify-start lg:left-3 md:left-3 ">
+                                <div className="relative md:justify-start  lg:left-3 md:left-3 ">
                                     {(userProfileData?.userProfileData?._id === userId) && (
-                                        <BiEdit className="ml-2  font-bold text-2xl w-10 h-10 md:w-8 md:h-8 absolute bottom-1 md:bottom-8 text-white md:left-16 border-2 bg-beige bg-yellow-500 rounded-full p-1" />)}
+                                        <BiEdit className="ml-2  cursor-pointer  font-bold text-2xl w-10 h-10 md:w-8 md:h-8 absolute bottom-1 md:bottom-8 text-white md:left-16 border-2 bg-beige bg-yellow-500 rounded-full p-1" />)}
                                     <img src={userProfileData?.userProfileData?.profileImg} alt="User Image" className="w-20 h-20  rounded-full border-4  shadow-lg" />
                                     {(userProfileData?.userProfileData?._id === userId) && (
                                         <input
                                             accept="image/*"
                                             onChange={handleProfileImage}
-                                            className="block w-full text-sm opacity-0 bottom-9 left-10 relative text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input2" type="file" />
+                                            className="block w-full   text-sm opacity-0 bottom-9 left-10 relative text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input2" type="file" />
                                     )}
                                 </div>
                             </div>
                         </div>
-                        {/* </div> */}
-
-
-
-
                     </div>
 
 
@@ -432,26 +424,14 @@ function Profile() {
 
 
 
-
-
-
-
-
-
-
-                    <div
-                        className="w-full  left-36 -mx-9 flex flex-wrap relative  rounded-sm overflow-auto ">
-                        {/* <div className="relative z-0 bottom-8   h-auto grid grid-cols-1 md:grid-cols-2 m-auto  overflow-y-hidden overflow-x-hidden    shadow-md shadow-gray-600 w-[900px]  "> */}
-
-                        <div className="  left-0    relative items-center mt-5 justify-center  ">
-                            {UserPost && UserPost.map((post: any, index) => (
+                    <div className=" xl:-mx-9 sm:left-0  flex-wrap justify-end xl:left-36 xl:w-scroll-m lg:left-52 lg: md:left-32  md:-mx-40   left-0 relative rounded-sm">
+                        {UserPost &&
+                            UserPost.map((post: any, index) => (
                                 (userProfileData?.userProfileData?._id === userId) ? (
                                     <>
-                             
-
-                                        <div key={index} className="relative p-4 mx-1 hover:shadow-lg">
+                                        <div key={index} className="relative p-4 mx-1 lg:mx-2  hover:shadow-lg">
                                             <div className="relative right-0">
-                                                <div className="bg-white rounded-lg m-auto relative shadow-md shadow-black sm:max-w-[100%]">
+                                                <div className="bg-white rounded-lg m-auto relative shadow-md shadow-black ">
                                                     <div className="flex justify-between items-center p-3">
                                                         <div
                                                             onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
@@ -463,7 +443,6 @@ function Profile() {
                                                                 alt="User Profile"
                                                                 className="w-9 h-9 cursor-pointer rounded-full mr-2"
                                                             />
-
                                                             <div className="text-blue-600 overflow-scroll text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl">
                                                                 {userProfileData?.userProfileData?.UserName}
                                                                 <div>
@@ -487,7 +466,7 @@ function Profile() {
                                                             alt={post?.Image}
                                                             className="cursor-pointer w-full max-h-24 sm:max-h-32 md:max-h-48 lg:max-h-64 xl:max-h-80 rounded-lg"
                                                         />
-                                                        <div className="flex justify-end  px-2  items-end  py-2 relative'">
+                                                        <div className="flex justify-end px-2 items-end py-2 relative'">
                                                             <button>
                                                                 {userProfileData?.userProfileData?._id === userId && (
                                                                     <div className="relative hover:bg-gray-300">
@@ -502,10 +481,9 @@ function Profile() {
                                             <br />
                                         </div>
                                     </>
-
                                 ) : (UserPost[index]?.status === true) && (
-                                    <div key={index} className="relative p-4 mx-80 hover:shadow-lg">
-                                        <div className="bg-white rounded-lg m-auto relative shadow-md  sm:max-w-[100%]">
+                                    <div key={index} className="relative p-4 mx-8 lg:mx-10 hover:shadow-lg">
+                                        <div className="bg-white rounded-lg m-auto relative shadow-md sm:max-w-[100%]">
                                             <div className="flex justify-between items-center p-3">
                                                 <div className="flex justify-between items-center p-3">
                                                     <div
@@ -525,12 +503,11 @@ function Profile() {
                                                     </div>
                                                     <br />
                                                 </div>
-
                                             </div>
                                             <div className="px-10 bottom-7 mb-1 relative flex flex-col">
                                                 <h1
                                                     onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
-                                                    className='font-semibold cursor-pointer top-5 relative text-2xl'
+                                                    className='font-semibold cursor-pointer  break-all top-5 relative text-2xl'
                                                 >
                                                     {post?.title}
                                                 </h1>
@@ -544,7 +521,7 @@ function Profile() {
                                                 />
                                                 <div className="relative">
                                                     {userProfileData?.userProfileData?._id === userId ? (
-                                                        <div className='flex justify-end  right-8 items-end relative'>
+                                                        <div className='flex justify-end right-8 items-end relative'>
                                                         </div>
                                                     ) : (
                                                         <div className='flex justify-end top-2 py-3 right-8 items-end relative'>
@@ -559,12 +536,15 @@ function Profile() {
                                             </div>
                                         </div>
                                     </div>
-
                                 )
                             ))}
-                            <ToastContainer />
-                        </div>
+                        <ToastContainer />
                     </div>
+
+
+
+
+
                 </div>
 
                 {showModal && (
@@ -781,74 +761,27 @@ export default Profile
 
 
 
-
-
-
-
-
-
-
-
-           {/* <div key={index} className='flex p-2   relative '>
-                                        <div className="flex relative    ">
-                                            <div className='flex bg-white    left-2 rounded-lg m-auto h-auto  overflow-hidden shadow-sm shadow-black sm:max-w-[100%]'
-                                                style={{
-                                                    width: '54.5rem',
-                                                    position: 'relative',
-                                                    
-                                                }}
-                                            >
-
-                                                <div className=' text-start pl-3 pt-3 justify-start  absolute'>
-                                                    <img src={userProfileData?.userProfileData?.profileImg} alt='User Profile' className='w-9 inline rounded-full mx-auto ' />
-                                                    <h1 className='inline-block pl-1 top-3 text-lg absolute'>{userProfileData?.userProfileData?.UserName}</h1>
-                                                </div>
-
-                                                <div className='p-4 flex right-0 relative flex-col justify-center'>
-                                                    <h1 onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
-                                                        className='font-semibold  cursor-pointer top-5 relative text-2xl'>{post?.title}</h1>
-                                                    <img src={post?.image} alt='User Profile' className=' mx-auto ' />
-                                                </div>
-                                                <div>
-                                                    {(UserPost[index]?.status === false) && (
-                                                        <p className='font-medium pr-5 text-xl text-red-800'>Inactive</p>
-                                                    )}
-
-                                                </div>
-                                            </div>
-                                            {(!userProfileData?.userProfileData?._id === userId) && (
-                                                <div className='flex justify-end  right-8 items-end   relative'>
-                                                    <AiFillDelete onClick={() => DaletePost(post?._id)}
-                                                        className='text-2xl cursor-pointer right-0 bottom-2 relative' />
-
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div> */}
-
-                                        {/* 
-                                        <div key={index} className='relative p-4 mx-10 hover:shadow-lg ' >
-                                            <div className='relative right-0'>
-                                                <div className='bg-white rounded-lg m-auto relative shadow-md shadow-black sm:max-w-[100%]'>
+{/* <div className="w-full  left-36 -mx-9 flex flex-wrap relative  rounded-sm ">
+                        <div className="  left-0    relative items-center mt-5 justify-center  ">
+                            {UserPost && UserPost.map((post: any, index) => (
+                                (userProfileData?.userProfileData?._id === userId) ? (
+                                    <>
+                                        <div key={index} className="relative p-4 mx-1 hover:shadow-lg">
+                                            <div className="relative right-0">
+                                                <div className="bg-white rounded-lg m-auto relative shadow-md shadow-black sm:max-w-[100%]">
                                                     <div className="flex justify-between items-center p-3">
                                                         <div
                                                             onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
-                                                            className='flex items-center cursor-pointer hover:text-blue-600'>
+                                                            className="flex items-center cursor-pointer hover:text-blue-600"
+                                                        >
                                                             <img
                                                                 onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
                                                                 src={userProfileData?.userProfileData?.profileImg}
-                                                                alt='User Profile'
-                                                                className='w-9 h-9 cursor-pointer rounded-full mr-2'
+                                                                alt="User Profile"
+                                                                className="w-9 h-9 cursor-pointer rounded-full mr-2"
                                                             />
-                                                            {(!userProfileData?.userProfileData?._id === userId) && (
-                                                                <div className='flex justify-end  right-8 items-end   relative'>
-                                                                    <AiFillDelete onClick={() => DaletePost(post?._id)}
-                                                                        className='text-2xl cursor-pointer right-0 bottom-2 relative' />
 
-                                                                </div>
-                                                            )}
-
-                                                            <div className="text-blue-600 overflow-scroll  text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl">
+                                                            <div className="text-blue-600 overflow-scroll text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl">
                                                                 {userProfileData?.userProfileData?.UserName}
                                                                 <div>
                                                                     <p className="text-sm text-black">{post?.Date}</p>
@@ -856,38 +789,96 @@ export default Profile
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className='px-10 flex flex-col'>
+                                                    <div className="px-10 flex flex-col">
                                                         <h1
-                                                            onClick={() => Navigate('/UserPostsView', { state: { UserPost: post?.PostId } })}
-                                                            className='font-semibold text-2xl break-words text-black cursor-pointer hover:underline'>
+                                                            onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
+                                                            className="font-semibold text-2xl break-words break-all text-black cursor-pointer hover:underline"
+                                                        >
                                                             {post?.title}
                                                         </h1>
                                                     </div>
-
-                                                    <div className="mt-2   mx-2 p-2   relative overflow-hidden">
+                                                    <div className="mt-2 mx-2 p-2 relative overflow-hidden">
                                                         <img
                                                             onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
                                                             src={post?.image}
                                                             alt={post?.Image}
                                                             className="cursor-pointer w-full max-h-24 sm:max-h-32 md:max-h-48 lg:max-h-64 xl:max-h-80 rounded-lg"
                                                         />
-                                                        <button>
-                                                            ds   <div className='bg-black'>
-                                                        {(!userProfileData?.userProfileData?._id === userId) && (
-                                                            <div className='flex justify-end  right-8 top-96 pt-96 items-end   relative'>
-                                                                <AiFillDelete onClick={() => DaletePost(post?._id)}
-                                                                    className='text-2xl cursor-pointer right-0 bottom-2 relative' />
-
-                                                            </div>
-                                                        )}
+                                                        <div className="flex justify-end  px-2  items-end  py-2 relative'">
+                                                            <button>
+                                                                {userProfileData?.userProfileData?._id === userId && (
+                                                                    <div className="relative hover:bg-gray-300">
+                                                                        <AiFillDelete onClick={() => DaletePost(post?._id)} className="text-2xl cursor-pointer " />
+                                                                    </div>
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                        </button>
-                                                    </div>
-
-                                                 
-
                                                 </div>
                                             </div>
                                             <br />
-                                        </div> */}
+                                        </div>
+                                    </>
 
+                                ) : (UserPost[index]?.status === true) && (
+                                    <div key={index} className="relative p-4 mx-8 hover:shadow-lg">
+                                        <div className="bg-white rounded-lg m-auto relative shadow-md  sm:max-w-[100%]">
+                                            <div className="flex justify-between items-center p-3">
+                                                <div className="flex justify-between items-center p-3">
+                                                    <div
+                                                        onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
+                                                        className="flex items-center cursor-pointer hover:text-blue-600"
+                                                    >
+                                                        <img
+                                                            onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
+                                                            src={userProfileData?.userProfileData?.profileImg}
+                                                            alt="User Profile"
+                                                            className="w-9 h-9 cursor-pointer rounded-full mr-2"
+                                                        />
+                                                        <div className="text-blue-600 overflow-scroll text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl">
+                                                            <h1 className='text-lg font-semibold text-black'>{userProfileData?.userProfileData?.UserName}</h1>
+                                                            <p className="text-sm text-black">{post?.Date}</p>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                </div>
+
+                                            </div>
+                                            <div className="px-10 bottom-7 mb-1 relative flex flex-col">
+                                                <h1
+                                                    onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
+                                                    className='font-semibold cursor-pointer top-5 relative text-2xl'
+                                                >
+                                                    {post?.title}
+                                                </h1>
+                                            </div>
+                                            <div className="mt-2 mx-2 p-2 relative overflow-hidden">
+                                                <img
+                                                    onClick={() => Navigate('/UserPostsView', { state: { UserPost: post } })}
+                                                    src={post?.image}
+                                                    alt={post?.Image}
+                                                    className="cursor-pointer w-full max-h-24 sm:max-h-32 md:max-h-48 lg:max-h-64 xl:max-h-80 rounded-lg"
+                                                />
+                                                <div className="relative">
+                                                    {userProfileData?.userProfileData?._id === userId ? (
+                                                        <div className='flex justify-end  right-8 items-end relative'>
+                                                        </div>
+                                                    ) : (
+                                                        <div className='flex justify-end top-2 py-3 right-8 items-end relative'>
+                                                            <button onClick={() => SavePost(post._id)}>
+                                                                <svg className="w-4 h-4 right-0 bottom-2 relative" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M1.9375 0H29.0625C29.5764 0 30.0692 0.158035 30.4325 0.43934C30.7959 0.720644 31 1.10218 31 1.5V30.214C31.0004 30.3483 30.9542 30.4801 30.8662 30.5959C30.7783 30.7116 30.6519 30.8069 30.5001 30.8719C30.3483 30.9369 30.1768 30.9691 30.0035 30.9653C29.8301 30.9614 29.6613 30.9216 29.5146 30.85L15.5 24.046L1.48283 30.848C1.33637 30.919 1.16803 30.9584 0.995292 30.962C0.82255 30.9657 0.651686 30.9335 0.500415 30.8689C0.349143 30.8042 0.222972 30.7094 0.134983 30.5942C0.0469929 30.4791 0.000388072 30.3478 0 30.214V1.5C0 1.10218 0.204129 0.720644 0.56748 0.43934C0.930832 0.158035 1.42364 0 1.9375 0ZM27.125 3H3.875V26.148L15.5 20.508L27.125 26.148V3Z" fill="#5F5454" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                )
+                            ))}
+                            <ToastContainer />
+                        </div>
+                    </div> */}

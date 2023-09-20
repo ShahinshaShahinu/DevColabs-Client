@@ -60,16 +60,8 @@ function App() {
         <Route path='/Community' element={<ChatPage />} />
         <Route path='/VideoCall' element={<VideoCallPage />} />
         <Route path='/room/:roomId' element={<RoomVideoCallPage/>} />
-
-
-     
         <Route path='/jasMeetingVideoCall' element={<JaaSMeetingVideoCall />} />
-
-
-
-
         {/* Admin Routes */}
-
         <Route path='/admin/login' element={<AdminLoginPage />} />
         <Route path='/admin/UserManageMent' element={<AdminProtectedRoute><AdminUserManagementPage /></AdminProtectedRoute>} />
         <Route path='/admin/Dashboard' element={<AdminProtectedRoute><AdminDashboardPage /></AdminProtectedRoute>} />
