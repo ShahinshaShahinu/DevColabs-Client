@@ -9,7 +9,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "homepage": "https://ShahinshaShahinu.github.io",
   "dependencies": {
     "@babel/core": "^7.22.10",
     "@babel/plugin-transform-react-jsx": "^7.22.5",
