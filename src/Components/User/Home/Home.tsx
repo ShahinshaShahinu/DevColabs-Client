@@ -23,7 +23,6 @@ import Box from "@mui/material/Box";
 import { Pagination } from "@mui/material";
 import CommentEdit from "./HomeOptions/CommentEdit";
 import { Comment } from "../../../utils/interfaceModel/comment";
-import ReactPaginate from 'react-paginate';
 import CustomPagination from "./Pagination";
 
 
