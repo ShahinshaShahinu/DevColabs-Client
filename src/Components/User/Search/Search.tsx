@@ -13,6 +13,7 @@ import CommunitySection from "../Home/CommunitySection";
 import LikeSection from "../Home/LikeSection";
 import PostFooterOptions from "../Home/PostFooterOptions";
 import { useSelector } from "react-redux";
+import LoaderAbsolute from "../isLoading/LoaderAbsolute";
 
 
 
@@ -27,13 +28,18 @@ function Search() {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isScrolled, setIsScrolled] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true)
             const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
             const allUsersResponse = await api.get(`/GetUsers`, { withCredentials: true });
             setHomePosts(userResponse.data);
             setAllusers(allUsersResponse?.data);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 500);
         };
 
         fetchData();
@@ -105,8 +111,8 @@ function Search() {
     }
 
     function loginModalOpen(data: boolean): void {
-        console.log(data,'lll');
-        
+        console.log(data, 'lll');
+
         throw new Error("Function not implemented.");
     }
     const receiveDataFromChild = (data: boolean) => {
@@ -123,7 +129,9 @@ function Search() {
                         {/* Your Navbar component */}
                         <Navbar />
                     </div>
-
+                    {isLoading && (
+                        <LoaderAbsolute />
+                    )}
                     {/* Main content */}
                     <main className="flex-grow bg-white">
                         <div className="lg:mx-28 xl:mx-48 md:mx-28">
@@ -172,7 +180,21 @@ function Search() {
                                                         {selectedCategory === 'posts' ? 'Search Posts' : 'Search Users'}
                                                     </p>
                                                     <button className="bg-black"></button>
+
                                                     <div className="item-list">
+                                                        {filteredItemsp.length == 0 && (
+                                                            <>
+                                                                <div className="p-4 pt-0 bg-[#e1e5eb]">
+                                                                    <div className="bg-white p-4 rounded-md shadow-md">
+                                                                        <div className="p-4 pt-0 bg-gray-200 border-t-4 border-gray-400 rounded-t-lg">
+                                                                            <h1 className="text-xl font-semibold text-gray-800">Empty</h1>
+                                                                            <p className="text-gray-500">Search result not found</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </>
+                                                        )}
                                                         {filteredItemsp && filteredItemsp.map((item: any, index) => (
                                                             <div className="p-4 pt-0 bg-[#e1e5eb]" key={index}>
                                                                 {/* Render the appropriate content based on the selected category */}

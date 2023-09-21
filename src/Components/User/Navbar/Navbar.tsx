@@ -46,7 +46,7 @@ function Navbar() {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const Notifications = await GetNotification();
         setNotification(Notifications?.data);
-        console.log(Notifications?.data,'noti fif cso socket ');
+        console.log(Notifications?.data, 'noti fif cso socket ');
         const hasUnread = !!(Notifications?.data?.[0] && !Notifications?.data[0]?.read);
         sethasUnreadNotifications(hasUnread);
       } catch (error) {
@@ -60,7 +60,7 @@ function Navbar() {
   }, [socket]);
 
 
-  
+
 
   // useEffect(() => {
   //   const getAuth = async () => {
@@ -149,7 +149,7 @@ function Navbar() {
     };
 
     fetchNotification();
-  }, [isNotificationModalOpen, userData,socket]);
+  }, [isNotificationModalOpen, userData, socket]);
 
 
 
@@ -190,7 +190,7 @@ function Navbar() {
   useEffect(() => {
     console.log(Notification, 'Notification Notification NotificationNotification');
     fetchUserData();
-  }, [socket,setNotification]);
+  }, [socket, setNotification]);
 
 
 
@@ -314,7 +314,7 @@ function Navbar() {
                         onClick={() => {
                           setshowUserCircle(!showUserCircle), setShowSearch(false)
                         }}
-                        className="sm:w-10 sm:h-10 w-7 rounded-full "
+                        className="sm:w-10 sm:h-10  h-7 w-7 rounded-full "
                         src={image} alt=""
                       />
 
@@ -342,7 +342,7 @@ function Navbar() {
                               onClick={() => {
                                 Navigate("/SavedPosts"), RemoveSearchTerm();
                               }}
-                              className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
+                              className="flex items-center cursor-pointer px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
                               <span className="text-sm font-medium">Saved</span>
                               <svg
@@ -563,28 +563,24 @@ function Navbar() {
             >
               {username ? (
                 <>
-                  <li className="mx-4 items-center flex flex-col justify-center relative my-6 md:my-0">
+                  <li className="sm:-mx-4 mx-4 items-start flex flex-col justify-start relative my-4 md:my-0 text-left">
                     <button
                       onClick={() => {
                         Navigate("/PostCreation"), RemoveSearchTerm();
                       }}
-                      className="text-xl  hover:text-cyan-500 duration-500"
+                      className="text-sm hover:text-cyan-500 duration-500"
                     >
-                      <span className="border-2 border-sky-500">
-                        <IoCreateOutline className="w-8 h-8 inline-flex " />{" "}
-                        Create Post
-                      </span>
+                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" />
                     </button>
+
                   </li>
-                  <div className="items-center flex justify-end rounded-full relative">
-                    <li className="mx-6 items-center flex relative my-6 md:my-0 rounded-full hover:bg-white">
+                  <div className="items-center flex justify- rounded-full relative">
+                    <li className="mx-4 sm:mx-6  flex-col justify-start items-center flex relative my- md:my-0 rounded-full hover:bg-white">
                       <button onClick={() => setNotificationModalOpen(!isNotificationModalOpen)} className="text-xl hover:text-cyan-500 duration-500 relative">
-                        {/* {isNotificationModalOpen || (hasUnreadNotifications && Notification && !Notification[0]?.ReportPostId && Notification[0]?.senderId?._id === userId) || */}
+
                         {isNotificationModalOpen || (hasUnreadNotifications && Notification && Notification[0]?.senderId?._id === userId) ? (
-                          // (hasUnreadNotifications && Notification && Notification[0]?.ReportPostId?.userId === userId) ? (
                           <>
                             <IoIosNotifications className="w-9 h-9" />
-                            {/* {(hasUnreadNotifications && Notification && !Notification[0]?.ReportPostId && Notification[0]?.senderId?._id == userId || hasUnreadNotifications && Notification && Notification[0]?.ReportPostId?.userId === userId) && ( */}
                             {(hasUnreadNotifications && Notification && Notification[0]?.senderId?._id === userId) && (
                               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                             )}
@@ -599,11 +595,11 @@ function Navbar() {
                     <div className="relative right-5">
                       {isNotificationModalOpen && (
 
-                        <div className="absolute top-6 right-full w-[28rem]  max-w-md overflow-y-auto h-auto max-h-[40rem] bg-white border border-gray-300 rounded-xl shadow-l ">
+                        <div className="absolute top-6 sm:right-full sm:w-[28rem] w-[24rem]  -left-12 sm:-left-96  max-w-md overflow-y-auto h-auto max-h-[30rem] sm:max-h-[40rem]  bg-white border border-gray-300 rounded-xl shadow-l ">
                           {isLoading && <div className="absolute z-[60] inset-0 flex items-center justify-center  bg-opacity-50">
                             <Loading />
                           </div>}
-                          <div className="fixed w-[28rem] z-50 p-4 bg-gray-100 flex justify-between items-center rounded-t-xl">
+                          <div className="fixed sm:w-[28rem] w-96 z-50 p-4 bg-gray-100 flex justify-between items-center rounded-t-xl">
                             <h3 className="text-xl font-semibold text-gray-900">Notifications</h3>
                             <button
                               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -696,21 +692,21 @@ function Navbar() {
                               {userEmail}
                             </div>
                           </div>
-                          <li>
+                          <li className="cursor-pointer">
                             <a
                               onClick={() => { Navigate("/profile"), RemoveSearchTerm() }}
 
-                              className="block px-4 py-2  text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
+                              className="block px-4 py-2 cursor-pointer text-gray-700 dark:hover:bg-gray-600 dark:hover:text-white font-medium"
                             >
                               Profile
                             </a>
                           </li>
-                          <li>
+                          <li className="cursor-pointer">
                             <button
                               onClick={() => {
                                 Navigate("/SavedPosts"), RemoveSearchTerm()
                               }}
-                              className="flex items-center px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
+                              className="flex items-center cursor-pointer px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
                             >
                               <span className="text-sm  font-medium">Saved</span>
                               <svg
@@ -727,7 +723,7 @@ function Navbar() {
                           </li>
 
                           {/* </ul> */}
-                          <li >
+                          <li className="cursor-pointer">
                             <a
                               onClick={() => { handleSignOutClick(), RemoveSearchTerm() }}
                               className="block px-4 py-2 text-sm text-gray-700  dark:hover:bg-gray-600  dark:hover:text-white font-medium"

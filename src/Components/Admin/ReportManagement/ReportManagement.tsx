@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
-import { BlockReportedPost, DeleteRePortPost, SendNotification, UnBlockReportedPost, getReportedPosts } from "../../../services/API functions/AdminApi"
+import { BlockReportedPost, ClearAll, DeleteRePortPost, SendNotification, UnBlockReportedPost, getReportedPosts } from "../../../services/API functions/AdminApi"
 import { ReportPostData } from '../../../utils/interfaceModel/userInfra';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { format } from "date-fns";
 import { useSocket } from "../../../Context/WebsocketContext";
 import { useNavigate } from "react-router-dom";
+import { FaTimes } from "react-icons/fa";
 
 function ReportManagement() {
 
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [ReportPosts, setReportPosts] = useState<ReportPostData[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<number | null>(null);
   const [Refresh, setRefresh] = useState(false);
@@ -67,7 +68,7 @@ function ReportManagement() {
       if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
         localStorage.removeItem('admin');
         navigate('/admin/login')
-    }
+      }
     }
   }
 
@@ -101,14 +102,16 @@ function ReportManagement() {
     }
   }
   const handleDeleteClick = () => {
-    console.log('dele clicked modal opern');
     setIsDeleteConfirmationOpen(true);
   };
   const handleCancelDelete = () => {
     setIsDeleteConfirmationOpen(false);
   };
 
-
+  const handleAlldeleted =async () => {
+    
+      await ClearAll(); setRefresh(true);
+  }
 
 
 
@@ -117,6 +120,14 @@ function ReportManagement() {
     <>
       <div className="p-4 sm:ml-64">
         <div className="p-6 mt-20">
+          <div className="flex justify-end py-2 ">
+            <button
+              className="flex items-center px-2 mx-2 py-1 text-red-600 bg-white border border-red-600 rounded-md hover:bg-red-600 hover:text-white focus:outline-none focus:bg-red-600 focus:text-white"
+              onClick={() => handleAlldeleted()}
+            >
+              <FaTimes className="mr-1" /> Clear
+            </button>
+          </div>
           <div className="flex-1 overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -163,7 +174,7 @@ function ReportManagement() {
                     <td className="px-6 py-4">
                       {ReportPost?.PostId?.status ?
                         <button
-                          onClick={() => { BlockReportedPost(ReportPost?.PostId?._id), NotificationMessage(false, ReportPost?.PostId?._id, ReportPost?.PostId?.userId?._id ), setRefresh(true) }}
+                          onClick={() => { BlockReportedPost(ReportPost?.PostId?._id), NotificationMessage(false, ReportPost?.PostId?._id, ReportPost?.PostId?.userId?._id), setRefresh(true) }}
                           type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Inactive</button>
                         :
                         <button

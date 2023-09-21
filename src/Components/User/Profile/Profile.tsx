@@ -189,8 +189,6 @@ function Profile() {
         try {
 
             const Validate = ProfileValidation(userProfile);
-            console.log(Validate, 'checkid vali');
-
             if (Validate === 'success') {
                 setIsLoading(true);
                 setTimeout(() => {
@@ -199,9 +197,6 @@ function Profile() {
                 }, 1000);
 
                 UserProfileSuccess('Profile updated successfully!');
-
-                console.log('valiss');
-
 
                 const data = await api.post(`/profile/${userId}`, { ...userProfile }, { withCredentials: true })
                 console.log('after vass');
@@ -347,7 +342,7 @@ function Profile() {
                                 )}
 
                                 <p className="mb-3 font-medium text-gray-950 ">{userProfileData?.userProfileData?.profile?.Headline}</p>
-                                <p className=" font-serif    text-gray-950 ">{userProfileData?.userProfileData?.profile?.Hashtags}  </p>
+                                {/* <p className=" font-serif    text-gray-950 ">{userProfileData?.userProfileData?.profile?.Hashtags}  </p> */}
                                 <div>
                                     <div>
                                         {userHshTagSelectedTags.map((tag: any, index: any) => (
@@ -368,7 +363,6 @@ function Profile() {
                             </div>
                             <div className="max-w-sm  px-4  bottom-1 mx-6 absolute bg-white border border-gray-200 rounded-lg shadow  ">
                                 <p className="mb-3 font-normal text-gray-800 dark:text-gray-600 inline-flex">&nbsp;  {Postcount} posts published</p>
-                                <p className="mb-3 font-normal text-gray-800 dark:text-gray-600 inline-flex">&nbsp;   0 tags followed</p>
                             </div>
                             <div className="h-20 flex   w-screen relative justify-end">
                                 <div className="md:col-span-2  z-10 flex  items-center md:items-stretch md:w-16 md:mr-2">
@@ -656,7 +650,7 @@ function Profile() {
                                                     placeholder="Enter your status/headline"
                                                     className="border border-gray-300 p-2 rounded-lg w-full" />
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <label htmlFor="hashtags" className="block text-sm font-medium text-gray-700">
                                                     Select Hashtags
                                                 </label>
@@ -673,7 +667,7 @@ function Profile() {
                                                     <option value="#React">#React</option>
                                                     <option value="#NodeJs">#NodeJs</option>
                                                 </select>
-                                            </div>
+                                            </div> */}
                                             <TextField
                                                 onChange={(e) => setUserProfile({ ...userProfile, AboutMe: e.target.value })}
                                                 id="outlined-multiline-static"

@@ -32,7 +32,14 @@ export const DashbordDAtas =async ()=>{
         
     }
 }
-
+export const ClearAll = async () =>{
+    try {
+        const res = await api.post('/admin/clearReportPosts');
+        return res
+    } catch (error) {
+        
+    }
+}
 
 
 

@@ -39,13 +39,13 @@ const RightSidebar: React.FC<RightSidebarPropsdata> = ({ isVisible, toggleSideba
 
                             <div className="flex flex-col items-center mb-4">
                                 <img
-                                    src={selected.Image}
-                                    alt={selected.Name}
+                                    src={selected?.Image}
+                                    alt={selected?.Name}
                                     className="w-20 h-20 rounded-full border-2 border-gray-600 shadow-md hover:shadow-md transform hover:scale-105 transition-transform duration-300 mb-2"
                                 />
-                                <p className="text-xl font-semibold">{selected.Name}</p>
+                                <p className="text-xl font-semibold">{selected?.Name}</p>
                             </div>
-                            {selected.CreatedAdmin && (
+                            {selected?.CreatedAdmin && (
                                 <div className="bg-blue-200 shadow-md rounded-md p-2 flex items-center">
                                     <div className="flex items-center">
                                         <div className="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center">
@@ -74,11 +74,11 @@ const RightSidebar: React.FC<RightSidebarPropsdata> = ({ isVisible, toggleSideba
                                             className="flex items-center bg-white shadow-md rounded-md"
                                         >
                                             <img
-                                                src={user.profileImg}
-                                                alt={user.UserName}
+                                                src={user?.profileImg}
+                                                alt={user?.UserName}
                                                 className="w-8 h-8 rounded-full mr-2"
                                             />
-                                            <span>{user.UserName}</span>
+                                            <span>{user?.UserName}</span>
                                         </li>
                                     </>
                                     ))}

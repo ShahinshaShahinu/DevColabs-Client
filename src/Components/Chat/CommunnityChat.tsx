@@ -341,16 +341,16 @@ function CommunnityChat({ selectedChatss, MessagesFrt, setBackFromChat }: Select
                                                                 <img
                                                                     src={message?.image}
                                                                     alt="Selected"
-                                                                    className="object-cover object-center max-w-[400px] w-full h-full"
+                                                                    className="object-cover object-center max-w-[400px] cursor-pointer w-full h-full"
                                                                 />
 
                                                             </div>
                                                             {showBigImageId === message?._id && (
-                                                                <div onClick={() => setShowBigImageId(null)} className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75`}>
+                                                                <div onClick={() => setShowBigImageId(null)} className={`fixed inset-0 z-50 flex cursor-pointer items-center justify-center bg-black bg-opacity-75`}>
                                                                     <img
                                                                         src={message?.image}
                                                                         alt="Selected"
-                                                                        className="max-w-full max-h-full"
+                                                                        className="max-w-full max-h-full cursor-pointer"
                                                                     />
                                                                 </div>
                                                             )}

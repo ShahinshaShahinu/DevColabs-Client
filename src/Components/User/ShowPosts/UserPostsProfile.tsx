@@ -257,7 +257,7 @@ function UserPostsProfile() {
                             <img
                                 src={(clickData ? clickData.userId?.profileImg : UrlData?.userId?.profileImg) || ""}
                                 alt='User Profile'
-                                className='w-12 inline rounded-full mx-auto '
+                                className='w-12 h-12 inline rounded-full mx-auto '
                             />
                             <h1 className='inline-block pl-2 text-lg absolute'>
                                 {(clickData ? clickData.userId?.UserName : UrlData?.userId?.UserName) || ""}
@@ -350,7 +350,7 @@ function UserPostsProfile() {
                                                     <div className="rounded-lg overflow-hidden shadow-md">
                                                         <iframe
                                                             width="100%" // Set the width to 100% of the container
-                                                            height="400px" // Set the height as needed
+                                                            // height="400px" // Set the height as needed
                                                             src={videoUrl}
                                                             title={`Embedded YouTube Video ${index}`}
                                                             frameBorder={0}

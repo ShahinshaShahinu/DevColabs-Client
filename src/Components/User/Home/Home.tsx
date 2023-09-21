@@ -19,11 +19,10 @@ import { UserBlock_UnBlock, UserFolowers, userRecomended } from '../../../servic
 import Footer from "../Navbar/Footer";
 import CommunitySection from "./CommunitySection";
 import LikeSection from "./LikeSection";
-import Box from "@mui/material/Box";
-import { Pagination } from "@mui/material";
 import CommentEdit from "./HomeOptions/CommentEdit";
 import { Comment } from "../../../utils/interfaceModel/comment";
 import CustomPagination from "./Pagination";
+import LoaderAbsolute from "../isLoading/LoaderAbsolute";
 
 
 interface IHashtag {
@@ -57,6 +56,7 @@ function HomePage() {
     HashtagName: '',
     CountPost: 0,
   });
+  const [isLoading, setIsLoading] = useState(false)
   const [refresh, setRefresh] = useState(false);
   const location = useLocation();
   const getClicketHashtag = location?.state;
@@ -120,9 +120,6 @@ function HomePage() {
     try {
 
       if (username) {
-        console.log('usere');
-
-        console.log(selectedReason, '');
         if (selectedReason.trim() == '') {
           ErrorToast('please Select ')
         } else {
@@ -226,6 +223,7 @@ function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         if (selectCategory === 'Latest') {
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
           setHomePosts(userResponse?.data);
@@ -249,6 +247,9 @@ function HomePage() {
           );
           setHomePosts([...filteredPosts, ...followersPost]);
         }
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -389,15 +390,8 @@ function HomePage() {
 
 
 
-  const [page, setPage] = useState(1);
-
-
-  const itemsPerPage = 2;
+  const itemsPerPage = 4;
   const [currentPage, setCurrentPage] = useState(1);
-  const handleChange = (_event: React.ChangeEvent<unknown>, newPage: number) => {
-    setPage(newPage);
-  };
-
 
   const pageCount = Math.ceil(HomePosts.length / itemsPerPage);
 
@@ -413,10 +407,6 @@ function HomePage() {
 
 
 
-
-
-
-
   return (
     <>
 
@@ -427,7 +417,9 @@ function HomePage() {
             <Navbar />
           </div>
           <main className="flex-grow  bg-white  ">
-
+            {isLoading && (
+              <LoaderAbsolute />
+            )}
             <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
               <div className="mx-auto max-w-screen-xl overflow">
                 <div className="flex md:flex-row-reverse ">
@@ -440,7 +432,7 @@ function HomePage() {
                     <div className="w-auto absolute md:h-screen md:scree max-w-screen-md mb-96 top-12 md:top-16 bg-white ml-0 ">
                       {/* Inner Content */}
                       <div className="flex   relative z-10   top-2 sm:justify-center md:left-32 lg:left-44 xl:left-14 h-auto bg-opacity-75">
-                        <nav className="fixed baCkground border-b-2 sm:w-full backdrop-blur-md h-auto xl:w-[42rem] md:w-[35rem] lg:w-[40rem] w-[28rem] overflow-y-auto md:overflow-y-hidden">
+                        <nav className="fixed baCkground border-b-2  backdrop-blur-md h-auto xl:w-[42rem] md:w-[35rem] lg:w-[40rem] sm:w-full   w-[28rem]  overflow-y-auto md:overflow-y-hidden">
                           <ul>
                             {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') ? (
                               <li className={`flex cursor-pointer relative items-center h-12 space-x-2 `}>
@@ -491,7 +483,7 @@ function HomePage() {
 
 
 
-                      <div className="p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
+                      <div className="md:p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
 
                         <div >
 
@@ -536,7 +528,7 @@ function HomePage() {
                                     </div>
                                     <p
                                       onClick={() => Navigate('/profile', { state: post?.userId?._id })}
-                                      className="font-medium cursor-pointer text-base sm:text-base overflow-hidden whitespace-wrap break-words"
+                                      className="font-medium cursor-pointer break-all flex mr-8 text-base sm:text-base overflow-hidden whitespace-wrap break-words"
                                     >
                                       {post?.userId?.UserName}
                                     </p>
@@ -931,7 +923,7 @@ function HomePage() {
                                           <button className="text-gray-500">Delete</button> */}
 
 
-                                      <div className="pt-5">
+                                      <div className="pt-5 -m-6 sm:-m-0">
                                         <div className="pt-5 pl-5">
                                           {HomePosts[index]?.Comments.map((comment: Comment, commentIndex: number) => (
                                             <div key={commentIndex} className="mb-2 bg-white ">
@@ -939,12 +931,12 @@ function HomePage() {
                                                 <img onClick={() => Navigate('DevColabs-Client//profile', { state: comment?.userId?._id })}
                                                   src={comment.userId.profileImg}
                                                   alt="Commenter Profile"
-                                                  className="w-10 h-10 rounded-full mr-3  cursor-pointer"
+                                                  className="w-8 h-8 rounded-full mr-3  cursor-pointer"
                                                 />
                                                 <div
                                                   className="flex-grow">
                                                   <p onClick={() => Navigate('/profile', { state: comment?.userId?._id })}
-                                                    className="font-semibold cursor-pointer text-blue-500 hover:underline">
+                                                    className="font-semibold cursor-pointer break-all text-blue-500 hover:underline">
                                                     {comment.userId.UserName}
                                                   </p>
                                                   <p className="text-gray-600 break-all mt-1">{comment.Comment}</p>
@@ -1017,23 +1009,6 @@ function HomePage() {
 
 
 
-                        {/* 
-                        <div className="hidden md:block ">
-                          <div className="bg top-10 lg:w-[110%]  h-32  lg:right-10 relative flex justify-center ">
-                            <div className="bg-white w-full h-full z-0   flex ">
-                              <Box
-                                sx={{
-                                  margin: "auto",
-                                  width: "fit-content",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Pagination count={10} page={page} onChange={handleChange} />
-                              </Box>
-                            </div>
-                          </div>
-                        </div> */}
-
                         <div className="hidden z-50 md:block ">
                           <div className="bg top-10 lg:w-[110%] h-32 lg:right-10 relative flex justify-center ">
                             <div className="bg-white w-full h-full items-center justify-center z-0 flex ">
@@ -1041,28 +1016,10 @@ function HomePage() {
                             </div>
                           </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-                        <div className="sm:hidden">
-                          <div className=" top-0 w-screen  h-14 p-1  right-4  mb-10  relative flex justify-center ">
-                            <div className="bg-white w-full h-fullrounded-xl  flex ">
-                              <Box
-                                sx={{
-                                  margin: "auto",
-                                  width: "fit-content",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Pagination count={10} page={page} onChange={handleChange} />
-                              </Box>
+                        <div className=" bottom-4 relative ">
+                          <div className="bg top-10 lg:w-[110%] h-32 md:hidden lg:right-10 relative flex justify-center ">
+                            <div className="bg-white w-full h-full  bottom-5 pb-10   relative items-center justify-center z-0 flex ">
+                              <CustomPagination pageCount={pageCount} onPageChange={handlePageChange} />
                             </div>
                           </div>
                         </div>
@@ -1098,6 +1055,7 @@ function HomePage() {
                 </div>
               </div>
             </div>
+
 
           </main>
           {/* Footer */}

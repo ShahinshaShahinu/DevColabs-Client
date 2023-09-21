@@ -1,14 +1,14 @@
-export const ProfileValidation = (userData: { FirstName: string, LastName: string, Pronouns: string, Headline: string, Hashtags: string, AboutMe: string }) => {
+export const ProfileValidation = (userData: { FirstName: string, LastName: string, Pronouns: string, Headline: string,  AboutMe: string }) => {
     try {
         const regex = {
             lnameRgx: /^(?! +$)[A-Za-z ]{3,30}$/,
             emailRgx: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
             passWordRgx: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            HeadlineRgx: /^(?!\s+$)[A-Za-z\d\s]{10,}$/,
+            HeadlineRgx: /^(?!\s+$)[A-Za-z\d\s]{5,}$/,
             AboutMeReg: /^(?!\s+$)[\s\S]{10,250}$/
         };
 
-        const { FirstName, LastName, Pronouns, Headline, Hashtags, AboutMe } = userData;
+        const { FirstName, LastName, Pronouns, Headline, AboutMe } = userData;
 
 
         console.log('coming the validatoin');
@@ -20,7 +20,7 @@ export const ProfileValidation = (userData: { FirstName: string, LastName: strin
             FirstName: "",
             LastName: "",
             Headline: '',
-            Hashtags: '',
+            // Hashtags: '',
             Pronouns: 'Please select',
             AboutMe: ''
         };
@@ -34,10 +34,11 @@ export const ProfileValidation = (userData: { FirstName: string, LastName: strin
         } else if (Pronouns === 'Please select') {
             return errors.Pronouns = "Please select Pronouns";
         } else if (!regex.HeadlineRgx.test(Headline)) {
-            return errors.Headline = "Enter A valid Headline Minimum 10 letters";
-        } else if (Hashtags === 'Please select') {
-            return errors.Hashtags = "Enter A valid Hashtags";
+            return errors.Headline = "Enter A valid Headline Minimum 5 letters";
         }
+        //  else if (Hashtags === 'Please select') {
+        //     return errors.Hashtags = "Enter A valid Hashtags";
+        // }
         
         else if (!regex.AboutMeReg.test(AboutMe)) {
             console.log('minimum');

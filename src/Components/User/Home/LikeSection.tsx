@@ -86,7 +86,7 @@ console.log(data?.likes    ,'data');
             {isOpen && (
                 <>
 
-                    <div className="fixed top-0 left-0 right-0 z-50 w-full h-screen flex items-center justify-center">
+                    <div className="fixed top-0 left-0 right-0 z-50 w-full h-screen  overflow-auto flex items-center justify-center">
                         <div className="fixed inset-0 bg-black opacity-50" onClick={closeModal}></div>
                         <div className="relative bg-white rounded-lg shadow p-6 w-full max-w-2xl max-h-full ">
                             <button
@@ -119,7 +119,7 @@ console.log(data?.likes    ,'data');
                                                 src={user?.userId?.profileImg || 'https://img.favpng.com/22/0/21/computer-icons-user-profile-clip-art-png-favpng-MhMHJ0Fw21MJadYjpvDQbzu5S.jpg'}
                                                 alt={user?.userId?.profileImg || 'User'}
                                             />
-                                            <span onClick={() => Navigate('/profile', { state: user?.userId?._id })} className="text-gray-700 cursor-pointer overflow-ellipsis whitespace-nowrap">{user?.userId?.UserName}</span>
+                                            <span onClick={() => Navigate('/profile', { state: user?.userId?._id })} className="text-gray-700 cursor-pointer  overflow-ellipsis  break-all">{user?.userId?.UserName}</span>
                                             <div onClick={() => Navigate('/profile', { state: user?.userId?._id })} className="flex-grow cursor-pointer left-10 relative" />
 
 
@@ -128,7 +128,7 @@ console.log(data?.likes    ,'data');
                                                     <button
                                                         onClick={() =>{username ?  UnFolllowing(user?.userId?._id):setIsModalOpen(true)}}
                                                         type="button"
-                                                        className="bg-rose-500 text-white px-3 py-1 rounded-md hover:bg-rose-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
+                                                        className="bg-rose-500 text-white md:px-3  md:py-1 px-2 rounded-md hover:bg-rose-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
                                                     >
                                                         Unfollow
                                                     </button>
@@ -140,7 +140,7 @@ console.log(data?.likes    ,'data');
                                                             <button
                                                                 onClick={() =>{username ? Folllowing(user?.userId?._id):setIsModalOpen(true)}}
                                                                 type="button"
-                                                                className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
+                                                                className="bg-blue-500 text-white md:px-3  md:py-1 px-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
                                                             >
                                                                 Follow
                                                             </button>
