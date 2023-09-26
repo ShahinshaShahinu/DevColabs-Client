@@ -38,7 +38,7 @@ function RoomVideoCall() {
         // Get the current camera stream based on the frontCamera state
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: !frontCamera ? 'user' : 'environment' },
+          video: { facingMode: 'environment' },
         });
         console.log(frontCamera,'camera');console.log(frontCamera,'camera');
         // Continue with stream handling
