@@ -558,7 +558,7 @@ function Navbar() {
             )}
 
             <ul
-              className={`md:flex md:items-center z-[-1] md:z-auto  md:static absolute md:bg-[#D4E7FA]  bg-[#a4bfeb] w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 md:opacity-100  ${showMenu ? `opacity-100 top-10` : `opacity-0 top-[-400px]`
+              className={`md:flex md:items-center z-[-1] md:z-auto  md:static absolute md:bg-[#D4E7FA]  bg-cyan-50 border-b-2  sm:border-0 shadow-lg sm:shadow-none border-gray-400 w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 md:opacity-100  ${showMenu ? `opacity-100 top-10` : `opacity-0 top-[-400px]`
                 }  transition-all ease-in duration-500`}
             >
               {username ? (
@@ -570,7 +570,7 @@ function Navbar() {
                       }}
                       className="text-sm hover:text-cyan-500 duration-500"
                     >
-                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" />
+                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" /> 
                     </button>
 
                   </li>

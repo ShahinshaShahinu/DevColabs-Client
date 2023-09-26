@@ -11,7 +11,7 @@ interface FooterProps {
 
 function Footer({ SelectCategory, ClickedHashtag }: FooterProps) {
   const Navigate = useNavigate();
-  const { userId } = useSelector((state: any) => state.user);
+  const { username } = useSelector((state: any) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -25,7 +25,7 @@ function Footer({ SelectCategory, ClickedHashtag }: FooterProps) {
                   <AiFillHome className='text-2xl mx-5 cursor-pointer' onClick={() => { Navigate('/'), SelectCategory('Latest'), ClickedHashtag('') }} />
                 </a>
                 <a className="hover:text-gray-400">
-                  <HiOutlineUserGroup className='text-2xl mx-5 cursor-pointer' onClick={() =>{userId ? Navigate('/Commuity'): setIsModalOpen(!isModalOpen)} } />
+                  <HiOutlineUserGroup className='text-2xl mx-5 cursor-pointer' onClick={() =>{username ? Navigate('/Community') : setIsModalOpen(!isModalOpen)} } />
                 </a>
               </div>
             </div>

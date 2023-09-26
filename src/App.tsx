@@ -69,7 +69,7 @@ function App() {
         <Route path='/admin/ReportManageMent' element={<AdminProtectedRoute><AdminReportManagementPage /></AdminProtectedRoute>} />
   
 
-        <Route path='*' element={<ErrorPage/>}/>
+        {/* <Route path='*' element={<ErrorPage/>}/> */}
 
       </Routes>
     </>

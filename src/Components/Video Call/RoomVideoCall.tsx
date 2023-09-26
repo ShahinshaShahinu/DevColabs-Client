@@ -3,6 +3,10 @@ import { useSocket } from "../../Context/WebsocketContext";
 import { usePeer } from "../../Provider/Peer";
 import { MdCallEnd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../User/Navbar/Navbar";
+import { BsFillCameraVideoFill } from "react-icons/bs";
+import { AiFillAudio } from "react-icons/ai";
+import VideoCallOptions from "./VideoCallOptions";
 
 interface PeerContextValue {
   peer: RTCPeerConnection;
@@ -19,11 +23,13 @@ interface Call {
 
 function RoomVideoCall() {
   const socket = useSocket();
-  const naviagte= useNavigate()
-  const [myStream, setMyStream] = useState<MediaStream | null>(null);
+  const naviagte = useNavigate()
+  const [myStream, setMyStream] = useState<MediaStream | null | undefined>(null);
   const [remoteEmailId, setRemoteEmailId] = useState<string>('');
-  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue|any = usePeer();
+  const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue | any = usePeer();
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
+  const [Audio, setAudio] = useState(true)
+  const [Video, setVido] = useState(true);
 
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     console.log(`Email ${email} joined room`);
@@ -34,11 +40,11 @@ function RoomVideoCall() {
   const handleIncomingCall = useCallback(
     async ({ from, offer }: Call) => {
       try {
-        // Attempt to access media devices
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
+
+         const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true,
+          });
 
         // Continue with stream handling
         setRemoteSocketId(from);
@@ -51,7 +57,7 @@ function RoomVideoCall() {
         console.error('Error accessing media devices:', error);
       }
     },
-    [socket, createAnswer]
+    [createAnswer]
   );
 
   const handleCallAccepted = useCallback(
@@ -87,10 +93,11 @@ function RoomVideoCall() {
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted]);
 
   const handleCallUser = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
+    let stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
@@ -107,65 +114,99 @@ function RoomVideoCall() {
 
   useEffect(() => {
     handleCallUser();
-  }, [handleCallUser]);
+  }, [handleCallUser, Video, Audio]);
 
-  const handleEndCall = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: false,
+  // const handleEndCall = async () => {
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia({
+  //       audio: false,
+  //       video: false,
+  //     });
+  //     stream.getTracks().forEach(track => track.stop());
+  //   } catch (error) {
+  //     console.error('Error stopping media devices:', error);
+  //   }
+
+  //   // Close the peer connection (assuming you have a 'peer' variable representing it)
+  //   if (peer) {
+  //     peer.close();
+  //   }
+
+  //   console.log('nnnnnnnnnnnnnnnnnnnn');
+
+  //   naviagte('/videocall');
+  // };
+
+  const turnOffCamera = () => {
+    if (myStream) {
+      const tracks = myStream.getTracks();
+      tracks.forEach((track) => {
+        track.stop(); // This stops the individual track
       });
-      stream.getTracks().forEach(track => track.stop());
-    } catch (error) {
-      console.error('Error stopping media devices:', error);
+      setMyStream(null); 
     }
-  
-    // Close the peer connection (assuming you have a 'peer' variable representing it)
-    if (peer) {
-      peer.close();
-    }
-  
-   console.log('nnnnnnnnnnnnnnnnnnnn');
-   
-    naviagte('/videocall');
   };
+
   return (
-    <div>
-      <h1>Room Page</h1>
-      {remoteEmailId}
-      <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4>
-  
-      {myStream && (
-        <>
-          <h1 className="text-xl">My Stream</h1>
-          <div className="flex justify-center items-center h-screen">
-            <button onClick={()=>handleEndCall()}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full flex items-center"    >
-              <MdCallEnd  className="text-3xl " />
-            </button>
-          </div>
-          <video
-            autoPlay
-            playsInline
-            // muted
-            height="400px"
-            width="400px"
-            ref={(videoElement) => {
-              if (videoElement) {
-                videoElement.srcObject = myStream;
-              }
-            }}
-          />
-        </>
-      )}
-      <video
-        // muted
-        playsInline
-        autoPlay
-        // muted
-        ref={remoteVideoRef}
-      ></video>
-    </div>
+    <>
+      <div className=" relative z-20 ">
+        <Navbar />
+      </div>
+      <div className="top-8 relative">
+        {/* <h1>Room Page</h1>
+        {remoteEmailId} */}
+        {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
+
+        {myStream && (
+          <>
+            <h1 className="text-xl">My Stream</h1>
+            {Video ? (
+
+              <video
+                autoPlay
+                playsInline
+                // muted
+                // height="400px"
+                // width="400px"
+                ref={(videoElement) => {
+                  if (videoElement) {
+                    videoElement.srcObject = myStream;
+                  }
+                }}
+              />
+            ) : (
+              <div className="bg-black md:w-[42.8%] h-[42vh] " />
+            )}
+
+
+
+          </>
+        )}
+        <video
+          // muted
+          playsInline
+          autoPlay
+          // muted
+          ref={remoteVideoRef}
+        ></video>
+
+
+        {/* <video
+          autoPlay
+          playsInline
+          ref={(videoElement) => {
+            if (videoElement && myStream) {
+              videoElement.srcObject = myStream;
+            }
+          }}
+        /> */}
+
+      </div>
+
+      <VideoCallOptions VideoDisabled={(data) => {setVido(data),turnOffCamera()}} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
+
+
+    </>
   );
 }
 

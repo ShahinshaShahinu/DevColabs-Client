@@ -9,16 +9,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+
 function login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const Userauth = localStorage.getItem("user");
-    if (Userauth) {
-      localStorage.removeItem("userId");
-      console.log(Userauth);
-    }
     if (Userauth) {
       navigate("/");
     }
@@ -214,7 +211,7 @@ function login() {
                   }}
                 >
                   Forgot password
-                <p className="inline text-black font-medium px-1" >?</p>
+                  <p className="inline text-black font-medium px-1" >?</p>
                 </p>
               </div>
               <div className="flex px-4">
@@ -241,12 +238,6 @@ function login() {
                     console.log("Login Failed");
                   }}
                 />
-
-
-                {/* <div className="    mx-1">
-                  <GitHubAuth />
-                </div> */}
-
 
 
               </div>

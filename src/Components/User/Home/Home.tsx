@@ -1064,8 +1064,6 @@ function HomePage() {
               SelectCategory={(data) => (data === 'Latest' ? setSelectCategory('Latest') : 'Recommended')}
               ClickedHashtag={(data) => setClickedHashtag(data)}
             />
-
-
           </div>
         </div >
 

@@ -1,7 +1,13 @@
 import { JaaSMeeting } from '@jitsi/react-sdk';
+import { useSelector } from 'react-redux';
+
 
 function JaaSMeetingVideoCall() {
-    const roomName = 'PleaseUseAGoodRoomName'; // Replace with your desired room name
+    const { username, userEmail }: string | any = useSelector((state: any) => state?.user);
+
+
+    const roomName = 'DevCollab Meet'; // Replace with your desired room name
+
 
     const configOverwrite = {
         startWithAudioMuted: true,
@@ -10,16 +16,16 @@ function JaaSMeetingVideoCall() {
         enableEmailInStats: false,
     };
 
+
     const interfaceConfigOverwrite = {
         DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
     };
 
     const userInfo = {
-        displayName: 'YOUR_USERNAME', // Replace with the desired username
-        email: '', // Include an empty email or a placeholder value
+        displayName: username,
+        email: userEmail,
     };
 
-    // const appId = 'localhost:5173'; // Replace with your local server address
 
     return (
         <>
@@ -39,6 +45,8 @@ function JaaSMeetingVideoCall() {
                     }
                 }}
             />
+
+
         </>
     );
 }

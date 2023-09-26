@@ -1015,6 +1015,28 @@ function Chat() {
                                                                     <a
                                                                     >NewCommunity</a>
                                                                 </li>
+                                                                <li
+                                                                    onClick={() => {
+                                                                        Navigate('/videocall')
+                                                                    }}
+                                                                    className="p-3 cursor-pointer hover:bg-gray-100 transition duration-300 border-b border-gray-200"
+                                                                >
+                                                                    <a className="flex items-center space-x-2">
+                                                                        <BsFillCameraVideoFill className="inline" />
+                                                                        <span className="text-base">Personal Meet</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li
+                                                                    onClick={() => {
+                                                                        Navigate('/jasMeetingVideoCall')
+                                                                    }}
+                                                                    className="p-3 cursor-pointer hover:bg-gray-100 transition duration-300 border-b border-gray-200"
+                                                                >
+                                                                    <a className="flex items-center space-x-2">
+                                                                        <SiGooglemeet className="inline" />
+                                                                        <span className="text-base break-all inline">Meet Community</span>
+                                                                    </a>
+                                                                </li>
 
                                                             </ul>
                                                         </div>

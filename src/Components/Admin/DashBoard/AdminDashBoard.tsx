@@ -24,7 +24,7 @@ interface AllPost {
 
 function AdminDashBoard() {
   const [dashboard, setdashboard] = useState<Dashboard>({ TotalUsers: 0, TotalPosts: 0, TotalCommunities: 0 })
-  const [Graph, setGraph] = useState<Graphs[]>([]);
+  const [PGraph, setGraph] = useState<Graphs[]>([]);
   const [AllPost,setAllPost]=useState<AllPost[]>([])
   const navigate = useNavigate()
   useEffect(() => {
@@ -48,13 +48,13 @@ function AdminDashBoard() {
     fetchData()
   }, [])
 
-  const maxUsers = Math.max(...Graph.map((entry) => entry?.count));
+  const maxUsers = Math.max(...PGraph.map((entry) => entry?.count));
 
   useEffect(() => {
     const data = {
       type: "bar", // Specify the chart type as bar
       data: {
-        labels: Graph.map((entry) => entry.month),
+        labels: PGraph.map((entry) => entry.month),
         datasets: [
           {
             label: "User Growth",
@@ -76,7 +76,7 @@ function AdminDashBoard() {
     };
 
     new Chart(document.getElementById("user-growth-chart"), data, options);
-  }, [Graph]);
+  }, [PGraph]);
   return (
     <>
       <div className="p-4 sm:ml-64 ">
@@ -121,7 +121,7 @@ function AdminDashBoard() {
                 <div className=" p-4">
                   <h1 className="font-medium text-lg  cursor-pointer text-blue-600">User Growth Chart</h1>
                   <div className="flex items-center  space-x-4 mt-32">
-                    {Graph?.map((entry, index) => (
+                    {PGraph?.map((entry, index) => (
                       <div key={index} className="relative w-16">
                         <div
                           className="absolute bottom-0 left-0 cursor-pointer w-full h-40 bg-blue-400 hover:bg-blue-500 transition-transform duration-300 origin-bottom transform hover:scale-y-105 rounded-md"
