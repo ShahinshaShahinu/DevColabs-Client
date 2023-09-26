@@ -3,7 +3,7 @@ import { BsCameraVideoOffFill, BsFillCameraVideoFill } from "react-icons/bs"
 import { MdCallEnd } from "react-icons/md"
 import { usePeer } from "../../Provider/Peer";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 
 

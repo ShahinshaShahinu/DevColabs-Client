@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "../../Context/WebsocketContext";
 import { usePeer } from "../../Provider/Peer";
-import { MdCallEnd } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import Navbar from "../User/Navbar/Navbar";
-import { BsFillCameraVideoFill } from "react-icons/bs";
-import { AiFillAudio } from "react-icons/ai";
 import VideoCallOptions from "./VideoCallOptions";
 
 interface PeerContextValue {
@@ -23,7 +19,6 @@ interface Call {
 
 function RoomVideoCall() {
   const socket = useSocket();
-  const naviagte = useNavigate()
   const [myStream, setMyStream] = useState<MediaStream | null | undefined>(null);
   const [remoteEmailId, setRemoteEmailId] = useState<string>('');
   const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue | any = usePeer();
@@ -153,8 +148,8 @@ function RoomVideoCall() {
         <Navbar />
       </div>
       <div className="top-8 relative">
-        {/* <h1>Room Page</h1>
-        {remoteEmailId} */}
+        <h1>Room Page</h1>
+        {remoteEmailId}
         {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
 
         {myStream && (

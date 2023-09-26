@@ -10,14 +10,13 @@ import VideoFooter from "./VideoFooter";
 
 function VideoCall() {
     const navigate = useNavigate();
-    const { username, userEmail }: string | any = useSelector((state: any) => state?.user);
+    const {  userEmail }: string | any = useSelector((state: any) => state?.user);
     const socket = useSocket();
-    const [email, setEmail] = useState('');
     const [room, setRoom] = useState("");
 
 
     const handleJoinRoom = useCallback(
-        (data: { email: string; room: string; }) => {
+        (data: { userEmail: string; room: string; }) => {
             const { room } = data;
             navigate(`/room/${room}`);
         },
@@ -35,9 +34,9 @@ function VideoCall() {
     const handleSubmitForm = useCallback(
         (e: { preventDefault: () => void; }) => {
             e.preventDefault();
-            socket.emit("room:join", { email, room });
+            socket.emit("room:join", { userEmail, room });
         },
-        [email, room, socket]
+        [userEmail, room, socket]
     );
 
 
