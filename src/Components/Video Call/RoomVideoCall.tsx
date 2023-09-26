@@ -93,7 +93,7 @@ function RoomVideoCall() {
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video:  { facingMode: frontCamera ? 'user' : 'environment' },
+      video:  { facingMode: 'environment' },
     });
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
