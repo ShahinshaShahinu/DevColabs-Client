@@ -35,25 +35,28 @@ function RoomVideoCall() {
   const handleIncomingCall = useCallback(
     async ({ from, offer }: Call) => {
       try {
- 
+        // Get the current camera stream based on the frontCamera state
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video:  { facingMode: frontCamera ? 'user' : 'environment' },
+          video: { facingMode: !frontCamera ? 'user' : 'environment' },
         });
-
+        console.log(frontCamera,'camera');console.log(frontCamera,'camera');
         // Continue with stream handling
         setRemoteSocketId(from);
         setMyStream(stream);
         SendStream(stream);
+  
+        // Create an answer and emit it
         const ans = await createAnswer(offer);
         socket.emit("call:accepted", { to: from, ans });
       } catch (error) {
         // Handle the error appropriately (e.g., show a message to the user)
-        console.error('Error accessing media devices:', error);
+        console.error("Error accessing media devices:", error);
       }
     },
-    [createAnswer,socket,frontCamera]
+    [createAnswer, socket, frontCamera]
   );
+  
 
   const handleCallAccepted = useCallback(
     async (data: { ans: RTCSessionDescriptionInit }) => {
@@ -92,8 +95,6 @@ function RoomVideoCall() {
       audio: true,
       video:  { facingMode: frontCamera ? 'user' : 'environment' },
     });
-console.log(frontCamera,'fofofof');
-
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
