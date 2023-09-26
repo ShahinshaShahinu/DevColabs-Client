@@ -167,6 +167,7 @@ function RoomVideoCall() {
                 <video
                   autoPlay
                   playsInline
+                  muted
                   ref={(videoElement) => {
                     if (videoElement) {
                       videoElement.srcObject = myStream;
