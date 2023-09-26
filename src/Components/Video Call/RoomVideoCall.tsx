@@ -86,11 +86,11 @@ function RoomVideoCall() {
       socket.off("call:accepted", handleCallAccepted);
     };
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted]);
-
+  const [frontCamera, setFrontCamera] = useState<boolean>(true);
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: { facingMode: frontCamera ? 'environment' : 'user' },
     });
 
     const offer = await createOffers();
@@ -111,26 +111,7 @@ function RoomVideoCall() {
     handleCallUser();
   }, [handleCallUser, Video, Audio]);
 
-  // const handleEndCall = async () => {
-  //   try {
-  //     const stream = await navigator.mediaDevices.getUserMedia({
-  //       audio: false,
-  //       video: false,
-  //     });
-  //     stream.getTracks().forEach(track => track.stop());
-  //   } catch (error) {
-  //     console.error('Error stopping media devices:', error);
-  //   }
 
-  //   // Close the peer connection (assuming you have a 'peer' variable representing it)
-  //   if (peer) {
-  //     peer.close();
-  //   }
-
-  //   console.log('nnnnnnnnnnnnnnnnnnnn');
-
-  //   naviagte('/videocall');
-  // };
 
   const turnOffCamera = () => {
     if (myStream) {
@@ -147,7 +128,7 @@ function RoomVideoCall() {
       <div className=" relative z-20 ">
         <Navbar />
       </div>
-        {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
+      {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
       <div>
         <h1>Room Page</h1>
         {remoteEmailId}
@@ -159,28 +140,28 @@ function RoomVideoCall() {
           autoPlay
           // muted
           ref={remoteVideoRef}
-          ></video>
-          {myStream && (
-            <>
-              {Video ? (
-  
-                <video
-                  autoPlay
-                  playsInline
-                  muted
-                  ref={(videoElement) => {
-                    if (videoElement) {
-                      videoElement.srcObject = myStream;
-                    }
-                  }}
-                />
-              ) : (
-                <div className="bg-black md:w-[42.8%] h-[42vh] " />
-              )}
-            </>
-          )}
-      </div>
+        ></video>
+        {myStream && (
+          <>
+            {Video ? (
 
+              <video
+                autoPlay
+                playsInline
+                muted
+                ref={(videoElement) => {
+                  if (videoElement) {
+                    videoElement.srcObject = myStream;
+                  }
+                }}
+              />
+            ) : (
+              <div className="bg-black md:w-[42.8%] h-[42vh] " />
+            )}
+          </>
+        )}
+      </div>
+      <button onClick={() => setFrontCamera(!frontCamera)}>Toggle Camera</button>
       <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
 
 
