@@ -152,32 +152,32 @@ function RoomVideoCall() {
         <h1>Room Page</h1>
         {remoteEmailId}
       </div>
-      <div className="top-12 sm:flex relative">
-        {myStream && (
-          <>
-            {Video ? (
-
-              <video
-                autoPlay
-                playsInline
-                ref={(videoElement) => {
-                  if (videoElement) {
-                    videoElement.srcObject = myStream;
-                  }
-                }}
-              />
-            ) : (
-              <div className="bg-black md:w-[42.8%] h-[42vh] " />
-            )}
-          </>
-        )}
+      <div className="sm:top-12 top-10 sm:flex relative">
         <video
           // muted
           playsInline
           autoPlay
           // muted
           ref={remoteVideoRef}
-        ></video>
+          ></video>
+          {myStream && (
+            <>
+              {Video ? (
+  
+                <video
+                  autoPlay
+                  playsInline
+                  ref={(videoElement) => {
+                    if (videoElement) {
+                      videoElement.srcObject = myStream;
+                    }
+                  }}
+                />
+              ) : (
+                <div className="bg-black md:w-[42.8%] h-[42vh] " />
+              )}
+            </>
+          )}
       </div>
 
       <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
