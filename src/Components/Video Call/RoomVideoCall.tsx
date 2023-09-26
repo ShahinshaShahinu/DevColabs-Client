@@ -25,7 +25,7 @@ function RoomVideoCall() {
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
   const [Audio, setAudio] = useState(true)
   const [Video, setVido] = useState(true);
-
+  const [frontCamera, setFrontCamera] = useState<boolean>(true);
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     console.log(`Email ${email} joined room`);
     setRemoteEmailId(email);
@@ -38,7 +38,7 @@ function RoomVideoCall() {
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: true,
+          video:  { facingMode: frontCamera ? 'user' : 'environment' },
         });
 
         // Continue with stream handling
@@ -52,7 +52,7 @@ function RoomVideoCall() {
         console.error('Error accessing media devices:', error);
       }
     },
-    [createAnswer]
+    [createAnswer,socket,frontCamera]
   );
 
   const handleCallAccepted = useCallback(
@@ -86,7 +86,7 @@ function RoomVideoCall() {
       socket.off("call:accepted", handleCallAccepted);
     };
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted]);
-  const [frontCamera, setFrontCamera] = useState<boolean>(true);
+
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -149,6 +149,7 @@ console.log(frontCamera,'fofofof');
               <video
                 autoPlay
                 playsInline
+                height='500px'
                 muted
                 ref={(videoElement) => {
                   if (videoElement) {
