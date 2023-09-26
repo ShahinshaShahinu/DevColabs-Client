@@ -1,5 +1,6 @@
 import { AiFillAudio, AiOutlineAudioMuted } from "react-icons/ai"
 import { BsCameraVideoOffFill, BsFillCameraVideoFill } from "react-icons/bs"
+import { FaCameraRotate } from "react-icons/fa6"
 import { MdCallEnd } from "react-icons/md"
 import { usePeer } from "../../Provider/Peer";
 import { useNavigate } from "react-router-dom";
@@ -7,19 +8,22 @@ import { useState } from "react";
 
 
 
+
 interface FooterProps {
     VideoDisabled: (data: boolean) => void;
     AudioDiabled: (data: boolean) => void;
+    setChangeCamera: (data: boolean) => void;
     stream: MediaStream | null | undefined
 }
-function VideoCallOptions({ VideoDisabled, AudioDiabled, stream }: FooterProps) {
+function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera }: FooterProps) {
     const [Audio, setAudio] = useState(true)
-    const [video, setVido] = useState(true)
+    const [video, setVido] = useState(true);
+    const [frontCamera, setFrontCamera] = useState<boolean>(true);
     const { peer }: any = usePeer();
     const naviagte = useNavigate()
     const handleEndCall = async () => {
         try {
-           
+
 
             stream?.getTracks()?.forEach(track => track?.stop());
         } catch (error) {
@@ -35,7 +39,7 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream }: FooterProps) 
     };
 
     const CameraOFF = async () => {
- 
+
         VideoDisabled(!video)
     }
     const OudioOFF = async () => {
@@ -49,8 +53,8 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream }: FooterProps) 
                 <footer className="bg-gray-800  text-white p-4  fixed bottom-0 left-0 w-full">
                     <nav className="container mx-auto flex items-center justify-center">
                         <div className="">
-                            <div className="flex space-x-12 justify-between">
-                                <a className="hover:text-gray-400">
+                            <div className="flex space-x-8 justify-between">
+                                <a className="hover:text-gray-400 font-bold py-2  rounded-full mb-2">
                                     {(video == true) ? (
 
                                         <BsCameraVideoOffFill onClick={() => { CameraOFF(), setVido(!video) }} className="text-2xl cursor-pointer" />
@@ -61,7 +65,7 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream }: FooterProps) 
 
                                     )}
                                 </a>
-                                <a className="hover:text-gray-400">
+                                <a className="hover:text-gray-400  relative font-bold py-2  rounded-full mb-2">
                                     {(Audio == true) ? (
                                         <>
                                             <AiOutlineAudioMuted onClick={() => { OudioOFF(), setAudio(!Audio) }} className="text-2xl  cursor-pointer" />
@@ -74,10 +78,24 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream }: FooterProps) 
                                 </a>
                                 <button
                                     onClick={handleEndCall}
-                                    className="bg-red-500 hover:bg-red-600 text-white font-bold px-2 p-1 rounded-full flex items-center"
+                                    className="bg-red-500 hover:bg-red-600 text-white  font-bold py-2 px-4 rounded-full mb-2  "
                                 >
-                                    <MdCallEnd className="text-lg" />
+                                    <MdCallEnd className="text-2xl" />
                                 </button>
+                                <div className="flex  sm:hidden  relative">
+                                    {frontCamera ? (
+                                        <button onClick={() => { setChangeCamera(!frontCamera), setFrontCamera(!frontCamera) }} className=" rounded-full " >
+                                            <FaCameraRotate className="text-3xl" />
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => { setChangeCamera(!frontCamera), setFrontCamera(!frontCamera) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2">
+                                            <FaCameraRotate className="text-2xl" />
+                                        </button>
+                                    )}
+                                </div>
+
+
+
                             </div>
 
                         </div>

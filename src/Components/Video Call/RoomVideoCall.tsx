@@ -90,14 +90,15 @@ function RoomVideoCall() {
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: { facingMode: frontCamera ? 'environment' : 'user' },
+      video:  { facingMode: frontCamera ? 'user' : 'environment' },
     });
+console.log(frontCamera,'fofofof');
 
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
     setMyStream(stream);
-  }, [remoteSocketId, socket]);
+  }, [remoteSocketId, socket,frontCamera]);
 
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
@@ -161,8 +162,8 @@ function RoomVideoCall() {
           </>
         )}
       </div>
-      <button onClick={() => setFrontCamera(!frontCamera)}>Toggle Camera</button>
-      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
+
+      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} setChangeCamera ={(data)=>setFrontCamera(data)} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
 
 
     </>
