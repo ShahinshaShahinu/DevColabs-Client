@@ -25,7 +25,7 @@ function RoomVideoCall() {
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
   const [Audio, setAudio] = useState(true)
   const [Video, setVido] = useState(true);
-  const [frontCamera, setFrontCamera] = useState<boolean>(true);
+  const [frontCamera, setFrontCamera] = useState<boolean>(false);
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     console.log(`Email ${email} joined room`);
     setRemoteEmailId(email);
@@ -35,7 +35,7 @@ function RoomVideoCall() {
   const handleIncomingCall = useCallback(
     async ({ from, offer }: Call) => {
       try {
-
+ 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video:  { facingMode: frontCamera ? 'user' : 'environment' },
@@ -85,7 +85,7 @@ function RoomVideoCall() {
       socket.off("incomming:call", handleIncomingCall);
       socket.off("call:accepted", handleCallAccepted);
     };
-  }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted]);
+  }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted,frontCamera]);
 
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
