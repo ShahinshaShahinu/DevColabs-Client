@@ -36,10 +36,10 @@ function RoomVideoCall() {
     async ({ from, offer }: Call) => {
       try {
 
-         const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: true,
-          });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
 
         // Continue with stream handling
         setRemoteSocketId(from);
@@ -89,9 +89,9 @@ function RoomVideoCall() {
 
   const handleCallUser = useCallback(async () => {
     let stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
+      audio: true,
+      video: true,
+    });
 
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
@@ -138,7 +138,7 @@ function RoomVideoCall() {
       tracks.forEach((track) => {
         track.stop(); // This stops the individual track
       });
-      setMyStream(null); 
+      setMyStream(null);
     }
   };
 
@@ -147,22 +147,19 @@ function RoomVideoCall() {
       <div className=" relative z-20 ">
         <Navbar />
       </div>
-      <div className="top-8 relative">
+        {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
+      <div>
         <h1>Room Page</h1>
         {remoteEmailId}
-        {/* <h4>{remoteSocketId ? "Connected" : "No one in the room"}</h4> */}
-
+      </div>
+      <div className="top-12 sm:flex relative">
         {myStream && (
           <>
-            <h1 className="text-xl">My Stream</h1>
             {Video ? (
 
               <video
                 autoPlay
                 playsInline
-                // muted
-                // height="400px"
-                // width="400px"
                 ref={(videoElement) => {
                   if (videoElement) {
                     videoElement.srcObject = myStream;
@@ -172,9 +169,6 @@ function RoomVideoCall() {
             ) : (
               <div className="bg-black md:w-[42.8%] h-[42vh] " />
             )}
-
-
-
           </>
         )}
         <video
@@ -184,21 +178,9 @@ function RoomVideoCall() {
           // muted
           ref={remoteVideoRef}
         ></video>
-
-
-        {/* <video
-          autoPlay
-          playsInline
-          ref={(videoElement) => {
-            if (videoElement && myStream) {
-              videoElement.srcObject = myStream;
-            }
-          }}
-        /> */}
-
       </div>
 
-      <VideoCallOptions VideoDisabled={(data) => {setVido(data),turnOffCamera()}} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
+      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
 
 
     </>
