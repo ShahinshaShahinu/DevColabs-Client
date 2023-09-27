@@ -114,7 +114,7 @@ function RoomVideoCall() {
         setFrontCamera(true);
         let stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: frontCamera ? 'user' : 'environment' },
+          video: { facingMode: data ? 'user' : 'environment' },
         });
         SendStream(stream);
         setMyStream(stream);
