@@ -114,6 +114,8 @@ function RoomVideoCall() {
       audio: true,
       video: { facingMode: frontCamera ? 'user' : 'environment' },
     });
+    console.log('changed');
+    
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
