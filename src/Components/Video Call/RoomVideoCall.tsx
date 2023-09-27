@@ -3,6 +3,7 @@ import { useSocket } from "../../Context/WebsocketContext";
 import { usePeer } from "../../Provider/Peer";
 import Navbar from "../User/Navbar/Navbar";
 import VideoCallOptions from "./VideoCallOptions";
+import { useSelector } from "react-redux";
 
 interface PeerContextValue {
   peer: RTCPeerConnection;
@@ -25,6 +26,7 @@ function RoomVideoCall() {
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
   const [Audio, setAudio] = useState(true)
   const [Video, setVido] = useState(true);
+  const { userId} = useSelector((state: any) => state.user);
   const [frontCamera, setFrontCamera] = useState<boolean>(true);
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     // console.log(`Email ${email} joined room`);
@@ -39,9 +41,10 @@ function RoomVideoCall() {
         console.log("frontCamera:", frontCamera);
   
         // Get the current camera stream based on the frontCamera state
-        socket.on('changeCamera',(data:boolean)=>{
-   
-          setFrontCamera(data)
+        socket.on('changeCamera',(data,Id)=>{
+          if(Id==userId){
+            setFrontCamera(data)
+          }
         })
         
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -102,10 +105,10 @@ function RoomVideoCall() {
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted,frontCamera]);
 
   const handleCallUser = useCallback(async () => {
-    socket.on('changeCamera',(data:boolean)=>{
-      console.log(data,'cameraaaaaaaaaaaaaaaaa');
-      
-      setFrontCamera(data)
+    socket.on('changeCamera',(data,Id)=>{
+      if(Id==userId){
+        setFrontCamera(data)
+      }
     })
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,

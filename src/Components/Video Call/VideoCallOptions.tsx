@@ -6,6 +6,7 @@ import { usePeer } from "../../Provider/Peer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSocket } from "../../Context/WebsocketContext";
+import { useSelector } from "react-redux";
 
 
 
@@ -18,6 +19,7 @@ interface FooterProps {
 }
 function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera }: FooterProps) {
     const [Audio, setAudio] = useState(true);
+    const { userId } = useSelector((state: any) => state.user);
     const socket = useSocket();
     const [video, setVido] = useState(true);
     const [frontCamera, setFrontCamera] = useState<boolean>(true);
@@ -40,7 +42,7 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
         naviagte('/videocall');
     };
     const changeCamera = async () =>{
-        socket.emit('changeCamera',(frontCamera))
+        socket.emit('changeCamera',frontCamera,userId)
     }
 
     const CameraOFF = async () => {
