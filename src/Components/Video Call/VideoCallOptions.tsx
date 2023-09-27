@@ -5,6 +5,7 @@ import { MdCallEnd } from "react-icons/md"
 import { usePeer } from "../../Provider/Peer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useSocket } from "../../Context/WebsocketContext";
 
 
 
@@ -16,7 +17,8 @@ interface FooterProps {
     stream: MediaStream | null | undefined
 }
 function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera }: FooterProps) {
-    const [Audio, setAudio] = useState(true)
+    const [Audio, setAudio] = useState(true);
+    const socket = useSocket();
     const [video, setVido] = useState(true);
     const [frontCamera, setFrontCamera] = useState<boolean>(true);
     const { peer }: any = usePeer();
@@ -37,6 +39,9 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
 
         naviagte('/videocall');
     };
+    const changeCamera = async () =>{
+        socket.emit('changeCamera',(frontCamera))
+    }
 
     const CameraOFF = async () => {
 
@@ -84,11 +89,11 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
                                 </button>
                                 <div className="flex  sm:hidden  relative">
                                     {frontCamera ? (
-                                        <button onClick={() => { setChangeCamera(!frontCamera), setFrontCamera(!frontCamera) }} className=" rounded-full " >
+                                        <button onClick={() => { setChangeCamera(!frontCamera),changeCamera(), setFrontCamera(!frontCamera) }} className=" rounded-full " >
                                             <FaCameraRotate className="text-3xl" />
                                         </button>
                                     ) : (
-                                        <button onClick={() => { setChangeCamera(!frontCamera), setFrontCamera(!frontCamera) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2">
+                                        <button onClick={() => { setChangeCamera(!frontCamera),changeCamera(), setFrontCamera(!frontCamera) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2">
                                             <FaCameraRotate className="text-2xl" />
                                         </button>
                                     )}

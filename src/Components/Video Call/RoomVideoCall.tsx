@@ -27,7 +27,7 @@ function RoomVideoCall() {
   const [Video, setVido] = useState(true);
   const [frontCamera, setFrontCamera] = useState<boolean>(true);
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
-    console.log(`Email ${email} joined room`);
+    // console.log(`Email ${email} joined room`);
     setRemoteEmailId(email);
     setRemoteSocketId(id);
   }, []);
@@ -35,12 +35,24 @@ function RoomVideoCall() {
   const handleIncomingCall = useCallback(
     async ({ from, offer }: Call) => {
       try {
+        // Log the current frontCamera state
+        console.log("frontCamera:", frontCamera);
+  
         // Get the current camera stream based on the frontCamera state
+        socket.on('changeCamera',(data:boolean)=>{
+          console.log(data,'cameraaaaaaaaaaaaaaaaa');
+          
+          setFrontCamera(data)
+        })
+        
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video:  { facingMode: frontCamera ? 'user' : 'environment' },
+          video: { facingMode: frontCamera ? 'user' : 'environment' },
         });
-        console.log(frontCamera,'camera');console.log(frontCamera,'camera');
+  
+        // Log whether the front or rear camera was used
+        console.log(frontCamera ? 'Using front camera' : 'Using rear camera');
+  
         // Continue with stream handling
         setRemoteSocketId(from);
         setMyStream(stream);
@@ -51,11 +63,12 @@ function RoomVideoCall() {
         socket.emit("call:accepted", { to: from, ans });
       } catch (error) {
         // Handle the error appropriately (e.g., show a message to the user)
-        console.error("Error accessing media devices:", error);
+        // console.error("Error accessing media devices:", error);
       }
     },
     [createAnswer, socket, frontCamera]
   );
+  
   
 
   const handleCallAccepted = useCallback(

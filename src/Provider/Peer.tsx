@@ -42,7 +42,7 @@ export const PeerProvider: React.FC<PeerProviderProps> = ({ children }) => {
 
     const createAnswer = async (offer: RTCSessionDescriptionInit) => {
         try {
-            console.log('Offer content:', offer);
+            
             await peer.setRemoteDescription(offer);
             const answer = await peer.createAnswer();
             await peer.setLocalDescription(answer);
@@ -59,9 +59,7 @@ export const PeerProvider: React.FC<PeerProviderProps> = ({ children }) => {
         const tracks = stream.getTracks();
         const addedTracks = new Set<MediaStreamTrack>();
         for (const track of tracks) {
-            console.log('track ', track);
             if (!addedTracks.has(track)) {
-                console.log('Adding track:', track);
                 peer.addTrack(track, stream);
                 addedTracks.add(track); // Mark the track as added
             }
@@ -70,11 +68,8 @@ export const PeerProvider: React.FC<PeerProviderProps> = ({ children }) => {
     }
 
     const handleTrackEvent = useCallback((ev: RTCTrackEvent) => {
-        console.log('RTCTrackEvent:', ev);
-
         const streams = ev?.streams;
         if (streams && streams.length > 0) {
-            console.log('Remote stream received:', streams[0]);
             setRemoteStream(streams[0]);
         } else {
             console.log('No remote streams found in RTCTrackEvent');
@@ -85,7 +80,6 @@ export const PeerProvider: React.FC<PeerProviderProps> = ({ children }) => {
 
 
     useEffect(() => {
-        console.log('working add event listener');
 
         peer.addEventListener('track', handleTrackEvent);
 
