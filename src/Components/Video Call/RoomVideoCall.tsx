@@ -106,12 +106,17 @@ function RoomVideoCall() {
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted, frontCamera]);
 
   const handleCallUser = useCallback(async () => {
-    socket.on('changeCamera', (data, Id) => {
+    socket.on('changeCamera', async (data, Id) => {
       console.log(data, 'came');
       if (Id == userId) {
         setFrontCamera(data)
       } else {
-        setFrontCamera(true)
+        setFrontCamera(true);
+        let stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: { facingMode: frontCamera ? 'user' : 'environment' },
+        });
+        setMyStream(stream);
       }
     })
     console.log(frontCamera ? 'Using front camera' : 'Using rear camera');
