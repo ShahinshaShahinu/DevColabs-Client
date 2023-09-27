@@ -57,10 +57,10 @@ function App() {
         <Route path='/SavedPosts' element={<ProtectedRoute><UserSavedPostsPage /></ProtectedRoute>} />
         <Route path='/Hashtags' element={<ProtectedRoute><UserHashtagPage /></ProtectedRoute>} />
         <Route path='/search-results' element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-        <Route path='/Community' element={<ChatPage />} />
-        <Route path='/VideoCall' element={<VideoCallPage />} />
-        <Route path='/room/:roomId' element={<RoomVideoCallPage/>} />
-        <Route path='/jasMeetingVideoCall' element={<JaaSMeetingVideoCall />} />
+        <Route path='/Community' element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+        <Route path='/VideoCall' element={<ProtectedRoute><VideoCallPage /></ProtectedRoute>} />
+        <Route path='/room/:roomId' element={<ProtectedRoute><RoomVideoCallPage/></ProtectedRoute>} />
+        <Route path='/jasMeetingVideoCall' element={<ProtectedRoute><JaaSMeetingVideoCall /></ProtectedRoute>} />
         {/* Admin Routes */}
         <Route path='/admin/login' element={<AdminLoginPage />} />
         <Route path='/admin/UserManageMent' element={<AdminProtectedRoute><AdminUserManagementPage /></AdminProtectedRoute>} />
