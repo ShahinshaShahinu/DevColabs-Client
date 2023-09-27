@@ -3,6 +3,7 @@ import { useSocket } from "../../Context/WebsocketContext";
 import { usePeer } from "../../Provider/Peer";
 import Navbar from "../User/Navbar/Navbar";
 import VideoCallOptions from "./VideoCallOptions";
+import { useSelector } from "react-redux";
 
 interface PeerContextValue {
   peer: RTCPeerConnection;
@@ -15,7 +16,6 @@ interface PeerContextValue {
 interface Call {
   from: string;
   offer: RTCSessionDescriptionInit;
-  camera?: boolean
 }
 
 function RoomVideoCall() {
@@ -24,11 +24,10 @@ function RoomVideoCall() {
   const [remoteEmailId, setRemoteEmailId] = useState<string>('');
   const { peer, createOffers, createAnswer, SendStream, remoteStream }: PeerContextValue | any = usePeer();
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
-  const [Audio, setAudio] = useState(true)
+  const [Audio, setAudio] = useState(true);
+  const { userId } = useSelector((state: any) => state.user);
   const [Video, setVido] = useState(true);
   const [frontCamera, setFrontCamera] = useState<boolean>(true);
-  const [from, setfrom] = useState<any>()
-  const [offer, setoffer] = useState<any>()
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     // console.log(`Email ${email} joined room`);
     setRemoteEmailId(email);
@@ -36,23 +35,24 @@ function RoomVideoCall() {
   }, []);
 
   const handleIncomingCall = useCallback(
-    async ({ from, offer, camera }: Call) => {
+    async ({ from, offer }: Call) => {
       try {
-        setfrom(from); setoffer(offer)
         // Log the current frontCamera state
         console.log("frontCamera:", frontCamera);
+
+        // Get the current camera stream based on the frontCamera state
         socket.on('changeCamera', (data) => {
-          console.log('wofffffffffffffffff');
+          console.log(data, 'came');
 
           setFrontCamera(data)
         })
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: camera ? 'user' : 'environment' },
+          video: { facingMode: frontCamera ? 'user' : 'environment' },
         });
 
-
+        // Log whether the front or rear camera was used
         console.log(frontCamera ? 'Using front camera' : 'Using rear camera');
 
         // Continue with stream handling
@@ -60,6 +60,7 @@ function RoomVideoCall() {
         setMyStream(stream);
         SendStream(stream);
 
+        // Create an answer and emit it
         const ans = await createAnswer(offer);
         socket.emit("call:accepted", { to: from, ans });
       } catch (error) {
@@ -105,17 +106,19 @@ function RoomVideoCall() {
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted, frontCamera]);
 
   const handleCallUser = useCallback(async () => {
-    socket.on('changeCamera', (data: boolean) => {
-      console.log(data, 'cameraaaaaaaaaaaaaaaaa');
-      socket.emit('call', from, offer, data)
-      setFrontCamera(data)
+    socket.on('changeCamera', (data, Id) => {
+      console.log(data, 'came');
+      if (Id == userId) {
+        setFrontCamera(data)
+      } else {
+        setFrontCamera(true)
+      }
     })
+    console.log(frontCamera ? 'Using front camera' : 'Using rear camera');
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: { facingMode: frontCamera ? 'user' : 'environment' },
     });
-    console.log('changed');
-    
     const offer = await createOffers();
     await peer.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
@@ -186,7 +189,7 @@ function RoomVideoCall() {
         )}
       </div>
 
-      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} setChangeCamera={() => (true)} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
+      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} setChangeCamera={(data) => setFrontCamera(data)} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
 
 
     </>
