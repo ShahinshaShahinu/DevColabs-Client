@@ -40,8 +40,7 @@ function RoomVideoCall() {
   
         // Get the current camera stream based on the frontCamera state
         socket.on('changeCamera',(data:boolean)=>{
-          console.log(data,'cameraaaaaaaaaaaaaaaaa');
-          
+   
           setFrontCamera(data)
         })
         
@@ -50,7 +49,7 @@ function RoomVideoCall() {
           video: { facingMode: frontCamera ? 'user' : 'environment' },
         });
   
-        // Log whether the front or rear camera was used
+    
         console.log(frontCamera ? 'Using front camera' : 'Using rear camera');
   
         // Continue with stream handling
@@ -58,7 +57,6 @@ function RoomVideoCall() {
         setMyStream(stream);
         SendStream(stream);
   
-        // Create an answer and emit it
         const ans = await createAnswer(offer);
         socket.emit("call:accepted", { to: from, ans });
       } catch (error) {
@@ -104,6 +102,11 @@ function RoomVideoCall() {
   }, [socket, handleUserJoined, handleIncomingCall, handleCallAccepted,frontCamera]);
 
   const handleCallUser = useCallback(async () => {
+    socket.on('changeCamera',(data:boolean)=>{
+      console.log(data,'cameraaaaaaaaaaaaaaaaa');
+      
+      setFrontCamera(data)
+    })
     let stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video:  { facingMode: frontCamera ? 'user' : 'environment' },
@@ -178,7 +181,7 @@ function RoomVideoCall() {
         )}
       </div>
 
-      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} setChangeCamera ={(data)=>setFrontCamera(data)} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
+      <VideoCallOptions VideoDisabled={(data) => { setVido(data), turnOffCamera() }} setChangeCamera ={()=>(true)} AudioDiabled={(data) => setAudio(data)} stream={myStream} />
 
 
     </>
