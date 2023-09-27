@@ -30,6 +30,7 @@ import RoomVideoCallPage from './Pages/RoomVideoCallPage'
 
 
 import JaaSMeetingVideoCall from './Components/JitsiVideoCall/JaaSMeetingVideoCall'
+import ErrorPage from './Pages/ErrorPage'
 
 
 
@@ -69,7 +70,7 @@ function App() {
         <Route path='/admin/ReportManageMent' element={<AdminProtectedRoute><AdminReportManagementPage /></AdminProtectedRoute>} />
   
 
-        {/* <Route path='*' element={<ErrorPage/>}/> */}
+        <Route path='*' element={<ErrorPage/>}/>
 
       </Routes>
     </>
