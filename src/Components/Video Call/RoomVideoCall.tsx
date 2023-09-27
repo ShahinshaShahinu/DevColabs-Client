@@ -78,7 +78,7 @@ function RoomVideoCall() {
       const { ans } = data;
       await peer.setRemoteDescription(ans);
     },
-    [peer]
+    [peer,socket]
   );
 
   const handleNegoNeeded = useCallback(async () => {
@@ -137,11 +137,11 @@ function RoomVideoCall() {
     if (remoteStream && remoteVideo) {
       remoteVideo.srcObject = remoteStream;
     }
-  }, [remoteStream]);
+  }, [remoteStream,socket]);
 
   useEffect(() => {
     handleCallUser();
-  }, [handleCallUser, Video, Audio]);
+  }, [handleCallUser, Video, Audio,socket]);
 
 
 
