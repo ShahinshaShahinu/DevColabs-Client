@@ -25,7 +25,7 @@ function RoomVideoCall() {
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
   const [Audio, setAudio] = useState(true)
   const [Video, setVido] = useState(true);
-  const [frontCamera, setFrontCamera] = useState<boolean>(false);
+  const [frontCamera, setFrontCamera] = useState<boolean>(true);
   const handleUserJoined = useCallback(({ email, id }: { email: string; id: string }) => {
     console.log(`Email ${email} joined room`);
     setRemoteEmailId(email);
@@ -38,7 +38,7 @@ function RoomVideoCall() {
         // Get the current camera stream based on the frontCamera state
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: { facingMode: 'environment' },
+          video:  { facingMode: frontCamera ? 'user' : 'environment' },
         });
         console.log(frontCamera,'camera');console.log(frontCamera,'camera');
         // Continue with stream handling
