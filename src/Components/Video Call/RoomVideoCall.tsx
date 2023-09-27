@@ -116,6 +116,7 @@ function RoomVideoCall() {
           audio: true,
           video: { facingMode: frontCamera ? 'user' : 'environment' },
         });
+        SendStream(stream);
         setMyStream(stream);
       }
     })
@@ -172,6 +173,8 @@ function RoomVideoCall() {
           // muted
           ref={remoteVideoRef}
         ></video>
+
+
         {myStream && (
           <>
             {Video ? (
