@@ -74,6 +74,17 @@ function HomePage() {
       clearInterval(intervalId);
     };
   }, []);
+
+  useEffect(() => {
+    const Userauth = localStorage.getItem("user");
+    if (!Userauth) {
+      localStorage.removeItem('user')
+      dispatch(updateUser({}));
+      googleLogout();
+    }
+  }, []);
+
+
   const CommentDate = format(currentDate, "d MMMM yyyy hh:mm a");
   const ReportDate = format(currentDate, "d MMMM yyyy hh:mm a");
 
@@ -1045,7 +1056,7 @@ function HomePage() {
                             </li>
                             <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
-                              <h1 onClick={() => Navigate('/profile')} className="font-bold text-base">Profile</h1>
+                              <h1 onClick={() =>{username ? Navigate('/profile') : setIsModalOpen(true)} } className="font-bold text-base">Profile</h1>
                             </li>
                           </ul>
                         </nav>

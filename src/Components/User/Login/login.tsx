@@ -7,7 +7,7 @@ import { updateUser } from "../../../redux/user/userSlice";
 import { LoginValidation } from "../../../utils/userValidation/signUpvalidation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 
 function login() {
@@ -18,6 +18,10 @@ function login() {
     const Userauth = localStorage.getItem("user");
     if (Userauth) {
       navigate("/");
+    }else{
+      localStorage.removeItem('user')
+      dispatch(updateUser({}));
+      googleLogout();
     }
   }, []);
 

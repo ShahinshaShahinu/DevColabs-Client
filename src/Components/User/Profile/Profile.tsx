@@ -103,8 +103,6 @@ function Profile() {
                     Navigate('/login')
                 }
 
-
-
             }
         }
 
