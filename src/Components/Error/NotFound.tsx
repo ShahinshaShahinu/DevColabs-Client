@@ -4,7 +4,7 @@ function NotFound() {
     return (
         <>
             <div className="flex flex-col items-center justify-center h-screen">
-                <img src="../../../public/Images/5203299.jpg" alt="Error" className="max-w-md h-auto" />
+                <img src="\Images\5203299.jpg" alt="Error" className="max-w-md h-auto" />
                 <p className="text-2xl mt-4">Oops! Something went wrong.</p>
                 <button
                     onClick={() => window?.history?.back()}
