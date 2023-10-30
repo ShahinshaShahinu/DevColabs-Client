@@ -144,7 +144,7 @@ function UsersSaved({ Saved, sendRefresh }: UsersSavedProps) {
                                         <div className="flex grid-cols-1 bg-gray-50  h-screen   rounded-lg items-center justify-center md:grid-cols-2 m-auto  sm:max-w-[100%]">
                                             <div className="px-52  relative flex justify-center items-center cursor-pointer flex-col">
                                                 <div className="flex lg:w-72 items-center justify-center">
-                                                    <img src="../../../../public/Copy NO Saved post.jpg" alt="" srcSet="" />
+                                                    <img src="\Copy NO Saved post.jpg" alt="" srcSet="" />
                                                 </div>
                                             </div>
                                         </div>
