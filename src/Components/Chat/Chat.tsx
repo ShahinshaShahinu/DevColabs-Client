@@ -51,6 +51,7 @@ function Chat() {
         }],
         CreatedDate: '',
     });
+    
     const [selectCommunity, setSelectCommunity] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -145,6 +146,7 @@ function Chat() {
     const SendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
+           
             setRefresh(true)
             let res
             setFilteredItemsp([]);
@@ -286,11 +288,12 @@ function Chat() {
             setChatMessages(data?.data);
             const allusers = await GetUsers()
             setAllusers(allusers?.data);
+            
         }
         fetchChats();
 
 
-    }, [refresh, socket, isSidebarOpen, setRefresh, selectedIndex, isLoading, selectedChat, setMessage, Message, filteredItemsp]);
+    }, [refresh, socket, isSidebarOpen, selectedIndex, isLoading, selectedChat, setMessage, Message, filteredItemsp]);
 
     let newFilteredItems: (AllUsers)[] = [];
     useEffect(() => {
@@ -607,7 +610,7 @@ function Chat() {
                                         )}
 
                                         <div className="absolute right-0  bg-white rounded shadow cursor-pointer">
-                                            {/* <div className="p-2">
+                                            {/* <div className="p-2">f
                                                 <div className="flex items-center">
                                                     <AiOutlineClear className="inline mr-2" />
                                                     <p className="inline">Clear</p>
@@ -771,12 +774,13 @@ function Chat() {
                                                                     </>
                                                                 )}
                                                                 <h1 className="mb-1  overflow-hidden min-w-full whitespace-wrap break-words">
-                                                                    {message.text}
+                                                                    {message.text} 
                                                                 </h1>
 
-                                                                <div className="flex justify-end">
-                                                                    <span className="text-xs text-gray-500 self-end justify-end relative">{message.timestamp}</span>
+                                                                <div className="flex justify-end  items-end">
+                                                                    <span className="text-xs text-gray-500 self-end justify-end flex-nowrap relative">{message.timestamp}</span>
                                                                 </div>
+
                                                             </div>
                                                         </>
                                                     ) : (
@@ -816,6 +820,8 @@ function Chat() {
                                                         </>
 
                                                     )}
+
+
                                             </div>
 
                                             {message?.senderId?._id === userId && (
@@ -827,6 +833,10 @@ function Chat() {
                                             )}
                                         </div>
                                     ))}
+
+
+
+
 
                                     {/* <div  ref={chatContainerRef} /> */}
                                 </div>
