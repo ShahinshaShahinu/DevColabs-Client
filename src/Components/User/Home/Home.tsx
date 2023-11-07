@@ -23,6 +23,7 @@ import CommentEdit from "./HomeOptions/CommentEdit";
 import { Comment } from "../../../utils/interfaceModel/comment";
 import CustomPagination from "./Pagination";
 import LoaderAbsolute from "../isLoading/LoaderAbsolute";
+import { IoCloseSharp } from "react-icons/io5";
 
 
 interface IHashtag {
@@ -58,6 +59,7 @@ function HomePage() {
   });
   const [isLoading, setIsLoading] = useState(false)
   const [refresh, setRefresh] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
   const getClicketHashtag = location?.state;
   useMemo(() => {
@@ -279,7 +281,7 @@ function HomePage() {
 
     fetchData();
 
-  }, [ selectCategory, refresh, liked, setliked, SetComment, setrefresh, SavedPost, reftesh]);
+  }, [selectCategory, refresh, liked, setliked, SetComment, setrefresh, SavedPost, reftesh]);
 
 
 
@@ -307,10 +309,10 @@ function HomePage() {
   //         CountPost: filteredPosts?.length,
   //       });
   //       setHomePosts(filteredPosts);
-        
+
   //       setTimeout(() => {
   //         console.log('afteer 1');
-          
+
   //         setIsLoading(false);
   //       }, 1000);
   //     }
@@ -318,31 +320,31 @@ function HomePage() {
   //   fetchData();
   // }, [refresh, clickedHashtag, setClickedHashtag,   Comment, SetComment, selectCategory]);
 
-const selectHashtagPosts= async (clickedHashtag:string)=>{
-  setSelectCategory('');
-  setIsLoading(true);
-  setClickedHashtag(clickedHashtag)
+  const selectHashtagPosts = async (clickedHashtag: string) => {
+    setSelectCategory('');
+    setIsLoading(true);
+    setClickedHashtag(clickedHashtag)
 
-  const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-  console.log(userResponse, 'ress');
+    const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+    console.log(userResponse, 'ress');
 
 
-  const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-    const postTagsCleaned = post.HashTag.map(tag => tag.trim());
-    return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
-  });
-  setIsLoading(true);
+    const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+      const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+      return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
+    });
+    setIsLoading(true);
 
-  setTag({
-    HashtagName: clickedHashtag.trim(),
-    CountPost: filteredPosts?.length,
-  });
-  setHomePosts(filteredPosts);
-  
-  setTimeout(() => {
-    setIsLoading(false);
-  }, 1000);
-}
+    setTag({
+      HashtagName: clickedHashtag.trim(),
+      CountPost: filteredPosts?.length,
+    });
+    setHomePosts(filteredPosts);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }
 
   const SavePostSucess = (success: string) => {
     toast.success(success, {
@@ -414,7 +416,7 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
       } else {
         setIsModalOpen(true);
       }
-      
+
 
     } catch (error) {
       console.log(error);
@@ -469,9 +471,9 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
             <Navbar />
           </div>
           <main className="flex-grow  bg-white  ">
-            {isLoading && (
+            {/* {isLoading && (
               <LoaderAbsolute />
-            )}
+            )} */}
             <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
               <div className="mx-auto max-w-screen-xl overflow">
                 <div className="flex md:flex-row-reverse ">
@@ -558,7 +560,7 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
                                       <div className="container">
                                         {/* Your other content here */}
 
-                                        <div className="justify-end absolute right-12 flex items-end group">
+                                        <div className="justify-end absolute  sm:visible hidden right-12 sm:flex items-end group">
                                           <PiDotsThreeOutlineVerticalFill type="button" data-dial-toggle="speed-dial-menu-top-right" aria-controls="speed-dial-menu-top-right" aria-expanded="false" className="flex items-center justify-center rounded-full w-6 h-6    focus:ring-4 focus:ring-blue-300 focus:outline-none " />
                                           <div onClick={() => {
                                             setClickedPostIndex(index);
@@ -573,7 +575,36 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
                                               </div>
                                             </div>
                                           </div>
+                                        </div>
 
+                                        <div className={`justify-end absolute ${menuVisible ? 'bg-gray-200 right-5 p-2' : 'bg-white'} shadow-sm rounded-lg  sm:hidden right-10 flex items-end`}>
+                                          <button
+                                            type="button"
+                                            data-dial-toggle="speed-dial-menu-top-right"
+                                            aria-controls="speed-dial-menu-top-right"
+                                            aria-expanded={menuVisible}
+                                            className="flex items-center justify-center rounded-full w-6 h-6 focus:ring-4 focus:ring-blue-300 focus:outline-none"
+                                            onClick={() => setMenuVisible(!menuVisible)}
+                                          >
+                                            {!menuVisible ? (
+                                              <PiDotsThreeOutlineVerticalFill />
+                                            ) : (
+                                              <IoCloseSharp className="w-6 h-6" />
+                                            )}
+                                          </button>
+                                          <div
+                                            id="speed-dial-menu-top-right"
+                                            className={`items-center ${menuVisible ? '' : 'hidden'} mt-0 space-x-2 px-2`}
+                                          >
+                                            <div className="flex space-x-2">
+                                              <div className="w-6 h-6 bg-blue-500 cursor-pointer rounded-full flex items-center justify-center">
+                                                <HiShare onClick={openShareModal} className="w-5 h-5 text-white" />
+                                              </div>
+                                              <div className="w-6 h-6 bg-blue-500 cursor-pointer rounded-full flex items-center justify-center">
+                                                <GoReport onClick={openReportModal} className="w-5 h-5 text-white" />
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -643,6 +674,7 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
                                               <button
                                                 data-modal-hide="popup-modal"
                                                 type="button"
+                                                title="close"
                                                 className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                                                 onClick={closeShareModal}
                                               >
@@ -795,7 +827,7 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
                                           className={`inline-block px-3 py-1 text-sm bg-blue-100 text-blue-500 rounded-full mr-2 hover:bg-blue-200 cursor-pointer m-0.5 ${index > 0 ? 'ml-2' : ''
                                             } ${index > 0 ? 'sm:relative sm:right-2' : ''
                                             }`}
-                                          onClick={() => { setClickedHashtag(''), selectHashtagPosts(trimmedTag)}}
+                                          onClick={() => { setClickedHashtag(''), selectHashtagPosts(trimmedTag) }}
                                         >
                                           {trimmedTag}
                                         </span>
@@ -1087,7 +1119,7 @@ const selectHashtagPosts= async (clickedHashtag:string)=>{
                       <div className="h-full overflow-y-auto  relative bg-white  border-r-2 px-2 ">
                         <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') ,setTag( {HashtagName: '', CountPost: 0})}} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
+                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag(''), setTag({ HashtagName: '', CountPost: 0 }) }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
