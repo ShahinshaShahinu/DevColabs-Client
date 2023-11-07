@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import { FaHome } from "react-icons/fa";
 
 function login() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function login() {
     const Userauth = localStorage.getItem("user");
     if (Userauth) {
       navigate("/");
-    }else{
+    } else {
       localStorage.removeItem('user')
       dispatch(updateUser({}));
       googleLogout();
@@ -56,7 +57,7 @@ function login() {
         email: result.email,
         password: import.meta.env.VITE_GOOGLE_AUTH_PASSWORD,
       };
-      console.log(import.meta.env.VITE_GOOGLE_AUTH_PASSWORD, 'llllllllll');
+
 
 
       const { data } = await api.post("/login", { ...loginUser }, { withCredentials: true });
@@ -245,15 +246,25 @@ function login() {
 
 
               </div>
-              <div className="flex bottom-2 relative">
-                <p className="inline-block "> Don’t have an account </p>{" "}
-                <a
-                  className="cursor-pointer text-blue-700"
-                  onClick={() => navigate("/signup")}
-                >
-                  ? SignUp{" "}
-                </a>
+              <div className="flex justify-between items-center">
+                <div className="flex  relative">
+                  <p className="inline-block "> Don’t have an account </p>{" "}
+                  <a
+                    className="cursor-pointer text-blue-700"
+                    onClick={() => navigate("/signup")}
+                  >
+                    ? SignUp{" "}
+                  </a>
+                </div>
+
+                <button onClick={() => navigate("/")} type="button" className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 relative px-4 rounded-full">
+                  <FaHome className="inline-block w-5 h-5 mr-1" /> Home
+                </button>
+
+
               </div>
+
+
             </form>
           </div>
           <ToastContainer />
