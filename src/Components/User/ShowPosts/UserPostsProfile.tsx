@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {  AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineHome, AiOutlineUser } from 'react-icons/ai'
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../../services/axios';
@@ -36,11 +36,12 @@ function UserPostsProfile() {
 
     const [HashTag, setHashTag] = useState<string[]>([]);
     const [PostId, setPostId] = useState("");
+    const [hastLen,setHashlen] =useState(0)
 
-
-    const handleChange = (newHashTag:string[] ) => {
+    const handleChange = (newHashTag: string[]) => {
         const modifiedTags = newHashTag.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
         setHashTag(modifiedTags);
+       
     };
 
     useEffect(() => {
@@ -65,7 +66,8 @@ function UserPostsProfile() {
     useEffect(() => {
         setTaitle(clickData?.title);
         setPreviewContent(clickData?.content)
-        setHashTag(clickData?.HashTag)
+        setHashTag(clickData?.HashTag);
+        setHashlen(clickData?.HashTag?.length)
         setPostId(clickData?._id)
 
         console.log(clickData, 'clicke');
@@ -113,11 +115,13 @@ function UserPostsProfile() {
 
 
             const err = EditPostValidation(Taitle, previewContent);
-
-            if (clickData.title == Taitle && previewContent == clickData.content) {
+            
+            if (clickData.title == Taitle && previewContent == clickData.content && hastLen==HashTag?.length) {
+                console.log(err ,'eeeeeeeeeeeeeee',HashTag);
                 handleModalToggle();
 
             } else {
+                
                 if (err === 'success') {
                     setIsLoading(true);
                     const cloudImgUrl: String = await uploadImage(img)
@@ -161,7 +165,7 @@ function UserPostsProfile() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            const videoFiles = Array?.from(files)?.filter((file:File) => file?.type.startsWith('video/'));
+            const videoFiles = Array?.from(files)?.filter((file: File) => file?.type.startsWith('video/'));
             setSelectedVideos(videoFiles);
         }
     };
@@ -207,7 +211,7 @@ function UserPostsProfile() {
 
         <>
             <div className="  flex top-20 relative items-center justify-center  ">
-<div
+                <div
                     style={{ zIndex: '0' }}
                     className="">
                     <div className="hidden md:block mx-2 xl:mx-5 relative sm:w-66 md:w-82 lg:w-66 sm:w-72  md:w-ful xl:w-66 2xl:w-68">
@@ -277,7 +281,7 @@ function UserPostsProfile() {
 
                             }}
                         >
-                            {((clickData?.userId?._id === userId&&userId!=undefined) || (typeof UrlData !== 'string' && UrlData?.userId?._id === userId && userId!=undefined)) && (
+                            {((clickData?.userId?._id === userId && userId != undefined) || (typeof UrlData !== 'string' && UrlData?.userId?._id === userId && userId != undefined)) && (
 
                                 <div className="m-5 "><button onClick={() => SetEditDatas(true)} className="flex p-2.5 bg-yellow-500 rounded-xl hover:rounded-3xl hover:bg-yellow-600 transition-all duration-300 text-white"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button></div>
                             )}
@@ -387,9 +391,9 @@ function UserPostsProfile() {
                 {EditDatas && (
 
                     <>
-                        <div id="loadingModal" aria-hidden="true" className="fixed top-10 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+                        <div id="loadingModal" aria-hidden="true" className="fixed top-10 left-0 right-0 bottom-0  flex items-center justify-center bg-gray-700 bg-opacity-50">
                             <form onSubmit={HandleEditPostDatas}>
-                                <div className="max-w-6xl mx-auto mt-10 p-4 bg-white rounded-lg shadow-md overflow-auto " style={{ height: '45rem' }}>
+                                <div className="max-w-6xl mx-auto mt-20 p-4 bg-white rounded-lg shadow-md overflow-auto " style={{ height: '45rem' }}>
                                     <div className="mb-4">
                                         <div className="max-w-6xl w-screen border-2   rounded-lg p-2">
                                             <div className='px-5 pb-1'>
@@ -445,13 +449,11 @@ function UserPostsProfile() {
 
 
 
-                                            <div className='flex justify-start left-10 relative bottom-28 bg  px-10'>
+                                            {/* <div className='flex justify-start  left-10 relative bottom-28 bg  px-10'>
                                                 <MuiChipsInput value={HashTag} onChange={handleChange} id="outlined-required"
                                                     label="HashTag"
                                                     className='bg-white h-14'
                                                 />
-
-
                                                 <div className='relative bottom-5 left-20 '>
 
                                                     <div className="w-36">
@@ -481,7 +483,48 @@ function UserPostsProfile() {
                                                         </button>
                                                     }
                                                 </div>
+                                            </div> */}
+
+
+                                            <div className="flex justify-start right-2 top-5 relative  bg-white px-10 space-x-4">
+                                                <div className="w-1/2">
+                                                    <MuiChipsInput value={HashTag} onChange={handleChange} id="outlined-required"
+                                                        label="HashTag"
+                                                        className='bg-white h-14' ></MuiChipsInput>
+                                                </div>
+
+                                                <div className="relative bottom-1 left-20 space-y-4">
+                                                    <div className="w-36">
+                                                        <label className="flex  text-sm font-medium text-gray-900 dark:text-black" htmlFor="multiple_files">
+                                                            Upload multiple files
+                                                        </label>
+                                                        <div className="relative">
+                                                            <label htmlFor="multiple_files" className="cursor-pointer ">
+                                                                <div className="flex items-center justify-center p-4 rounded-lg border-2 bg-white border-blue-500 hover:bg-blue-100 transition-colors duration-300">
+                                                                    <RiVideoUploadFill className="text-blue-500 text-4xl" />
+                                                                </div>
+                                                            </label>
+                                                            <input
+                                                                onChange={handleFileChange}
+                                                                accept="video/*"
+                                                                className="hidden"
+                                                                id="multiple_files"
+                                                                type="file"
+                                                                multiple
+
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {selectedVideos?.length > 0 &&
+                                                        <button type='button' className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" onClick={() => { showVideos == true ? setShowVideos(false) : setShowVideos(true) }} >
+                                                            Show Videos
+                                                        </button>
+                                                    }
+                                                </div>
                                             </div>
+
+
                                             {showVideos &&
                                                 chunkArray(selectedVideos, 3).map((videoPair, pairIndex) => (
                                                     <div key={pairIndex} className="flex">
@@ -503,78 +546,66 @@ function UserPostsProfile() {
                                                 ))}
 
 
+                                            {clickData?.Videos?.length != 0 && (
 
-
-
-                                            <div className='pt-5 pl-14'>
-                                                <div className="bg-white mb-10 bottom-2 h-auto w-[800px] rounded-xl relative shadow-md p-4 ">
-                                                    <div className="flex ">
-                                                        <div className="flex flex-wrap ">
-                                                            {(UrlData?.Videos || []).map((videoUrl: string, index: number) => (
-                                                                <div className="w-1/2 px-2 mb-4" key={index}>
-                                                                    <div className="rounded-lg overflow-hidden shadow-md w-72">
-                                                                        <iframe
-                                                                            width="100%"
-                                                                            height="100%"
-                                                                            src={videoUrl}
-                                                                            title={`Embedded Video ${index}`}
-                                                                            frameBorder={0}
-                                                                            allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                            allowFullScreen
-                                                                        ></iframe>
-                                                                    </div>
-                                                                    <button
-                                                                        onClick={() => handleDeleteVideo(index, PostId)}
-
-                                                                        className="mt-2 bg-red-500 text-white px-2 py-1 rounded"
-                                                                    >
-                                                                        Remove
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                            {clickData?.Videos.map((videoUrl: string, index: number) => (
-                                                                <div className="w-1/2 px-2 mb-4" key={index}>
-                                                                    <div className="rounded-lg overflow-hidden shadow-md w-72">
-                                                                        <iframe
-                                                                            width="100%"
-                                                                            height="100%"
-                                                                            src={videoUrl}
-                                                                            title={`Embedded YouTube Video ${index}`}
-                                                                            frameBorder={0}
-                                                                            allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                            allowFullScreen
-                                                                        ></iframe>
+                                                <div className='pt-5 pl-14'>
+                                                    <div className="bg-white mb-10   h-auto w-[800px] rounded-xl relative shadow-md p-4 ">
+                                                        <div className="flex ">
+                                                            <div className="flex flex-wrap ">
+                                                                {(UrlData?.Videos || []).map((videoUrl: string, index: number) => (
+                                                                    <div className="w-1/2 px-2 mb-4" key={index}>
+                                                                        <div className="rounded-lg overflow-hidden shadow-md w-72">
+                                                                            <iframe
+                                                                                width="100%"
+                                                                                height="100%"
+                                                                                src={videoUrl}
+                                                                                title={`Embedded Video ${index}`}
+                                                                                frameBorder={0}
+                                                                                allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                                allowFullScreen
+                                                                            ></iframe>
+                                                                        </div>
                                                                         <button
                                                                             onClick={() => handleDeleteVideo(index, PostId)}
-                                                                            type='button'
+
                                                                             className="mt-2 bg-red-500 text-white px-2 py-1 rounded"
                                                                         >
                                                                             Remove
                                                                         </button>
                                                                     </div>
-                                                                </div>
-                                                            ))}
+                                                                ))}
+                                                                {clickData?.Videos.map((videoUrl: string, index: number) => (
+                                                                    <div className="w-1/2 px-2 mb-4" key={index}>
+                                                                        <div className="rounded-lg overflow-hidden shadow-md w-72">
+                                                                            <iframe
+                                                                                width="100%"
+                                                                                height="100%"
+                                                                                src={videoUrl}
+                                                                                title={`Embedded YouTube Video ${index}`}
+                                                                                frameBorder={0}
+                                                                                allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                                allowFullScreen
+                                                                            ></iframe>
+                                                                            <button
+                                                                                onClick={() => handleDeleteVideo(index, PostId)}
+                                                                                type='button'
+                                                                                className="mt-2 bg-red-500 text-white px-2 py-1 rounded"
+                                                                            >
+                                                                                Remove
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
 
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
+                                            )}
 
 
-                                            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-                                            <div className='justify-center  flex right-5 mb-20 rounded-xl bg-gray-100 px-11 ml-10 m-1  relative'>
+                                            <div className='justify-center  flex right-5 sm:mb-52 sm:top-20  rounded-xl bg-gray-100 px-11 ml-10 m-1  relative'>
                                                 <button
                                                     type="submit"
                                                     className="text-white  top-1 relative  bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2  "
