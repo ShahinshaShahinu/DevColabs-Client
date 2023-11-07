@@ -59,7 +59,16 @@ function Navbar() {
     };
   }, [socket]);
 
-
+  useEffect(() => {
+    const Userauth = localStorage.getItem("user");
+    if (!Userauth) {
+      localStorage.removeItem('user')
+      console.log('jjj');
+      
+      dispatch(updateUser({}));
+      googleLogout();
+    }
+  },[]);
 
 
   // useEffect(() => {

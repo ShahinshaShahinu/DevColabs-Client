@@ -160,9 +160,10 @@ function OptionsSavedPost({ post, HomePosts, index, userId, SendData }: OptionPr
 
     useEffect(() => {
         const FetchSavedPost = async () => {
-
+            setIsLoading(true);
             const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-            SetSavedPost(findSaveduserPost?.data)
+            SetSavedPost(findSaveduserPost?.data);
+            setIsLoading(false)
         }
         FetchSavedPost();
 

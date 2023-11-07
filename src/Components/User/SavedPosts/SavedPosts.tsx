@@ -27,27 +27,23 @@ function SavedPosts() {
 
         fetchSaves();
 
-    }, [refresh]);
-    // const DeletiingPost = (success: string) => {
-    //     toast.success(success, {
-    //         position: 'bottom-right',
-    //         autoClose: 2000
-    //     });
-    // }
+    }, [refresh,refreshGrp]);
+
+    useEffect(()=>{
+        const fetchSaves = async () => {
+            setRefreshGrp(false)
+            const findUserSave = await api.get(`/SavedPosts/${userId}`)
+            console.log(findUserSave?.data);
+            
+            SetSaved(findUserSave.data.findUserSave)
+            console.log(findUserSave.data.findUserSave, 'findUserSavefindUserSave');
+        }
+
+        fetchSaves();
+    },[])
 
 
-    // const DaleteSavedPost = async (PostId: Posts | string) => {
-    //     console.log(PostId, 'postid');
-    //     setIsLoading(true);
-    //     const DeleteuserSavedPost = await api.post(`/DaleteSavedPost/${PostId}`, { withCredentials: true });
 
-    //     if (DeleteuserSavedPost) {
-    //         DeletiingPost('Deleted');
-    //         setTimeout(() => {
-    //             setIsLoading(false);
-    //         }, 1000);
-    //     }
-    // }
     const loginModalOpen = () => {
         // setIsModalOpen(!isModalOpen);
     }

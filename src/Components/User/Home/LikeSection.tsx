@@ -71,8 +71,8 @@ console.log(data?.likes    ,'data');
     return (
         <>
             <div className="flex mb-4 -space-x-4">
-                {data?.likes?.LikedUsers?.slice(0, 8).reverse().map((user) => (
-                    <div className="flex items-center cursor-pointer">
+                {data?.likes?.LikedUsers?.slice(0, 8).reverse().map((user,inkex) => (
+                    <div key={inkex} className="flex items-center cursor-pointer">
                         <img onClick={openModal}
                             className="w-7 h-7 cursor-pointer border-2 border-white rounded-full"
                             src={user?.userId?.profileImg || 'https://img.favpng.com/22/0/21/computer-icons-user-profile-clip-art-png-favpng-MhMHJ0Fw21MJadYjpvDQbzu5S.jpg'}

@@ -53,8 +53,8 @@ function App() {
         <Route path='/profile' element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
         <Route path="/PostCreation" element={<ProtectedRoute><JoditPostCreationPage /></ProtectedRoute>} />
       
-        <Route path='/UserPostsView/:postId' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
-        <Route path='/UserPostsView' element={<ProtectedRoute><UserProfilePostsPage /></ProtectedRoute>} />
+        <Route path='/UserPostsView/:postId' element={<UserProfilePostsPage />} />
+        <Route path='/UserPostsView' element={<UserProfilePostsPage />} />
         <Route path='/SavedPosts' element={<ProtectedRoute><UserSavedPostsPage /></ProtectedRoute>} />
         <Route path='/Hashtags' element={<ProtectedRoute><UserHashtagPage /></ProtectedRoute>} />
         <Route path='/search-results' element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />

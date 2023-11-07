@@ -182,8 +182,10 @@ function HomePage() {
 
   useEffect(() => {
     const fetchHashtags = async () => {
-      const Hashtags = await api.get('/admin/HashTagManageMent', { withCredentials: true });
-      setfetchHashTag(Hashtags.data)
+      const Hashtags = await api.get('/HashTagManageMent', { withCredentials: true });
+      console.log(Hashtags.data, 'hhhhhhhhhhhhhhhhhhhhhh hasdh');
+
+      setfetchHashTag(Hashtags?.data)
     }
     fetchHashtags();
     setRefreshGrp(true)
@@ -204,9 +206,9 @@ function HomePage() {
 
   const handleClick = async (PostId: Posts) => {
     try {
-      setliked(true)
 
-      const UserStatus = await UserBlock_UnBlock(userEmail)
+      const UserStatus = await UserBlock_UnBlock(userEmail);
+
       if (UserStatus === false) {
         setliked(true)
         dispatch(updateUser({}));
@@ -217,6 +219,10 @@ function HomePage() {
         const response = await api.post(`/Postslike/${PostId}`);
         console.log(response?.data?.liked);
       }
+
+      setliked(true)
+
+
 
     } catch (error) {
       console.log(error);
@@ -229,6 +235,9 @@ function HomePage() {
   const toggleCommentBox = (index: number) => {
     setShowCommentBox(prevState => (prevState === index ? null : index));
   };
+
+
+
 
 
   useEffect(() => {
@@ -260,7 +269,8 @@ function HomePage() {
         }
         setTimeout(() => {
           setIsLoading(false);
-        }, 500);
+          setliked(false)
+        }, liked == true ? 900 : 600);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -269,44 +279,70 @@ function HomePage() {
 
     fetchData();
 
-  }, [showCommentBox, selectCategory, setliked, liked, SetComment, ShareSocialMediaModal, ReportModal, setrefresh, SavedPost, isModalOpen, reftesh]);
+  }, [ selectCategory, refresh, liked, setliked, SetComment, setrefresh, SavedPost, reftesh]);
 
 
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const fetchData = async () => {
+  //   const fetchData = async () => {
 
-      if (clickedHashtag) {
-        setSelectCategory('');
-        console.log(clickedHashtag, 'click');
+  //     if (clickedHashtag) {
+  //       setSelectCategory('');
+  //       setIsLoading(true);
 
-        console.log('after');
-
-        const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-        console.log(userResponse, 'ress');
+  //       const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+  //       console.log(userResponse, 'ress');
 
 
-        const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-          const postTagsCleaned = post.HashTag.map(tag => tag.trim());
-          return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
-        });
-        console.log(filteredPosts, 'clikc', filteredPosts?.length, 'lemee');
+  //       const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+  //         const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+  //         return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
+  //       });
+  //       console.log(filteredPosts, 'clikc', filteredPosts?.length, 'lemee');
 
-        setTag({
-          HashtagName: clickedHashtag.trim(),
-          CountPost: filteredPosts?.length,
-        });
-        console.log(filteredPosts);
+  //       setTag({
+  //         HashtagName: clickedHashtag.trim(),
+  //         CountPost: filteredPosts?.length,
+  //       });
+  //       setHomePosts(filteredPosts);
+        
+  //       setTimeout(() => {
+  //         console.log('afteer 1');
+          
+  //         setIsLoading(false);
+  //       }, 1000);
+  //     }
+  //   }
+  //   fetchData();
+  // }, [refresh, clickedHashtag, setClickedHashtag,   Comment, SetComment, selectCategory]);
 
-        setHomePosts(filteredPosts);
-      }
+const selectHashtagPosts= async (clickedHashtag:string)=>{
+  setSelectCategory('');
+  setIsLoading(true);
+  setClickedHashtag(clickedHashtag)
 
-    }
-    fetchData();
-  }, [refresh, clickedHashtag, setClickedHashtag, liked, ShareSocialMediaModal, SavedPost, Comment, SetComment, selectCategory]);
+  const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+  console.log(userResponse, 'ress');
 
+
+  const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+    const postTagsCleaned = post.HashTag.map(tag => tag.trim());
+    return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
+  });
+  setIsLoading(true);
+
+  setTag({
+    HashtagName: clickedHashtag.trim(),
+    CountPost: filteredPosts?.length,
+  });
+  setHomePosts(filteredPosts);
+  
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 1000);
+}
 
   const SavePostSucess = (success: string) => {
     toast.success(success, {
@@ -333,12 +369,15 @@ function HomePage() {
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
 
         if (SavingPost?.data?.Saved === true) {
+          setRefresh(false);
           SavePostSucess('Seved');
         } else if (SavingPost?.data?.DeletedSAved === true) {
+          setRefresh(false);
           SavePostSucess('UnSaved');
         }
-        setRefresh(false)
+
       }
+      setRefresh(false);
 
     } else {
 
@@ -347,11 +386,15 @@ function HomePage() {
     }
   };
 
+
+
+
+
   useEffect(() => {
     const FetchSavedPost = async () => {
 
       const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-      console.log(findSaveduserPost?.data, 'savedpost');
+
       SetSavedPost(findSaveduserPost?.data)
     }
     FetchSavedPost();
@@ -364,16 +407,14 @@ function HomePage() {
     try {
 
       if (username) {
-        setrefresh(true)
+        setrefresh(true);
         SetComment('');
         await api.post(`/AddCommentOnPost/${postId}`, { Comment, CommentDate }, { withCredentials: true });
         setrefresh(false);
       } else {
-
         setIsModalOpen(true);
-
       }
-      setrefresh(false);
+      
 
     } catch (error) {
       console.log(error);
@@ -754,7 +795,7 @@ function HomePage() {
                                           className={`inline-block px-3 py-1 text-sm bg-blue-100 text-blue-500 rounded-full mr-2 hover:bg-blue-200 cursor-pointer m-0.5 ${index > 0 ? 'ml-2' : ''
                                             } ${index > 0 ? 'sm:relative sm:right-2' : ''
                                             }`}
-                                          onClick={() => setClickedHashtag(trimmedTag)}
+                                          onClick={() => { setClickedHashtag(''), selectHashtagPosts(trimmedTag)}}
                                         >
                                           {trimmedTag}
                                         </span>
@@ -833,7 +874,7 @@ function HomePage() {
                                       >
                                         <a
                                           type="button"
-                                          className={`${post.likes.LikedUsers.some(
+                                          className={`${post?.likes?.LikedUsers?.some(
                                             (likedUser: any) =>
                                               likedUser?.userId?._id === userId && likedUser?.liked)
                                             ? 'text-white bg-blue-500 darkhover:text-white dark:focus:ring-blue-800'
@@ -1046,7 +1087,7 @@ function HomePage() {
                       <div className="h-full overflow-y-auto  relative bg-white  border-r-2 px-2 ">
                         <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
+                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') ,setTag( {HashtagName: '', CountPost: 0})}} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>
@@ -1056,7 +1097,7 @@ function HomePage() {
                             </li>
                             <li className="flex cursor-pointer items-center h-12 space-x-2 hover:bg-sky-100 rounded-xl">
                               <AiOutlineUser className="text-3xl text-gray-800 ml-3" onClick={() => Navigate('/profile')} />
-                              <h1 onClick={() =>{username ? Navigate('/profile') : setIsModalOpen(true)} } className="font-bold text-base">Profile</h1>
+                              <h1 onClick={() => { username ? Navigate('/profile') : setIsModalOpen(true) }} className="font-bold text-base">Profile</h1>
                             </li>
                           </ul>
                         </nav>

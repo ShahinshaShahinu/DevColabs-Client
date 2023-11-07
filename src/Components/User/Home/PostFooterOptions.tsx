@@ -48,16 +48,13 @@ function PostFooterOptions({ post, HomePosts, index, userId, SendData }: OptionP
 
     useEffect(() => {
         SendData(reftesh)
-    }, [reftesh,isModalOpen])
+    }, [reftesh, isModalOpen])
 
-useEffect(()=>{
-console.log(post,'post');
-console.log(HomePosts,'HomePosts');
-console.log(index,'index');
-
-
-
-},[post])
+    useEffect(() => {
+        console.log(post, 'post');
+        console.log(HomePosts, 'HomePosts');
+        console.log(index, 'index');
+    }, [post])
 
     const CommentDate = format(currentDate, "d MMMM yyyy hh:mm a");
     const toggleCommentBox = (index: number) => {
@@ -120,39 +117,39 @@ console.log(index,'index');
 
     const SavePostSucess = (success: string) => {
         toast.success(success, {
-          position: 'bottom-right',
-          autoClose: 2000,
-          style: {
-            color: 'blue',
-          },
+            position: 'bottom-right',
+            autoClose: 2000,
+            style: {
+                color: 'blue',
+            },
         });
-      }
-    
+    }
+
     const SavePost = async (PostId: Posts) => {
         setrefresh(true);
         if (username) {
-          const UserStatus = await UserBlock_UnBlock(userEmail)
-          if (UserStatus === false) {
-            dispatch(updateUser({}));
-            localStorage.removeItem("user");
-            googleLogout();
-          } else {
-            const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
-    
-            if (SavingPost?.data?.Saved === true) {
-              SavePostSucess('Seved');
-            } else if (SavingPost?.data?.DeletedSAved === true) {
-              SavePostSucess('UnSaved');
+            const UserStatus = await UserBlock_UnBlock(userEmail)
+            if (UserStatus === false) {
+                dispatch(updateUser({}));
+                localStorage.removeItem("user");
+                googleLogout();
+            } else {
+                const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
+
+                if (SavingPost?.data?.Saved === true) {
+                    SavePostSucess('Seved');
+                } else if (SavingPost?.data?.DeletedSAved === true) {
+                    SavePostSucess('UnSaved');
+                }
+                setrefresh(false)
             }
-            setrefresh(false)
-          }
-    
+
         } else {
-    
-          setIsModalOpen(true);
-    
+
+            setIsModalOpen(true);
+
         }
-      };
+    };
 
     useEffect(() => {
         const FetchSavedPost = async () => {
@@ -162,7 +159,7 @@ console.log(index,'index');
         }
         FetchSavedPost();
 
-    }, [liked, reftesh])
+    }, [liked, reftesh, showCommentBox, setrefresh, setliked])
 
 
     return (
