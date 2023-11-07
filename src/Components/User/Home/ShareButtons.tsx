@@ -58,11 +58,11 @@ function ShareButtons({ url, title }: ShareButtonsProps) {
                 <TelegramShareButton url={url} title={title}>
                     <BsTelegram className="mr-2 relative text-4xl rounded-3xl text-blue-400 hover:text-blue-600" />
                 </TelegramShareButton>
-                <WhatsappShareButton url={url} title={title} >
+                <WhatsappShareButton url={url}>
                     <MdOutlineWhatsapp className="mr-2  text-4xl  relative  rounded-full bg-green-500 text-white hover:text-green-700" />
                 </WhatsappShareButton>
 
-                <EmailShareButton url={url} title={title}>
+                <EmailShareButton url={url} title={title} >
                     <MdOutlineMailOutline className="mr-2  text-4xl  relative bg-slate-600  rounded-full text-white hover:text-gray -800" />
                 </EmailShareButton>
                 <br />
