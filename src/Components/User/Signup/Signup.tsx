@@ -236,7 +236,7 @@ function Signup() {
 
             <div className="flex justify-center py-4">
 
-              <GoogleLogin
+              <GoogleLogin size="medium"
                 onSuccess={(credentialResponse: any) => {
                   window.google.accounts.id.prompt();
 
