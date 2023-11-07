@@ -13,6 +13,7 @@ import { UrlData } from '../../../utils/interfaceModel/userInfra';
 import { RiVideoUploadFill } from 'react-icons/ri';
 import { DeletePostVideo } from '../../../services/API functions/UserApi';
 import { HiOutlineUserGroup } from 'react-icons/hi2';
+import SameFooter from '../Navbar/SameFooter';
 
 
 
@@ -36,12 +37,12 @@ function UserPostsProfile() {
 
     const [HashTag, setHashTag] = useState<string[]>([]);
     const [PostId, setPostId] = useState("");
-    const [hastLen,setHashlen] =useState(0)
+    const [hastLen, setHashlen] = useState(0)
 
     const handleChange = (newHashTag: string[]) => {
         const modifiedTags = newHashTag.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
         setHashTag(modifiedTags);
-       
+
     };
 
     useEffect(() => {
@@ -115,13 +116,13 @@ function UserPostsProfile() {
 
 
             const err = EditPostValidation(Taitle, previewContent);
-            
-            if (clickData.title == Taitle && previewContent == clickData.content && hastLen==HashTag?.length) {
-                console.log(err ,'eeeeeeeeeeeeeee',HashTag);
+
+            if (clickData.title == Taitle && previewContent == clickData.content && hastLen == HashTag?.length) {
+                console.log(err, 'eeeeeeeeeeeeeee', HashTag);
                 handleModalToggle();
 
             } else {
-                
+
                 if (err === 'success') {
                     setIsLoading(true);
                     const cloudImgUrl: String = await uploadImage(img)
@@ -546,6 +547,11 @@ function UserPostsProfile() {
                                                 ))}
 
 
+
+
+
+
+
                                             {clickData?.Videos?.length != 0 && (
 
                                                 <div className='pt-5 pl-14'>
@@ -633,21 +639,6 @@ function UserPostsProfile() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 {isLoading && (
                     <div
                         id="loadingModal"
@@ -683,6 +674,11 @@ function UserPostsProfile() {
 
 
 
+
+
+                <div className="top-10 z-50  relative mt-10">
+                    <SameFooter />
+                </div>
 
 
 
