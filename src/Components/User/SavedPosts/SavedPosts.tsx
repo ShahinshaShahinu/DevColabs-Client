@@ -108,9 +108,6 @@ function SavedPosts() {
                     </div>
                 </div>
 
-
-
-              
             </div>
 
 
@@ -152,46 +149,3 @@ function SavedPosts() {
 
 export default SavedPosts
 
-
-
-
-
-
-
-
-
-
-
-
-
-// <div key={index} className=' relative '>
-//     <div className=" relative   right-0 ">
-//         <div className=' bg-white rounded-lg  m-auto relative min-h-[150px]  shadow-md shadow-black sm:max-w-[100%]'
-//         >
-//             <div onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })} className='z-10 text-start pl-3 pt-3 justify-start  absolute'>
-//                 <img onClick={() => Navigate('/profile', { state: post?.PostId?.userId?._id })}
-//                     src={post?.PostId?.userId?.profileImg} alt='User Profile' className='w-9 inline cursor-pointer rounded-full mx-auto ' />
-//                 <h1 onClick={() => Navigate('/profile', { state: post?.PostId?.userId })}
-//                     className='inline-block pl-1 top-3 text-lg cursor-pointer absolute'>{post?.PostId?.userId?.UserName}</h1>
-//             </div>
-
-
-//             <div className='p-9 flex  top-1 relative cursor-pointer flex-col justify-start'>
-//                 <h1 onClick={() => Navigate('/UserPostsView', { state: { UserPost: post?.PostId } })}
-//                     className='font-semibold top-5 relative text-2xl text-black'>{post?.PostId?.title} </h1>
-//             </div>
-
-//             <div className='flex justify-end'>
-//                 <div
-//                     className='bottom-0 left-0 px-4  relative' >
-//                     <AiOutlineDelete onClick={() => DaleteSavedPost(post._id)}
-//                         className='text-2xl cursor-pointer' />
-//                 </div>
-//             </div>
-//         </div>
-
-
-//     </div>
-
-//     <br />
-// </div>
