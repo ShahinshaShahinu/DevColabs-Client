@@ -471,9 +471,9 @@ function HomePage() {
             <Navbar />
           </div>
           <main className="flex-grow  bg-white  ">
-            {/* {isLoading && (
+            {isLoading && (
               <LoaderAbsolute />
-            )} */}
+            )}
             <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
               <div className="mx-auto max-w-screen-xl overflow">
                 <div className="flex md:flex-row-reverse ">
