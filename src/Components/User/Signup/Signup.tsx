@@ -75,7 +75,7 @@ function Signup() {
       }
 
       if (result) {
-       
+
         console.log(GoogleAccountUser);
 
 
@@ -251,14 +251,15 @@ function Signup() {
 
               <ToastContainer />
             </div>
-            <div className="px-3">
-              <p className="inline-block ">Already have an account </p> <a className=" cursor-pointer  text-blue-700" onClick={() => Navigate('/login')}>? Log in now</a>
+            <div className="flex justify-between items-center">
+              <div className="px-3">
+                <p className="inline-block ">Already have an account </p> <a className=" cursor-pointer  text-blue-700" onClick={() => Navigate('/login')}>? Log in now</a>
+              </div>
+
+              <button onClick={() => Navigate("/")} type="button" className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 relative px-4 rounded-full">
+                <FaHome className="inline-block w-5 h-5 mr-1" /> Home
+              </button>
             </div>
-
-            <button onClick={() => Navigate("/")} type="button" className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 relative px-4 rounded-full">
-                  <FaHome className="inline-block w-5 h-5 mr-1" /> Home
-                </button>
-
           </form>
 
         </div>
