@@ -47,7 +47,9 @@ function OptionsSavedPost({ post, HomePosts, index, userId, SendData }: OptionPr
         };
     }, []);
 
+
     useEffect(() => {
+       
         SendData(reftesh)
     }, [reftesh,isModalOpen])
 
