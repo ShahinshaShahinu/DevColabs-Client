@@ -577,16 +577,16 @@ function HomePage() {
                                           </div>
                                         </div>
 
-                                        <div className={`justify-end absolute ${menuVisible ? 'bg-gray-200 right-5 p-2' : 'bg-white'} shadow-sm rounded-lg  sm:hidden right-10 flex items-end`}>
+                                        <div className={`justify-end absolute ${menuVisible&&clickedPostIndex==index ? 'bg-gray-200 right-5 p-2' : 'bg-white'} shadow-sm rounded-lg  sm:hidden right-10 flex items-end`}>
                                           <button
                                             type="button"
                                             data-dial-toggle="speed-dial-menu-top-right"
                                             aria-controls="speed-dial-menu-top-right"
                                             aria-expanded={menuVisible}
                                             className="flex items-center justify-center rounded-full w-6 h-6 focus:ring-4 focus:ring-blue-300 focus:outline-none"
-                                            onClick={() => setMenuVisible(!menuVisible)}
+                                            onClick={() => {setMenuVisible(!menuVisible),setClickedPostIndex(index)}}
                                           >
-                                            {!menuVisible ? (
+                                            {!menuVisible&&clickedPostIndex==index ? (
                                               <PiDotsThreeOutlineVerticalFill />
                                             ) : (
                                               <IoCloseSharp className="w-6 h-6" />
@@ -594,7 +594,7 @@ function HomePage() {
                                           </button>
                                           <div
                                             id="speed-dial-menu-top-right"
-                                            className={`items-center ${menuVisible ? '' : 'hidden'} mt-0 space-x-2 px-2`}
+                                            className={`items-center ${menuVisible&&clickedPostIndex==index ? '' : 'hidden'} mt-0 space-x-2 px-2`}
                                           >
                                             <div className="flex space-x-2">
                                               <div className="w-6 h-6 bg-blue-500 cursor-pointer rounded-full flex items-center justify-center">
@@ -606,6 +606,7 @@ function HomePage() {
                                             </div>
                                           </div>
                                         </div>
+
                                       </div>
 
                                     </div>
