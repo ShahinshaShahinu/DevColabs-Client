@@ -398,7 +398,6 @@ function HomePage() {
       setIsLoading(true);
       const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
       SetSavedPost(findSaveduserPost?.data) ;
-      setIsLoading(false);
     }
     FetchSavedPost();
 
