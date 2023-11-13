@@ -360,7 +360,7 @@ function HomePage() {
 
 
   const SavePost = async (PostId: Posts) => {
-    setRefresh(true)
+    setIsLoading(true)
     if (username) {
       const UserStatus = await UserBlock_UnBlock(userEmail)
       if (UserStatus === false) {
@@ -368,25 +368,23 @@ function HomePage() {
         localStorage.removeItem("user");
         googleLogout();
       } else {
+        setIsLoading(true); setRefresh(true);
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
 
         if (SavingPost?.data?.Saved === true) {
-          setRefresh(true);
           SavePostSucess('Seved');
         } else if (SavingPost?.data?.DeletedSAved === true) {
-          setRefresh(true);
           SavePostSucess('UnSaved');
         }
-
+ 
       }
       setRefresh(false);
-
+      
     } else {
 
       setIsModalOpen(true);
 
     }
-    
   };
 
 
@@ -395,9 +393,10 @@ function HomePage() {
 
   useEffect(() => {
     const FetchSavedPost = async () => {
-      setIsLoading(true);
+
       const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-      SetSavedPost(findSaveduserPost?.data) ;
+
+      SetSavedPost(findSaveduserPost?.data)
     }
     FetchSavedPost();
 
