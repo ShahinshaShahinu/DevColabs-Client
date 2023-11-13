@@ -50,7 +50,11 @@ function UserPostsProfile() {
 
         if (postId) {
             const fetchPost = async () => {
+                setIsLoading(true);
                 const Post = await api.get(`/UserPostsView/${postId}`);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 500);
                 console.log(Post, 'postid');
                 setTaitle('');
                 setUrlData(Post?.data);
@@ -62,7 +66,7 @@ function UserPostsProfile() {
         }
 
 
-    }, [postId, isLoading])
+    }, [postId])
 
     useEffect(() => {
         setTaitle(clickData?.title);
