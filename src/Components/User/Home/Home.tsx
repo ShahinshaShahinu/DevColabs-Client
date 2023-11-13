@@ -370,7 +370,9 @@ function HomePage() {
       } else {
         setIsLoading(true); setRefresh(true);
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
-
+      const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
+      SetSavedPost(findSaveduserPost?.data)
+        setIsLoading(true);  setRefresh(true);
         if (SavingPost?.data?.Saved === true) {
           SavePostSucess('Seved');
         } else if (SavingPost?.data?.DeletedSAved === true) {
@@ -378,7 +380,7 @@ function HomePage() {
         }
  
       }
-      setRefresh(false);
+    
       
     } else {
 
@@ -391,16 +393,6 @@ function HomePage() {
 
 
 
-  useEffect(() => {
-    const FetchSavedPost = async () => {
-
-      const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-
-      SetSavedPost(findSaveduserPost?.data)
-    }
-    FetchSavedPost();
-
-  }, [refresh])
 
 
   const SubmitComments = async (postId: string) => {
