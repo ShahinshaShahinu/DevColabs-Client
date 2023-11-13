@@ -113,7 +113,9 @@ function Chat() {
             const fetchedCommunities = await Communities();
             setCommunities(fetchedCommunities?.data[0])
             console.log(fetchedCommunities, 'fetchhhhh');
-            setChatLoad(false)
+            setTimeout(() => {
+                setChatLoad(false)
+            }, 300);
 
         }
         fetchChats();
@@ -1007,12 +1009,12 @@ function Chat() {
 
                                     <><div className="hidden sm:hidden md:flex  lg:flex justify-center items-center h-full">
                                         <p className="text-gray-500">Select a chat to start chatting.</p>
-                                    </div><div className="md:w-1/4 bg-white md:mt-20 md:pt-3 mt-16 md:hidden  rounded-t-lg border-r">
+                                    </div><div className="md:w-1/4 bg-white md:mt-20 md:pt-3 mt-16 md:hidden  rounded-t-lg border-r ">
                                             <div className=" border-b">
 
 
-                                                <div className="md:w-1/4 bg-white md:mt-20    md:block rounded-t-lg border-r">
-                                                    <div className="p-4 border-b flex bg-[#f0f2f5] justify-between items-center">
+                                                <div className="md:w-1/4 bg-white md:mt-20    md:block rounded-t-lg border-r ">
+                                                    <div className="p-4 border-b flex bg-[#f0f2f5] justify-between items-center ">
 
                                                         {isSidebarOpen == true ? (
                                                             <>
@@ -1034,6 +1036,14 @@ function Chat() {
                                                                 className='h-5 w-5 cursor-pointer' />
                                                         </div>
                                                     </div>
+                                                    {
+                                                        chatLoad && (
+
+                                                            <div className="absolute inset-0 z-0 opacity-80  flex items-center">
+                                                                <Loading />
+                                                            </div>
+                                                        )
+                                                    }
                                                     {isDropdownOpen && (
                                                         <div className="relative dropdown-menu z-10">
                                                             <ul className="border bg-white shadow-lg absolute right-0  w-40 rounded-lg">
