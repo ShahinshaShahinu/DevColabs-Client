@@ -378,10 +378,10 @@ function HomePage() {
         } else if (SavingPost?.data?.DeletedSAved === true) {
           SavePostSucess('UnSaved');
         }
- 
+  
       }
     
-      
+       
     } else {
 
       setIsModalOpen(true);
