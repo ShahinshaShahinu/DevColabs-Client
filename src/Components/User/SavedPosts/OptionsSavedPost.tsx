@@ -53,6 +53,15 @@ function OptionsSavedPost({ post, HomePosts, index, userId, SendData }: OptionPr
         SendData(reftesh)
     }, [reftesh,isModalOpen])
 
+    useEffect(() => {
+        console.log(post, 'post');
+        console.log(HomePosts, 'HomePosts');
+        console.log(SavedPost, 'SavedPost');
+        console.log(post?.likes?.LikedUsers[0], 'likedUser?.userId?._id ');
+
+
+
+    }, [post])
 
     const CommentDate = format(currentDate, "d MMMM yyyy hh:mm a");
     const toggleCommentBox = (index: number) => {
@@ -67,7 +76,7 @@ function OptionsSavedPost({ post, HomePosts, index, userId, SendData }: OptionPr
                 setrefresh(true)
                 SetComment('');
                 await api.post(`/AddCommentOnPost/${postId}`, { Comment, CommentDate }, { withCredentials: true });
-                setrefresh(false);SendData(reftesh);
+                setrefresh(false);
             } else {
 
                 setIsModalOpen(true);
