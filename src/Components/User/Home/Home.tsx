@@ -368,7 +368,7 @@ function HomePage() {
         localStorage.removeItem("user");
         googleLogout();
       } else {
-        setIsLoading(true); setRefresh(true);
+        setIsLoading(true); 
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
       const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
       SetSavedPost(findSaveduserPost?.data)
