@@ -18,6 +18,8 @@ import { MdVideoLibrary } from "react-icons/md";
 import { CommunityUser } from "../../utils/interfaceModel/comment";
 import CommunnityChat from "./CommunnityChat";
 import { AllUsers } from "../../utils/interfaceModel/comment";
+import Loading from "../User/isLoading/Loading";
+
 
 
 function Chat() {
@@ -51,7 +53,7 @@ function Chat() {
         }],
         CreatedDate: '',
     });
-    
+
     const [selectCommunity, setSelectCommunity] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +75,8 @@ function Chat() {
     const [sendImages, setSendImages] = useState<File | null>(null);
     const [sendVideos, setSendVideos] = useState<File | null>(null);
     const [isImageSelected, setIsImageSelected] = useState(false);
-    const [isLoading, setisLoading] = useState(false)
+    const [isLoading, setisLoading] = useState(false);
+    const [chatLoad, setChatLoad] = useState(false)
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
     };
@@ -96,6 +99,7 @@ function Chat() {
 
         socket.on('CommunityChat', async () => {
             try {
+
                 const fetchedCommunities = await Communities();
                 setCommunities(fetchedCommunities?.data[0]);
                 const Community = await Communities();
@@ -105,9 +109,11 @@ function Chat() {
             }
         })
         const fetchChats = async () => {
+            setChatLoad(true)
             const fetchedCommunities = await Communities();
             setCommunities(fetchedCommunities?.data[0])
             console.log(fetchedCommunities, 'fetchhhhh');
+            setChatLoad(false)
 
         }
         fetchChats();
@@ -146,7 +152,7 @@ function Chat() {
     const SendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-           
+
             setRefresh(true)
             let res
             setFilteredItemsp([]);
@@ -288,7 +294,7 @@ function Chat() {
             setChatMessages(data?.data);
             const allusers = await GetUsers()
             setAllusers(allusers?.data);
-            
+
         }
         fetchChats();
 
@@ -354,8 +360,10 @@ function Chat() {
                 </div>
 
                 <div className="flex h-screen bg-white  relative md:px-6">
-                    <div className="md:w-1/4 bg-white md:mt-20   hidden md:block rounded-t-lg border">
-                        <div className="p-3 border-b flex z-20 relative bg-[#f0f2f5] justify-between items-center">
+
+                    <div className="md:w-1/4 bg-white md:mt-20   hidden md:block rounded-t-lg border relative">
+
+                        <div className="p-3 border-b flex z-20 relative bg-[#f0f2f5] justify-between items-center ">
                             <div className="items-center flex ">
                                 {isSidebarOpen != true ? (
 
@@ -411,6 +419,15 @@ function Chat() {
                             </div>
 
                         )}
+                        {
+                            chatLoad && (
+
+                                <div className="absolute inset-0 z-0 opacity-80  flex items-center">
+                                    <Loading />
+                                </div>
+                            )
+                        }
+
                         <div className="px-5 border-b mt-2   ">
                             {isSidebarOpen != true && (
                                 <form >
@@ -774,7 +791,7 @@ function Chat() {
                                                                     </>
                                                                 )}
                                                                 <h1 className="mb-1  overflow-hidden min-w-full whitespace-wrap break-words">
-                                                                    {message.text} 
+                                                                    {message.text}
                                                                 </h1>
 
                                                                 <div className="flex justify-end  items-end">
