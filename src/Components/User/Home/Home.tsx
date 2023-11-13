@@ -371,10 +371,10 @@ function HomePage() {
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
 
         if (SavingPost?.data?.Saved === true) {
-          setRefresh(false);
+          setRefresh(true);
           SavePostSucess('Seved');
         } else if (SavingPost?.data?.DeletedSAved === true) {
-          setRefresh(false);
+          setRefresh(true);
           SavePostSucess('UnSaved');
         }
 
@@ -386,6 +386,7 @@ function HomePage() {
       setIsModalOpen(true);
 
     }
+    
   };
 
 
@@ -394,10 +395,10 @@ function HomePage() {
 
   useEffect(() => {
     const FetchSavedPost = async () => {
-
+      setIsLoading(true);
       const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-
-      SetSavedPost(findSaveduserPost?.data)
+      SetSavedPost(findSaveduserPost?.data) ;
+      setIsLoading(false);
     }
     FetchSavedPost();
 
