@@ -115,10 +115,7 @@ function Search() {
 
         throw new Error("Function not implemented.");
     }
-    const receiveDataFromChild = (data: boolean) => {
-        setRefreshGrp(false)
-        setRefresh(data)
-    };
+  
 
     const [refreshGrp, setRefreshGrp] = useState(false)
     return (
@@ -245,7 +242,7 @@ function Search() {
                                                                             <div className="top-2 relative">
                                                                                 <LikeSection data={item} />
                                                                             </div>
-                                                                            <PostFooterOptions post={item} HomePosts={HomePosts} index={index} userId={userId} SendData={receiveDataFromChild} />
+                                                                            <PostFooterOptions post={item} HomePosts={HomePosts} index={index} userId={userId} SendData={()=>{setRefreshGrp(false),setRefresh(!refresh)}} />
                                                                         </div>
 
 
