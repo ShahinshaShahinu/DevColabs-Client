@@ -56,6 +56,16 @@ function Profile() {
         };
     }, [socket, sockets])
 
+    useEffect(() => {
+        if (!userProfileData) {
+            setIsLoading(true)
+        } else {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 500);
+        }
+    }, [userProfileData])
+
 
     useEffect(() => {
         socket.on('adminMessage', (data) => {
