@@ -13,6 +13,7 @@ import { ChatnotificationReactType } from "../../../utils/interfaceModel/userInf
 import { DeletNotification, GetNotification, Readed } from "../../../services/API functions/UserApi";
 import Loading from "../isLoading/Loading";
 import { useSocket } from '../../../Context/WebsocketContext'
+import FullScreenButton from "./FullScreenButton";
 
 
 
@@ -64,11 +65,11 @@ function Navbar() {
     if (!Userauth) {
       localStorage.removeItem('user')
       console.log('jjj');
-      
+
       dispatch(updateUser({}));
       googleLogout();
     }
-  },[]);
+  }, []);
 
 
   // useEffect(() => {
@@ -406,7 +407,7 @@ function Navbar() {
                       <span className="sr-only">Search</span>
                     </button>
                   )}
-
+                  <FullScreenButton />
                   <span
                     onClick={toggleMenu}
                     className="sm:text-3xl text-2xl cursor-pointer md:hidden block ml-2"
@@ -503,6 +504,7 @@ function Navbar() {
                   </svg>
                   <span className="sr-only">Search</span>
                 </button>
+                <FullScreenButton />
               </form>
             </div>
 
@@ -579,7 +581,7 @@ function Navbar() {
                       }}
                       className="text-sm hover:text-cyan-500 duration-500"
                     >
-                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" /> 
+                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" />
                     </button>
 
                   </li>
@@ -599,6 +601,7 @@ function Navbar() {
                           <IoIosNotificationsOutline className="w-9 h-9" />
                         )}
                       </button>
+
                     </li>
 
                     <div className="relative right-5">
