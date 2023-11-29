@@ -315,7 +315,7 @@ function Navbar() {
               </span>
 
               {/* opern---- small size search button */}
-
+              
               {username ? (
                 <div className={`flex items-center `}>
                   <div className=" flex items-center justify-start    rounded-full  ">
@@ -407,13 +407,16 @@ function Navbar() {
                       <span className="sr-only">Search</span>
                     </button>
                   )}
+                  <div className="md:hidden">
                   <FullScreenButton />
+                  </div>
                   <span
                     onClick={toggleMenu}
                     className="sm:text-3xl text-2xl cursor-pointer md:hidden block ml-2"
                   >
                     <AiOutlineMenu />
                   </span>
+                  
                 </div>
               ) : (
                 <div className="lg:hidden  md:hidden">
