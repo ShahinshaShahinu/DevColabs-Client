@@ -419,7 +419,8 @@ function Navbar() {
                   
                 </div>
               ) : (
-                <div className="lg:hidden  md:hidden">
+                <div className="lg:hidden flex md:hidden">
+                    <FullScreenButton />
                   <button
                     onClick={() => { Navigate("/login"), RemoveSearchTerm() }}
                     className="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ml-3"
