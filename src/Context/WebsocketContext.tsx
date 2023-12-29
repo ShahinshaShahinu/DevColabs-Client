@@ -10,7 +10,6 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export const useSocket = () => {
   const context = useContext(SocketContext);
 
-
   if (!context) {
     throw new Error('useSocket must be used within a SocketProvider');
   }
@@ -21,7 +20,7 @@ interface SocketProviderProps {
   children: React.ReactNode;
 }
 
-export const SocketProvider: React.FC<SocketProviderProps> = ({ children }:SocketProviderProps|any) => {
+export const SocketProvider: React.FC<SocketProviderProps> = ({ children }: SocketProviderProps | any) => {
   const socket = useMemo(() => io(import.meta.env.VITE_BASE_URL), []);
   const contextValue: SocketContextType = {
     socket,
