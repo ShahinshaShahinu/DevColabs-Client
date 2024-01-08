@@ -310,7 +310,7 @@ function Navbar() {
           <nav className={` bg-[#D4E7FA] p-4  md:flex md:items-center md:justify-between  `}>
             <div className="flex justify-between items-center">
               <span className="text-2xl sm:text-3xl lg:text-lg font-Poppins cursor-pointer flex items-center">
-                <img className="h-10 ml-7" src="/public/favicon-32x32.png" alt="DevCollab" />
+                <img className="h-10 ml-7" src="/favicon-32x32.png" alt="DevCollab" />
               </span>
 
 
