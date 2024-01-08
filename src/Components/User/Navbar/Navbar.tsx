@@ -309,13 +309,14 @@ function Navbar() {
         <div className="lg:mx-3 ">
           <nav className={` bg-[#D4E7FA] p-4  md:flex md:items-center md:justify-between  `}>
             <div className="flex justify-between items-center">
-              <span className="sm:text-2xl text-lg font-[Poppins] cursor-pointer">
-                DevColab
-                <img className="h-10 inline " src="" alt="" />
+              <span className="text-2xl sm:text-3xl lg:text-lg font-Poppins cursor-pointer flex items-center">
+                <img className="h-10 ml-7" src="../../../../public/favicon-32x32.png" alt="Description" />
               </span>
 
+
+
               {/* opern---- small size search button */}
-              
+
               {username ? (
                 <div className={`flex items-center `}>
                   <div className=" flex items-center justify-start    rounded-full  ">
@@ -408,7 +409,7 @@ function Navbar() {
                     </button>
                   )}
                   <div className="md:hidden">
-                  <FullScreenButton />
+                    <FullScreenButton />
                   </div>
                   <span
                     onClick={toggleMenu}
@@ -416,11 +417,11 @@ function Navbar() {
                   >
                     <AiOutlineMenu />
                   </span>
-                   
+
                 </div>
               ) : (
                 <div className="lg:hidden flex md:hidden">
-                    <FullScreenButton />
+                  <FullScreenButton />
                   <button
                     onClick={() => { Navigate("/login"), RemoveSearchTerm() }}
                     className="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ml-3"
@@ -448,7 +449,7 @@ function Navbar() {
 
             {/* search given below */}
 
-            <div className="flex md:left-40   absolute px-8 w-1/4">
+            <div className="flex md:left-20  absolute px-8 w-1/4">
               <form
                 onSubmit={handleSearchSubmit}
                 className={`flex items-center md:flex md:items-center top-0 z-[3] md:z-auto md:static absolute  w-full md:w-auto md:max-w-[100%] sm:w-96  xl:w-96 md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 ${showMenu
