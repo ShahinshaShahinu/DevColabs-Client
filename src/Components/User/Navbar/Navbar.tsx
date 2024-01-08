@@ -448,7 +448,6 @@ function Navbar() {
             </div>
 
             {/* search given below */}
-
             <div className="flex md:left-20  absolute px-8 w-1/4">
               <form
                 onSubmit={handleSearchSubmit}
