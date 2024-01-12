@@ -186,7 +186,6 @@ function HomePage() {
     const fetchHashtags = async () => {
       const Hashtags = await api.get('/HashTagManageMent', { withCredentials: true });
       console.log(Hashtags.data, 'hhhhhhhhhhhhhhhhhhhhhh hasdh');
-
       setfetchHashTag(Hashtags?.data)
     }
     fetchHashtags();
@@ -981,28 +980,7 @@ function HomePage() {
 
                                       </form>
 
-                                      {/* {HomePosts[index]?.Comments.map((comment: any, commentIndex: number) => (
-                                            <div key={comment._id}>
-                                              <div className="flex items-start mb-5" key={commentIndex}>
-                                                <img
-                                                  src={comment.userId.profileImg}
-                                                  alt="Commenter Profile"
-                                                  className="w-8 h-8 rounded-full mr-2"
-                                                />
-                                                <div>
-                                                  <p className="font-semibold">{comment.userId.UserName}</p>
-                                                  <p className="flex-auto text-gray-600 overflow-hidden break-words  break-all">
-                                                    {comment.Comment} 
-                                                  </p>
-
-                                                </div>
-                                              </div>
-                                            </div>
-                                          ))} */}
-                                      {/* <button className="text-blue-500 mr-2">Like</button>
-                                          <button className="text-red-500 mr-2">Dislike</button>
-                                          <button className="text-gray-500 mr-2">Reply</button>
-                                          <button className="text-gray-500">Delete</button> */}
+                                     
 
 
                                       <div className="pt-5 -m-6 sm:-m-0">
