@@ -243,8 +243,12 @@ function HomePage() {
       try {
         setIsLoading(true);
         if (selectCategory === 'Latest') {
+          console.log('--latest Homepost - selecteCategory --');
+          
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
           console.log('HOmeposts -- ', userResponse, '---HomePosts');
+          console.log('hhhhh ppppppppppppppppppppppppp');
+          
           setHomePosts(userResponse?.data?.posts);
           setPageCount(userResponse?.data?.totalPages);
         } else if (selectCategory === 'Recommended') {
@@ -401,7 +405,7 @@ function HomePage() {
         selectedPage: selectedPage
       }
     });
-    
+
     setIsLoading(false)
     setHomePosts(userResponse?.data?.posts);
     setPageCount(userResponse?.data?.totalPages);
