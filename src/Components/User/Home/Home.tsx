@@ -401,6 +401,7 @@ function HomePage() {
         selectedPage: selectedPage
       }
     });
+    
     setIsLoading(false)
     setHomePosts(userResponse?.data?.posts);
     setPageCount(userResponse?.data?.totalPages);
