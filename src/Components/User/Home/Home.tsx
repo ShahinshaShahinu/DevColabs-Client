@@ -24,6 +24,7 @@ import { Comment } from "../../../utils/interfaceModel/comment";
 import CustomPagination from "./Pagination";
 import LoaderAbsolute from "../isLoading/LoaderAbsolute";
 import { IoCloseSharp } from "react-icons/io5";
+import WithoutLoginModal from './WithoutLoginModal'
 
 
 interface IHashtag {
@@ -57,6 +58,7 @@ function HomePage() {
     HashtagName: '',
     CountPost: 0,
   });
+  const [pageCount, setPageCount] = useState(Number)
   const [isLoading, setIsLoading] = useState(false)
   const [refresh, setRefresh] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -185,7 +187,6 @@ function HomePage() {
   useEffect(() => {
     const fetchHashtags = async () => {
       const Hashtags = await api.get('/HashTagManageMent', { withCredentials: true });
-      console.log(Hashtags.data, 'hhhhhhhhhhhhhhhhhhhhhh hasdh');
       setfetchHashTag(Hashtags?.data)
     }
     fetchHashtags();
@@ -220,11 +221,7 @@ function HomePage() {
         const response = await api.post(`/Postslike/${PostId}`);
         console.log(response?.data?.liked);
       }
-
-      setliked(true)
-
-
-
+      setliked(true);
     } catch (error) {
       console.log(error);
 
@@ -247,7 +244,9 @@ function HomePage() {
         setIsLoading(true);
         if (selectCategory === 'Latest') {
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-          setHomePosts(userResponse?.data);
+          console.log('HOmeposts -- ', userResponse, '---HomePosts');
+          setHomePosts(userResponse?.data?.posts);
+          setPageCount(userResponse?.data?.totalPages);
         } else if (selectCategory === 'Recommended') {
           const userHashtag = await userRecomended();
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
@@ -284,50 +283,11 @@ function HomePage() {
 
 
 
-
-  // useEffect(() => {
-
-  //   const fetchData = async () => {
-
-  //     if (clickedHashtag) {
-  //       setSelectCategory('');
-  //       setIsLoading(true);
-
-  //       const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-  //       console.log(userResponse, 'ress');
-
-
-  //       const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
-  //         const postTagsCleaned = post.HashTag.map(tag => tag.trim());
-  //         return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
-  //       });
-  //       console.log(filteredPosts, 'clikc', filteredPosts?.length, 'lemee');
-
-  //       setTag({
-  //         HashtagName: clickedHashtag.trim(),
-  //         CountPost: filteredPosts?.length,
-  //       });
-  //       setHomePosts(filteredPosts);
-
-  //       setTimeout(() => {
-  //         console.log('afteer 1');
-
-  //         setIsLoading(false);
-  //       }, 1000);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [refresh, clickedHashtag, setClickedHashtag,   Comment, SetComment, selectCategory]);
-
   const selectHashtagPosts = async (clickedHashtag: string) => {
     setSelectCategory('');
     setIsLoading(true);
     setClickedHashtag(clickedHashtag)
-
     const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-    console.log(userResponse, 'ress');
-
-
     const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
       const postTagsCleaned = post.HashTag.map(tag => tag.trim());
       return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
@@ -367,20 +327,20 @@ function HomePage() {
         localStorage.removeItem("user");
         googleLogout();
       } else {
-        setIsLoading(true);    
+        setIsLoading(true);
         const SavingPost = await api.post(`/SavingPosts/${userId}/${PostId}`, { withCredentials: true });
-      const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
-      SetSavedPost(findSaveduserPost?.data)
-        setIsLoading(true);  setRefresh(true);
+        const findSaveduserPost = await api.get('/UserSaveds', { withCredentials: true });
+        SetSavedPost(findSaveduserPost?.data)
+        setIsLoading(true); setRefresh(true);
         if (SavingPost?.data?.Saved === true) {
           SavePostSucess('Seved');
         } else if (SavingPost?.data?.DeletedSAved === true) {
           SavePostSucess('UnSaved');
         }
-  
+
       }
-    
-       
+
+
     } else {
 
       setIsModalOpen(true);
@@ -434,18 +394,20 @@ function HomePage() {
 
 
 
-  const itemsPerPage = 4;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const pageCount = Math.ceil(HomePosts.length / itemsPerPage);
-
-  const handlePageChange = (selectedPage: number) => {
-    setCurrentPage(selectedPage);
+  const handlePageChange = async (selectedPage: number) => {
+    setIsLoading(true)
+    const userResponse = await api.get(`/HomePosts`, {
+      params: {
+        selectedPage: selectedPage
+      }
+    });
+    setIsLoading(false)
+    setHomePosts(userResponse?.data?.posts);
+    setPageCount(userResponse?.data?.totalPages);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPosts = HomePosts.slice(startIndex, endIndex);
+
+  const currentPosts = HomePosts
 
 
 
@@ -574,10 +536,10 @@ function HomePage() {
                                             aria-controls="speed-dial-menu-top-right"
                                             aria-expanded={menuVisible}
                                             className="flex items-center justify-center rounded-full w-6 h-6 focus:ring-4 focus:ring-blue-300 focus:outline-none"
-                                            onClick={() => { setMenuVisible(!menuVisible), setClickedPostIndex(menuVisible? 0: index) }}
+                                            onClick={() => { setMenuVisible(!menuVisible), setClickedPostIndex(menuVisible ? 0 : index) }}
                                           >
 
-                                            {menuVisible&&clickedPostIndex == index ? (
+                                            {menuVisible && clickedPostIndex == index ? (
                                               <>
                                                 <IoCloseSharp className="w-6 h-6" />
                                               </>
@@ -835,54 +797,9 @@ function HomePage() {
 
 
                                 {isModalOpen && (
-                                  <div
-                                    id="popup-modal"
-                                    tabIndex={-1}
-                                    className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-x-hidden overflow-y-auto bg-gray-900 bg-opacity-50"
-                                  >
-                                    <div className="relative w-full max-w-md">
-                                      <div className="relative bg-white rounded-lg shadow dark:bg-gray-300">
-                                        <div className="p-2 text-center ">
-                                          <div className="border-2 border-gray-500 rounded-md p-2">
-                                            <svg
-                                              className="mx-auto mb-4 text-red-800 w-12 h-12 dark:text-gr"
-                                              aria-hidden="true"
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 20 20"
-                                            >
-                                              <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                              />
-                                            </svg>
-                                            <h3 className="mb-5 text-2xl font-normal text-gray-900 dark:text-gray-900">
-                                              Please Login to Proceed
-                                            </h3>
-                                            <div className="flex justify-center items-center">
-                                              <button
-                                                data-modal-hide="popup-modal"
-                                                type="button"
-                                                className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                                                onClick={toggleModal}
-                                              >
-                                                Close
-                                              </button>
-                                              <button
-                                                className="ml-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                                                onClick={() => Navigate('/login')}
-                                              >
-                                                Login
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                                  <>
+                                  <Without_login_modal toggleModal={()=>toggleModal()} />
+                                  </>
                                 )}
 
 
@@ -980,7 +897,7 @@ function HomePage() {
 
                                       </form>
 
-                                     
+
 
 
                                       <div className="pt-5 -m-6 sm:-m-0">
