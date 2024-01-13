@@ -798,7 +798,7 @@ function HomePage() {
 
                                 {isModalOpen && (
                                   <>
-                                  <Without_login_modal toggleModal={()=>toggleModal()} />
+                                  <WithoutLoginModal toggleModal={()=>toggleModal()} />
                                   </>
                                 )}
 
