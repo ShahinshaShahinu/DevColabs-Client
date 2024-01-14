@@ -52,7 +52,7 @@ function HomePage() {
   const [reftesh, setrefresh] = useState(false)
   const [liked, setliked] = useState(false);
   const [refreshGrp, setRefreshGrp] = useState(false)
-  const [selectCategory, setSelectCategory] = useState<'Latest' | 'Recommended' | ''>('Latest')
+  const [selectCategory, setSelectCategory] = useState<'Latest' | 'Recommended' | '' | boolean>('Latest')
   const [clickedHashtag, setClickedHashtag] = useState<string | null>(null);
   const [Tag, setTag] = useState({
     HashtagName: '',
@@ -64,11 +64,13 @@ function HomePage() {
   const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
   const getClicketHashtag = location?.state;
+  
   useMemo(() => {
     if (getClicketHashtag) {
       setClickedHashtag(getClicketHashtag);
     }
   }, [getClicketHashtag]);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentDate(new Date());
@@ -156,13 +158,12 @@ function HomePage() {
         setIsModalOpen(true);
 
       }
-
-
     } catch (error) {
       console.log(error);
-
     }
   };
+
+
   const [fetchHashTag, setfetchHashTag] = useState<IHashtag[]>([]);
   const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
@@ -243,15 +244,13 @@ function HomePage() {
       try {
         setIsLoading(true);
         if (selectCategory === 'Latest') {
-          console.log('--latest Homepost - selecteCategory --');
-          
+
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-          console.log('HOmeposts -- ', userResponse, '---HomePosts');
-          console.log('hhhhh ppppppppppppppppppppppppp');
-          
           setHomePosts(userResponse?.data?.posts);
           setPageCount(userResponse?.data?.totalPages);
+
         } else if (selectCategory === 'Recommended') {
+
           const userHashtag = await userRecomended();
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
           const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
@@ -270,11 +269,16 @@ function HomePage() {
             userFollowersPost?.data?.Userfollowers?.some((follower: { _id: string; }) => follower?._id === post?.userId?._id && follower?._id !== userId)
           );
           setHomePosts([...filteredPosts, ...followersPost]);
+
         }
-        setTimeout(() => {
-          setIsLoading(false);
-          setliked(false)
-        }, liked == true ? 900 : 600);
+
+        if (selectCategory != true) {
+          setTimeout(() => {
+            setIsLoading(false);
+            setliked(false)
+          }, liked == true ? 900 : 1000);
+
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -288,25 +292,22 @@ function HomePage() {
 
 
   const selectHashtagPosts = async (clickedHashtag: string) => {
-    setSelectCategory('');
+    setSelectCategory(true);
     setIsLoading(true);
     setClickedHashtag(clickedHashtag)
     const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-    const filteredPosts = userResponse.data.filter((post: { HashTag: string[] }) => {
+    const filteredPosts = userResponse.data.posts.filter((post: { HashTag: string[] }) => {
       const postTagsCleaned = post.HashTag.map(tag => tag.trim());
       return postTagsCleaned.some(tag => tag === clickedHashtag.trim());
     });
-    setIsLoading(true);
 
     setTag({
       HashtagName: clickedHashtag.trim(),
       CountPost: filteredPosts?.length,
     });
     setHomePosts(filteredPosts);
+    setIsLoading(false);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
   }
 
   const SavePostSucess = (success: string) => {
@@ -341,14 +342,10 @@ function HomePage() {
         } else if (SavingPost?.data?.DeletedSAved === true) {
           SavePostSucess('UnSaved');
         }
-
       }
 
-
     } else {
-
       setIsModalOpen(true);
-
     }
   };
 
@@ -359,9 +356,7 @@ function HomePage() {
 
 
   const SubmitComments = async (postId: string) => {
-
     try {
-
       if (username) {
         setrefresh(true);
         SetComment('');
@@ -370,7 +365,6 @@ function HomePage() {
       } else {
         setIsModalOpen(true);
       }
-
 
     } catch (error) {
       console.log(error);
@@ -397,7 +391,6 @@ function HomePage() {
   }
 
 
-
   const handlePageChange = async (selectedPage: number) => {
     setIsLoading(true)
     const userResponse = await api.get(`/HomePosts`, {
@@ -416,11 +409,8 @@ function HomePage() {
 
 
 
-
-
   return (
     <>
-
 
       <div className=" relative h-screen  bg-slate-100">
         <div className="min-h-screen flex flex-col">
@@ -533,6 +523,7 @@ function HomePage() {
                                             </div>
                                           </div>
                                         </div>
+
 
                                         <div className={`justify-end absolute ${menuVisible && clickedPostIndex == index ? 'bg-gray-200 right-5 p-2' : 'bg-white'} shadow-sm rounded-lg  sm:hidden right-10 flex items-end`}>
                                           <button
@@ -803,7 +794,7 @@ function HomePage() {
 
                                 {isModalOpen && (
                                   <>
-                                  <WithoutLoginModal toggleModal={()=>toggleModal()} />
+                                    <WithoutLoginModal toggleModal={() => toggleModal()} />
                                   </>
                                 )}
 

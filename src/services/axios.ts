@@ -17,8 +17,8 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log(error ,'eee req');
-    
+    console.log(error, 'Request error');
+
     const errorWithResponse = error as { response?: { data?: { error?: string } } };
     if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
       console.log('Invalid token.');
@@ -40,10 +40,10 @@ try {
       return response;
     },
     (error) => {
-console.log(error ,'res');
+      console.log(error, 'ResPonse error');
 
       const errorWithResponse = error as { response?: { data?: { error?: string } } };
-      if (errorWithResponse?.response?.data?.error === 'Invalid token.' ) {
+      if (errorWithResponse?.response?.data?.error === 'Invalid token.') {
         console.log('Invalid token.');
         localStorage.removeItem("user");
         localStorage.removeItem("userId");
@@ -56,8 +56,7 @@ console.log(error ,'res');
     }
   );
 } catch (error) {
-  console.log(error, 'eroro ');
-
+  console.log(error, 'error');
 }
 
 

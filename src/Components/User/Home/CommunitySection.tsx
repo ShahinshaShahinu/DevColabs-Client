@@ -23,7 +23,7 @@ function CommunitySection({ datas, loginModalOpen }: fetch) {
             const fetchedRecomendedCommunities = await RcomendedCommunities();
             setRecomendedCommunities(fetchedRecomendedCommunities?.data?.[0]);
             setRecomendedCommunityUsersCount(fetchedRecomendedCommunities?.data?.[1])
-            const fetchedCommunities = await Communities(); console.log(fetchedCommunities?.data[0],'fetchedCommunities?.data[0]');
+            const fetchedCommunities = await Communities();
             
             setCommunities(fetchedCommunities?.data[0]);
 

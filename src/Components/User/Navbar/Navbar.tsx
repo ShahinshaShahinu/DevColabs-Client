@@ -36,24 +36,24 @@ function Navbar() {
   const socket = useSocket();
 
   useEffect(() => {
-    socket.on('adminMessage', async (data) => {
-      console.log('Admin message received:', data);
+    socket.on('adminMessage', async () => {
       const Notifications = await GetNotification();
       setNotification(Notifications?.data);
       sethasUnreadNotifications(true);
     });
+
     socket.on('chat', async () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const Notifications = await GetNotification();
         setNotification(Notifications?.data);
-        console.log(Notifications?.data, 'noti fif cso socket ');
         const hasUnread = !!(Notifications?.data?.[0] && !Notifications?.data[0]?.read);
         sethasUnreadNotifications(hasUnread);
       } catch (error) {
         console.error('Error fetching chat data:', error);
       }
     });
+
     return () => {
       socket.off('adminMessage');
       // socket.off('chat');
@@ -63,83 +63,18 @@ function Navbar() {
   useEffect(() => {
     const Userauth = localStorage.getItem("user");
     if (!Userauth) {
-      localStorage.removeItem('user')
-      console.log('jjj');
-
+      localStorage.removeItem('user');
       dispatch(updateUser({}));
       googleLogout();
     }
   }, []);
 
 
-  // useEffect(() => {
-  //   const getAuth = async () => {
-  //     try {
-  //       console.log('user auth auth');
-
-
-
-  //       const data:any = await api.post('/auth', null, { withCredentials: true });
-  //       console.log(data ,'akuth get auth');
-
-  //       if(data?.data?.error==='Invalid'){
-  //         console.log('invalid');
-
-  //         localStorage.removeItem('user');
-  //         navigate('/login')
-  //       }
-
-  //       if (!data?.status) {
-  //         console.log('nnnnnnnnnnnnnnnnoooooooooooooooooooo');
-
-  //         localStorage.removeItem('user');
-  //         navigate('/login')
-  //       }
-  //     } catch (error) {
-
-  //     }
-  //   }
-  //   getAuth();
-
-  // }, []);
-
-
-
-
-
-  // useEffect(() => {
-  //   const socket = io('ws://localhost:3000');
-
-  //   socket.on('connect', () => {
-  //     console.log('WebSocket connected');
-
-  //     socket.emit('hello from client'); // Send a hello message to the server
-  //   });
-
-  //   socket.on('connect_error', (error) => {
-  //     console.error('WebSocket connection error:', error);
-  //   });
-
-  //   socket.on('hello from server', (arg1, arg2, arg3) => {
-  //     console.log('Received hello from server:', arg1, arg2, arg3);
-  //   });
-
-  //   socket.on('disconnect', () => {
-  //     console.log('WebSocket disconnected');
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-
-
-
 
   useEffect(() => {
     const fetchNotification = async () => {
       try {
+
         setIsLoading(true); // Start loading
         const Notifications = await GetNotification();
         setNotification(Notifications?.data);
@@ -148,6 +83,7 @@ function Navbar() {
         if (isNotificationModalOpen) {
           await Readed();
         }
+
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
@@ -163,25 +99,12 @@ function Navbar() {
 
 
 
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const Notifications = await GetNotification();
-  //     setNotification(Notifications?.data);
-  //     const hasUnread = Notifications?.data?.some((notification: { read: any }) => !notification?.read);
-  //     console.log('sssssssssssssssssssssssss',hasUnread);
-
-  //     sethasUnreadNotifications(hasUnread);
-  //   }
-  //   fetch();
-
-  // }, [userData, setNotification, isNotificationModalOpen])
 
   const closeModal = () => {
+
     setIsLoading(false);
     sethasUnreadNotifications(false)
     setNotificationModalOpen(false);
-
-
     const fetchNotification = async () => {
       try {
         const Notifications = await GetNotification();
@@ -191,14 +114,10 @@ function Navbar() {
       }
     };
     fetchNotification();
-
-
   };
 
 
-
   useEffect(() => {
-    console.log(Notification, 'Notification Notification NotificationNotification');
     fetchUserData();
   }, [socket, setNotification]);
 
@@ -254,11 +173,10 @@ function Navbar() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const RemoveSearchTerm = () => {
-    console.log('removed removed Searched');
-
     localStorage.removeItem('searchTerm');
     setSearchTerm('')
   }
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     localStorage.removeItem('searchTerm');
     setSearchTerm(event.target.value);
@@ -300,9 +218,6 @@ function Navbar() {
 
 
 
-
-
-
   return (
     <>
       <div className="fixed w-screen bg-[#D4E7FA]">
@@ -312,8 +227,6 @@ function Navbar() {
               <span className="text-2xl sm:text-3xl lg:text-lg font-Poppins cursor-pointer flex items-center">
                 <img className="h-10 ml-7" src="/DEV-ICON.png" alt="DevCollab" />
               </span>
-
-
 
               {/* opern---- small size search button */}
 
@@ -782,12 +695,7 @@ function Navbar() {
             </ul>
           </nav>
 
-
-
-
           {/* Your other content */}
-
-
 
         </div>
       </div>
