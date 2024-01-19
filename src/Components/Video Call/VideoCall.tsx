@@ -6,6 +6,7 @@ import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { useSelector } from "react-redux";
 import VideoFooter from "./VideoFooter";
+import LoaderAbsolute from "../User/isLoading/LoaderAbsolute";
 
 
 function VideoCall() {
@@ -13,12 +14,13 @@ function VideoCall() {
     const {  userEmail }: string | any = useSelector((state: any) => state?.user);
     const socket = useSocket();
     const [room, setRoom] = useState("");
-
+    const [connectRoom ,setConnectRoom]=useState(false)
 
     const handleJoinRoom = useCallback(
         (data: { userEmail: string; room: string; }) => {
             const { room } = data;
             navigate(`/room/${room}`);
+            setConnectRoom(false)
         },
         [navigate]
     );
@@ -34,6 +36,7 @@ function VideoCall() {
     const handleSubmitForm = useCallback(
         (e: { preventDefault: () => void; }) => {
             e.preventDefault();
+            setConnectRoom(true)
             socket.emit("room:join", { userEmail, room });
         },
         [userEmail, room, socket]
@@ -107,6 +110,9 @@ function VideoCall() {
                         </button>
                     </div>
                 </form>
+                {connectRoom && (
+                <LoaderAbsolute />
+                )}
             </div>
 
             <VideoFooter />
