@@ -242,7 +242,7 @@ function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // setIsLoading(true);
+        setIsLoading(true);
         if (selectCategory === 'Latest') {
 
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
@@ -467,7 +467,7 @@ function HomePage() {
                                   'opacity-80 px-1 hover:bg-[#dddbdb]'
                                   } md:w-1/2 bg-transparent opacity-100  font-medium rounded-lg  py-2.5 mr-2 mb-2 text-lg`}
                               >
-                               Latest
+                                Latest
                               </button>
                               <button
                                 onClick={() => { username ? slecetedCategory('Recommended') : setIsModalOpen(true) }}
