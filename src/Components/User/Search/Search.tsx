@@ -33,7 +33,7 @@ function Search() {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true)
-            const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+            const userResponse = await api.get(`/SearchPosts`, { withCredentials: true });
             const allUsersResponse = await api.get(`/GetUsers`, { withCredentials: true });
             setHomePosts(userResponse.data?.posts);
             setAllusers(allUsersResponse?.data);
