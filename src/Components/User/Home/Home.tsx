@@ -64,7 +64,7 @@ function HomePage() {
   const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
   const getClicketHashtag = location?.state;
-  
+
   useMemo(() => {
     if (getClicketHashtag) {
       setClickedHashtag(getClicketHashtag);
@@ -242,7 +242,7 @@ function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         if (selectCategory === 'Latest') {
 
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
@@ -430,14 +430,14 @@ function HomePage() {
                   <div className="w-full   md:h-screen flex relative mb-[12rem] " >
                     {/* Outer Div with Black Background */}
 
-                    <div className="w-auto absolute md:h-screen md:scree max-w-screen-md mb-96 top-12 md:top-16 bg-white ml-0 ">
+                    <div className="w-auto absolute md:h-screen   max-w-screen-md mb-96 top-12 md:top-16  ml-0 ">
                       {/* Inner Content */}
-                      <div className="flex   relative z-10   top-2 sm:justify-center md:left-32 lg:left-44 xl:left-14 h-auto bg-opacity-75">
-                        <nav className="fixed baCkground border-b-2  backdrop-blur-md h-auto xl:w-[42rem] md:w-[35rem] lg:w-[40rem] sm:w-full   w-[28rem]  overflow-y-auto md:overflow-y-hidden">
+                      <div className="flex   relative z-10     top-2 sm:justify-center md:left-32 lg:left-44 xl:left-14 h-auto bg-opacity-75">
+                        <nav className="fixed baCkground border-b-2  mt-4 md:mt-0 border-l-2 border-r-1  border-gray-400  shadow-inner   backdrop-blur-md h-16 md:h-16  xl:w-[42rem] md:w-[35rem] lg:w-[40rem] sm:w-full   w-full overflow-y-hidden">
                           <ul>
                             {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') ? (
                               <li className={`flex cursor-pointer relative items-center h-12 space-x-2 `}>
-                                <h1 onClick={() => Navigate('/')} className="font-bold ml-3 p-3 relative text-xl">Home</h1>
+                                {/* <h1  className="font-bold ml-3 p-3 top-4 relative text-2xl">Home</h1> */}
                               </li>
                             ) : (
                               <>
@@ -458,25 +458,25 @@ function HomePage() {
                           </ul>
 
                           {(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && (
-                            <div className="flex sm:ml-5  mx-10 max-sm:px-10 max-sm:pl-0 justify-between   relative">
+                            <div className="flex px-10 justify-between -inset-y-10   relative">
                               <button
                                 onClick={() => setSelectCategory('Latest')}
                                 type="button"
                                 className={`${selectCategory === "Latest" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
-                                  'opacity-80 hover:bg-[#dddbdb]'
-                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg  py-2.5 mr-2 mb-2 text-base`}
+                                  'opacity-80 px-1 hover:bg-[#dddbdb]'
+                                  } md:w-1/2 bg-transparent opacity-100  font-medium rounded-lg  py-2.5 mr-2 mb-2 text-lg`}
                               >
-                                Latest Posts
+                               Latest
                               </button>
                               <button
                                 onClick={() => { username ? slecetedCategory('Recommended') : setIsModalOpen(true) }}
                                 type="button"
                                 className={`${selectCategory === "Recommended" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
-                                  'opacity-80 hover:bg-[#dddbdb]'
-                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg  py-2.5  mr-5 mb-2 text-base`}
-                              > Recommended Post</button>
+                                  'opacity-80 px-1 hover:bg-[#dddbdb]'
+                                  } md:w-1/2 bg-transparent opacity-100 font-medium rounded-lg  py-2.5  mr-5 mb-2 text-lg`}
+                              > Recommended </button>
                             </div>
                           )}
                         </nav>
@@ -484,11 +484,11 @@ function HomePage() {
 
 
 
-                      <div className="md:p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-28  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
+                      <div className="md:p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-16  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
 
                         <div >
 
-                          <p className="bg-white mx-4 ">
+                          <p className="bg-white mx-4  ">
                             {clickedHashtag !== null && clickedHashtag ? 'HashTag' : 'Posts'}
                           </p>
 

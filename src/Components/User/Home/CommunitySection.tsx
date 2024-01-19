@@ -43,7 +43,7 @@ function CommunitySection({ datas, loginModalOpen }: fetch) {
                     <div className="fixed right-0 h-full lg:w-60 max-lg:w-80  xl:96 lg:block  2xl:w-[24rem] md:w-[13rem] overflow-hidden lg:mx-5   xl:mx-14 md:mx-28 z-10">
                         <div className="h-full  
                    ">
-                            <nav className="flex flex-col top-44 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
+                            <nav className="flex flex-col top-40 relative bg-white border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                                 <h2 className="text-xl font-medium ">{userId ? ('Communities that may interest you') : ('Communities')}</h2>
                                 {isRecomendedCommunities && isRecomendedCommunities?.length != 0 ? isRecomendedCommunities?.map((group, index) => (
                                     <div key={index}>

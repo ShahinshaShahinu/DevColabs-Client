@@ -296,7 +296,7 @@ function Navbar() {
 
                   </div>
 
-                  {!showSearch && (
+                  {/* {!showSearch && ( */}
                     <button
 
                       onClick={() => { searchButton(), setshowUserCircle(false) }}
@@ -320,7 +320,7 @@ function Navbar() {
                       </svg>
                       <span className="sr-only">Search</span>
                     </button>
-                  )}
+                  {/* )} */}
                   <div className="md:hidden">
                     <FullScreenButton />
                   </div>

@@ -35,7 +35,7 @@ function Search() {
             setIsLoading(true)
             const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
             const allUsersResponse = await api.get(`/GetUsers`, { withCredentials: true });
-            setHomePosts(userResponse.data);
+            setHomePosts(userResponse.data?.posts);
             setAllusers(allUsersResponse?.data);
             setTimeout(() => {
                 setIsLoading(false);
