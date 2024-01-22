@@ -43,8 +43,8 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
         location.reload();
     };
 
-    const changeCamera = async () =>{
-        socket.emit('changeCamera',frontCamera,userId)
+    const changeCamera = async () => {
+        socket.emit('changeCamera', frontCamera, userId)
     }
 
     const CameraOFF = async () => {
@@ -93,11 +93,11 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
                                 </button>
                                 <div className="flex  sm:hidden  relative">
                                     {frontCamera ? (
-                                        <button onClick={() => { setChangeCamera(!frontCamera),changeCamera(), setFrontCamera(!frontCamera) }} className=" rounded-full " >
+                                        <button onClick={() => { setChangeCamera(!frontCamera), changeCamera(), setFrontCamera(!frontCamera) }} className=" rounded-full " >
                                             <FaCameraRotate className="text-3xl" />
                                         </button>
                                     ) : (
-                                        <button onClick={() => { setChangeCamera(!frontCamera),changeCamera(), setFrontCamera(!frontCamera) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2">
+                                        <button onClick={() => { setChangeCamera(!frontCamera), changeCamera(), setFrontCamera(!frontCamera) }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2">
                                             <FaCameraRotate className="text-2xl" />
                                         </button>
                                     )}

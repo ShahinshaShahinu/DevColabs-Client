@@ -30,6 +30,8 @@ function VideoCall() {
 
     useEffect(() => {
         socket.on("room:join", handleJoinRoom);
+        console.log('socket room:join');
+        
         return () => {
             socket.off("room:join", handleJoinRoom);
         };
