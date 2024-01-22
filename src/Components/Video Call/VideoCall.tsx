@@ -19,6 +19,9 @@ function VideoCall() {
     const handleJoinRoom = useCallback(
         (data: { userEmail: string; room: string; }) => {
             const { room } = data;
+            
+            console.log('room ---',room);
+
             navigate(`/room/${room}`);
             setConnectRoom(false)
         },

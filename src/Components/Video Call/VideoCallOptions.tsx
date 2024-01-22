@@ -40,7 +40,9 @@ function VideoCallOptions({ VideoDisabled, AudioDiabled, stream, setChangeCamera
         }
 
         naviagte('/videocall');
+        location.reload();
     };
+
     const changeCamera = async () =>{
         socket.emit('changeCamera',frontCamera,userId)
     }
