@@ -246,6 +246,8 @@ function HomePage() {
         if (selectCategory === 'Latest') {
 
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
+          console.log(userResponse.data ,' home posts');
+          
           setHomePosts(userResponse?.data?.posts);
           setPageCount(userResponse?.data?.totalPages);
 
