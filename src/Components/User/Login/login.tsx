@@ -224,7 +224,7 @@ function login() {
                   type="submit"
                   className="w-full py-3 mt-8  bg-indigo-600 hover:bg-indigo-500 relative text-white"
                 >
-                  Sign Up
+                  LogIn
                 </button>
               </div>
               <div className="flex items-center pt-5 ">
