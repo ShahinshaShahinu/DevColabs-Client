@@ -246,17 +246,17 @@ function HomePage() {
         if (selectCategory === 'Latest') {
 
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
-          console.log(userResponse.data ,' home posts');
-          
+
           setHomePosts(userResponse?.data?.posts);
           setPageCount(userResponse?.data?.totalPages);
 
         } else if (selectCategory === 'Recommended') {
 
+
           const userHashtag = await userRecomended();
           const userResponse = await api.get(`/HomePosts`, { withCredentials: true });
           const userHashTags = userHashtag?.data.map((hashtagObj: { Hashtag: string }) => hashtagObj.Hashtag);
-          const filteredPosts = userResponse?.data?.filter((post: {
+          const filteredPosts = userResponse?.data?.posts.filter((post: {
             userId: any; HashTag: string[]
           }) => {
             const postTagsCleaned = post?.HashTag?.map(tag => tag?.trim());
@@ -267,9 +267,10 @@ function HomePage() {
             );
           });
           const userFollowersPost = await UserFolowers();
-          const followersPost = userResponse?.data?.filter((post: { userId: { _id: string; }; }) =>
+          const followersPost = userResponse?.data?.posts.filter((post: { userId: { _id: string; }; }) =>
             userFollowersPost?.data?.Userfollowers?.some((follower: { _id: string; }) => follower?._id === post?.userId?._id && follower?._id !== userId)
           );
+
           setHomePosts([...filteredPosts, ...followersPost]);
 
         }
@@ -421,7 +422,9 @@ function HomePage() {
           </div>
           <main className="flex-grow  bg-white  ">
             {isLoading && (
+              <>
               <LoaderAbsolute />
+              </>
             )}
             <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
               <div className="mx-auto max-w-screen-xl overflow">
@@ -485,14 +488,15 @@ function HomePage() {
                       </div>
 
 
+                      {/* posts-gradiant   */}
+                      <div className="md:p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-16  md:w-[35rem] lg:w-screen bg-[#ebe7e1]  lg:max-w-2xl w-screen xl:left-14   relative  ">
 
-                      <div className="md:p-4 md:left-32 lg:left-44 md:mx-8 lg:mx-0 lg:right-0 sm:left-0 top-16  md:w-[35rem] lg:w-screen   lg:max-w-2xl w-screen xl:left-14   relative   bg-[#e1e5eb]">
-
-                        <div >
-
-                          <p className="bg-white mx-4  ">
-                            {clickedHashtag !== null && clickedHashtag ? 'HashTag' : 'Posts'}
-                          </p>
+                        <div>
+                          <div className="p-4 rounded-lg shadow-lg bg-gradient-to-b from-blue-300 to-blue-500">
+                            <p className="text-white text-lg font-semibold mx-4">
+                              {clickedHashtag !== null && clickedHashtag ? 'HashTag' : 'Posts'}
+                            </p>
+                          </div>
 
                           {HomePosts && currentPosts.map((post: any, index) => (
                             <div className="p-4 bg-[#e1e5eb]" key={index}>
@@ -987,7 +991,22 @@ function HomePage() {
                         <div className="hidden z-50 md:block ">
                           <div className="bg top-10 lg:w-[110%] h-32 lg:right-10 relative flex justify-center ">
                             <div className="bg-white w-full h-full items-center justify-center z-0 flex ">
-                              <CustomPagination pageCount={pageCount} onPageChange={handlePageChange} />
+                              {selectCategory === "Recommended" ? (
+                                <>
+                                  <div className="flex flex-col items-center justify-center p-6 rounded-lg shadow-lg bg-gradient-to-br from-purple-400 to-red-500">
+                                    <p className="text-white text-lg font-semibold text-center">
+                                      There are no recommended posts.
+                                    </p>
+                                    <p className="text-white text-sm mt-2 text-center">
+                                      You should follow others and get more recommendations!
+                                    </p>
+                                  </div>
+
+                                </>
+                              ) : (
+                                <CustomPagination pageCount={pageCount} onPageChange={handlePageChange} />
+
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1008,9 +1027,9 @@ function HomePage() {
                   <div className="hidden md:block relative xl:w-[16.5rem] 2xl:w-[17rem] ">
                     <div className="fixed top-0 left-0 right-10  h-full hidden md:block  lg:w-[18rem]  xl:w-[23rem] 2xl:w-[20 rem] md:w-[16rem] overflow-hidden lg:mx-7 xl:mx-10 md:mx-2 z-10">
                       <div className="h-full overflow-y-auto  relative bg-white  border-r-2 px-2 ">
-                        <nav className="flex flex-col top-44 relative bg-white mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
+                        <nav className="flex flex-col top-44 relative bg-white  mr-3 border-2 p-2 pr-2 justify-around rounded-lg shadow-lg">
                           <ul>
-                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag(''), setTag({ HashtagName: '', CountPost: 0 }) }} className={`flex cursor-pointer items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
+                            <li onClick={() => { setSelectCategory('Latest'), setClickedHashtag(''), setTag({ HashtagName: '', CountPost: 0 }) }} className={`flex cursor-pointer  items-center w-auto  h-12 space-x-2 ${(!clickedHashtag && selectCategory === 'Latest' || selectCategory === 'Recommended') && `bg-sky-200`}  rounded-xl hover:bg-sky-100 `}>
                               <AiOutlineHome className="text-3xl text-gray-800  ml-3 " onClick={() => Navigate('/')} />
                               <h1 onClick={() => { setSelectCategory('Latest'), setClickedHashtag('') }} className="font-bold text-base">Home</h1>
                             </li>

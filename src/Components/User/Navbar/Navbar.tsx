@@ -220,10 +220,11 @@ function Navbar() {
 
   return (
     <>
-      <div className="fixed w-screen bg-[#D4E7FA]">
-        <div className="lg:mx-3 ">
-          <nav className={` bg-[#D4E7FA] p-4  md:flex md:items-center md:justify-between  `}>
-            <div className="flex justify-between items-center">
+      <div className="fixed w-screen ">
+        <div className="bg-[#D4E7FA]">
+          <nav className={` bg-blue-300 p-4 lg:px-3 md:flex md:items-center md:justify-between  shadow-lg `}>
+
+            <div className="flex justify-between  items-center">
               <span className="text-2xl sm:text-3xl lg:text-lg font-Poppins cursor-pointer flex items-center">
                 <img className="h-10 ml-7" src="/DEV-ICON.png" alt="DevCollab" />
               </span>
@@ -297,29 +298,29 @@ function Navbar() {
                   </div>
 
                   {/* {!showSearch && ( */}
-                    <button
+                  <button
 
-                      onClick={() => { searchButton(), setshowUserCircle(false) }}
-                      type="submit"
-                      className="p-1.5 sm:p-2  md:hidden  font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={() => { searchButton(), setshowUserCircle(false) }}
+                    type="submit"
+                    className="p-1.5 sm:p-2  md:hidden  font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    <svg
+                      className="sm:w-4 sm:h-4 w-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
                     >
-                      <svg
-                        className="sm:w-4 sm:h-4 w-2.5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                        />
-                      </svg>
-                      <span className="sr-only">Search</span>
-                    </button>
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                    <span className="sr-only">Search</span>
+                  </button>
                   {/* )} */}
                   <div className="md:hidden">
                     <FullScreenButton />
@@ -394,7 +395,7 @@ function Navbar() {
                     type="text"
                     id="simple-search"
                     className="bg-gray-50 border border-gray-300  text-gray-900  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-50 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search..."
+                    placeholder="Search ..."
                     value={searchTerm}
                     onChange={handleSearchChange}
                   />
@@ -486,24 +487,25 @@ function Navbar() {
             )}
 
             <ul
-              className={`md:flex md:items-center z-[-1] md:z-auto  md:static absolute md:bg-[#D4E7FA]  bg-cyan-50 border-b-2  sm:border-0 shadow-lg sm:shadow-none border-gray-400 w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 md:opacity-100  ${showMenu ? `opacity-100 top-10` : `opacity-0 top-[-400px]`
+              className={`md:flex md:items-center z-[-1] md:z-auto  md:static absolute    border-b-2  sm:border-0 shadow-lg sm:shadow-none border-gray-400 w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 md:opacity-100  ${showMenu ? `opacity-100 top-10` : `opacity-0 top-[-400px]`
                 }  transition-all ease-in duration-500`}
             >
               {username ? (
                 <>
-                  <li className="sm:-mx-4 mx-4 items-start flex flex-col justify-start relative my-4 md:my-0 text-left">
+                  <li className="sm:-mx-4 mx-4 p-1  bg-white items-center rounded-full flex flex-col justify-center relative my-4 md:my-0 text-left">
                     <button
                       onClick={() => {
                         Navigate("/PostCreation"), RemoveSearchTerm();
                       }}
                       className="text-sm hover:text-cyan-500 duration-500"
                     >
-                      <IoCreateOutline className="w-8 h-8 inline-block mr-2" />
+                      <IoCreateOutline className="w-7 h-7 inline-block " />
                     </button>
 
                   </li>
-                  <div className="items-center flex justify- rounded-full relative">
-                    <li className="mx-4 sm:mx-6  flex-col justify-start items-center flex relative my- md:my-0 rounded-full hover:bg-white">
+                 
+                  <div className="items-center flex justify-between rounded-full relative">
+                    <li className="mx-4 sm:mx-6 left-2  flex-col justify-start items-center flex relative my- md:my-0 rounded-full bg-white hover:bg-white">
                       <button onClick={() => setNotificationModalOpen(!isNotificationModalOpen)} className="text-xl hover:text-cyan-500 duration-500 relative">
 
                         {isNotificationModalOpen || (hasUnreadNotifications && Notification && Notification[0]?.senderId?._id === userId) ? (
@@ -515,7 +517,7 @@ function Navbar() {
 
                           </>
                         ) : (
-                          <IoIosNotificationsOutline className="w-9 h-9" />
+                          <IoIosNotificationsOutline className="w-9 h-9 bg-white rounded-full" />
                         )}
                       </button>
 
@@ -589,9 +591,7 @@ function Navbar() {
                             </div>
                           ) : (
                             <div className="relative w-full  p-2  bg-gray-100 flex justify-end items-center ">
-                              <img
-                                src="/Images/NOnotification.jpg" alt="No Notification" srcSet="" />
-
+                              <img src="/Images/NOnotification.jpg" alt="No Notification" srcSet="" />
                             </div>
 
                           )}
@@ -609,7 +609,7 @@ function Navbar() {
                       src={userData?.profileImg}
                       alt="Rounded avatar"
                     />
-                    <div className="relative">
+                    <div className="relative  mr-4">
                       {showUserCircle && (
                         <div
                           id="userDropdown"
@@ -663,10 +663,7 @@ function Navbar() {
 
                         </div>
                       )}
-
-
                     </div>
-
                   </div>
                 </>
               ) : (
