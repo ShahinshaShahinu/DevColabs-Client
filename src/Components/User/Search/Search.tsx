@@ -64,7 +64,6 @@ function Search() {
 
     useEffect(() => {
         const SearchedItem = location.state?.searchTerm || '';
-        console.log(SearchedItem, 'SearchedItem');
 
         setSearchTerm(SearchedItem.toLowerCase());
 
@@ -98,14 +97,12 @@ function Search() {
             );
 
         }
-
+console.log(newFilteredItems ,'newFilteredItems')
 
         setFilteredItemsp(newFilteredItems);
     };
 
     const RemoveSearchTerm = () => {
-        console.log('removed removed Searched');
-
         localStorage.removeItem('searchTerm');
         setSearchTerm('')
     }
@@ -192,6 +189,9 @@ function Search() {
 
                                                             </>
                                                         )}
+                                                        <>
+                                                    
+                                                        </>
                                                         {filteredItemsp && filteredItemsp.map((item: any, index) => (
                                                             <div className="p-4 pt-0 bg-[#e1e5eb]" key={index}>
                                                                 {/* Render the appropriate content based on the selected category */}
