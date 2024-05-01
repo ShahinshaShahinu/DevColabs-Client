@@ -423,7 +423,7 @@ function HomePage() {
           <main className="flex-grow  bg-white  ">
             {isLoading && (
               <>
-              <LoaderAbsolute />
+                <LoaderAbsolute />
               </>
             )}
             <div className="lg:mx-28 xl:mx:28 md:mx-28  ">
@@ -475,7 +475,7 @@ function HomePage() {
                                 Latest
                               </button>
                               <button
-                                onClick={() => { username ? slecetedCategory('Recommended') : setIsModalOpen(true) }}
+                                onClick={() => { username ? slecetedCategory('Recommended') : setIsModalOpen(true) ,setHomePosts([]) }}
                                 type="button"
                                 className={`${selectCategory === "Recommended" ?
                                   "bg-[#b3bcc9] underline decoration-4 decoration-[#7856FF] text-gray-900" :
@@ -991,22 +991,26 @@ function HomePage() {
                         <div className="hidden z-50 md:block ">
                           <div className="bg top-10 lg:w-[110%] h-32 lg:right-10 relative flex justify-center ">
                             <div className="bg-white w-full h-full items-center justify-center z-0 flex ">
-                              {selectCategory === "Recommended" ? (
-                                <>
-                                  <div className="flex flex-col items-center justify-center p-6 rounded-lg shadow-lg bg-gradient-to-br from-purple-400 to-red-500">
-                                    <p className="text-white text-lg font-semibold text-center">
-                                      There are no recommended posts.
-                                    </p>
-                                    <p className="text-white text-sm mt-2 text-center">
-                                      You should follow others and get more recommendations!
-                                    </p>
-                                  </div>
-
-                                </>
-                              ) : (
+                              {selectCategory !== "Recommended" ? (
                                 <CustomPagination pageCount={pageCount} onPageChange={handlePageChange} />
-
+                              ) : (
+                                <>
+                                </>
                               )}
+
+                              {/* REcomendation */}
+                              {(HomePosts.length <= 0 && selectCategory == 'Recommended') && (
+                                <div className="flex flex-col items-center justify-center p-6 rounded-lg shadow-lg bg-gradient-to-br from-purple-400 to-red-500">
+                                  <p className="text-white text-lg font-semibold text-center">
+                                    There are no recommended posts.
+                                  </p>
+                                  <p className="text-white text-sm mt-2 text-center">
+                                    You should follow others and get more recommendations!
+                                  </p>
+                                </div>
+                              )}
+
+
                             </div>
                           </div>
                         </div>
