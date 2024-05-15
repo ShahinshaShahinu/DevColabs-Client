@@ -22,7 +22,6 @@ function ForgotPassword() {
     }, []);
 
     const handleButtonClick = () => {
-        // Perform the first action to redirect to the URL
         window.location.href = 'https://mail.google.com/mail/u/0/#inbox';
         
 
@@ -69,7 +68,7 @@ function ForgotPassword() {
                         </div>
                         <div className="flex justify-center">
                            {checkEmail==false ?(
-                        <button type='submit' className='w-full py-3 mt-8 bg-indigo-600 hover:bg-indigo-500 relative text-white'>Continue</button>) : ( <button onClick={handleButtonClick}
+                        <button type='submit' className='w-full py-3 mt-8 bg-indigo-600 hover:bg-indigo-500 relative text-white'>Continue</button>) : ( <button onClick={handleButtonClick} type="button"
                             className='px-5 py-3 shadow-zinc-950 text-sm font-medium mt-8 bg-blue-700 rounded-lg cursor-pointer focus:ring-blue-300 hover:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-center text-white'
                           >
                             Check your Email

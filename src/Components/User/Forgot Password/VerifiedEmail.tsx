@@ -15,11 +15,9 @@ function VerifiedEmail() {
       const tokenTrue = data.token;
       if (tokenTrue) {
 
-   console.log('kkkkk');
-   
-        Navigate('/UpdatePassWord',{state:{verificationToken:verificationToken}})
+        console.log('done');
 
-
+        Navigate('/UpdatePassWord', { state: { verificationToken: verificationToken } })
       }
 
       console.log('Email verification request sent successfully!');
@@ -36,14 +34,14 @@ function VerifiedEmail() {
         <img src='https://booster.io/wp-content/uploads/WooCommerce-Email-Verification.png' alt='Verify' className='flex w-36 relative  ' />
       </div>
       <div className='flex mb-52 '>
-         <button
-        className='bg-sky-500 shadow-2xl mb-5 border-2 border-gray-600 text-white rounded-lg px-4 py-2 flex items-center'
-        onClick={handleVerifyEmail}
-      >
-        Click to Verify
-      </button>
+        <button
+          className='bg-sky-500 shadow-2xl mb-5 border-2 border-gray-600 text-white rounded-lg px-4 py-2 flex items-center'
+          onClick={handleVerifyEmail}
+        >
+          Click to Verify
+        </button>
       </div>
-     
+
     </div>
   );
 }
