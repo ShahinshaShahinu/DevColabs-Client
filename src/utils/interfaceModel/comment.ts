@@ -9,8 +9,6 @@ export interface Comment  {
 }
 
 
-
-
 export interface User {
   _id?: string;
   UserName: string;
